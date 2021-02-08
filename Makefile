@@ -28,6 +28,7 @@ fmt:
 .PHONY: fmt
 
 precommit:
+	make mocks
 	make test
 	make lint
 	make fmt
