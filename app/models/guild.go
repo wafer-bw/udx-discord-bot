@@ -1,7 +1,69 @@
 package models
 
+import "time"
+
 // todo
 // https://discord.com/developers/docs/resources/guild#guild-resource
 
-// GuildMemberObject - the base model of a guild / server
-type GuildMemberObject struct{}
+// Guild - the base model of a guild / server
+type Guild struct {
+	ID                          string         `json:"id"`
+	Name                        string         `json:"name"`
+	Icon                        string         `json:"icon"`
+	IconHash                    string         `json:"icon_hash"`
+	Splash                      string         `json:"splash"`
+	DiscoverySplash             string         `json:"discovery_splash"`
+	Owner                       bool           `json:"owner"`
+	OwnerID                     string         `json:"owner_id"`
+	Permissions                 string         `json:"permissions"`
+	Region                      string         `json:"region"`
+	AFKChannelID                string         `json:"afk_channel_id"`
+	AFKTimeout                  int            `json:"afk_timeout"`
+	WidgetEnabled               bool           `json:"widget_enabled"`
+	WidgetChannelID             string         `json:"widget_channel_id"`
+	VerificationLevel           int            `json:"verification_level"`            // todo enum https://discord.com/developers/docs/resources/guild#guild-object-verification-level
+	DefaultMessageNotifications int            `json:"default_message_notifications"` // todo enum https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level
+	ExplicitContentFilter       int            `json:"explicit_content_filter"`       // todo enum https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level
+	Roles                       []*interface{} `json:"roles"`                         // todo struct
+	Emojis                      []*interface{} `json:"emojis"`                        // todo struct
+	Features                    []*interface{} `json:"features"`                      // todo struct
+	MFALevel                    int            `json:"mfa_level"`                     // todo enum https://discord.com/developers/docs/resources/guild#guild-object-mfa-level
+	ApplicationID               string         `json:"application_id"`
+	SystemChannelID             string         `json:"system_channel_id"`
+	SystemChannelFlags          int            `json:"system_channel_flags"` // todo enum https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
+	RulesChannelID              string         `json:"rules_channel_id"`
+	JoinedAt                    time.Time      `json:"joined_at"` // todo verify if this works in unmarshal or if it needs to be switched to a string
+	Large                       bool           `json:"large"`
+	Unavailable                 bool           `json:"unavailable"`
+	MemberCount                 int            `json:"member_count"`
+	VoiceStates                 []*interface{} `json:"voice_states"` // todo struct https://discord.com/developers/docs/resources/voice#voice-state-object
+	Members                     []*interface{} `json:"members"`      // todo struct https://discord.com/developers/docs/resources/guild#guild-member-object
+	Channels                    []*interface{} `json:"channels"`     // todo struct https://discord.com/developers/docs/resources/channel#channel-object
+	Presences                   []*interface{} `json:"presences"`    // todo struct https://discord.com/developers/docs/topics/gateway#presence-update
+	MaxPresences                int            `json:"max_presences"`
+	MaxMembers                  int            `json:"max_members"`
+	VanityURLCode               string         `json:"vanity_url_code"`
+	Description                 string         `json:"description"`
+	Banner                      string         `json:"banner"`
+	PremiumTier                 int            `json:"premium_tier"`
+	PremiumSubscriptionCount    int            `json:"premium_subscription_count"`
+	PreferredLocale             string         `json:"preferred_locale"`
+	PublicUpdatesChannelID      string         `json:"public_updates_channel_id"`
+	MaxVideoChannelUsers        int            `json:"max_video_channel_users"`
+	ApproximateMemberCount      int            `json:"approximate_member_count"`
+	ApproximatePresenceCount    int            `json:"approximate_presence_count"`
+	WelcomeScreen               interface{}    `json:"welcome_screen"` // todo struct https://discord.com/developers/docs/resources/guild#welcome-screen-object
+}
+
+// GuildMember - The properties of a member of a guild
+type GuildMember struct {
+	User         *User     `json:"user"`
+	Nick         string    `json:"nick"`
+	Roles        []string  `json:"roles"`
+	JoinedAt     time.Time `json:"joined_at"`     // todo verify if this works in unmarshal or if it needs to be switched to a string
+	PremiumSince time.Time `json:"premium_since"` // todo verify if this works in unmarshal or if it needs to be switched to a string
+	Deaf         bool      `json:"deaf"`
+	Mute         bool      `json:"mute"`
+	Pending      bool      `json:"pending"`
+	Permissions  string    `json:"permissions"`
+}

@@ -9,7 +9,7 @@ type InteractionRequest struct {
 	Data      *ApplicationCommandInteractionData `json:"data"`
 	GuildID   string                             `json:"guild_id"`
 	ChannelID string                             `json:"channel_id"`
-	Member    interface{}                        `json:"member"` // todo
+	Member    *GuildMember                       `json:"member"`
 	Token     string                             `json:"token"`
 	Version   int                                `json:"version"`
 }

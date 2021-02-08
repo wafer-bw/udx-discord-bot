@@ -53,15 +53,12 @@ todo
     * License
 * Code
     * Models
-        * Guild struct
-        * GuildMember struct
-        * Embeds struct
-        * AllowMentions struct
     * Make simple scripts for registering commands for now
     * Add scripts that act as an alternative for `make`
     * Cleanup `handler.go`
         * Modularize
         * Complete tests
+    * Discord type `snowflake` might be marshallable into a different type such as a hex encoded string?
     * Revisit & redesign command error response flow
     * Design command register flow
     * Extract slash command code to another repo that can act as a library

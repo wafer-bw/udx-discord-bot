@@ -31,8 +31,8 @@ var InteractionResponseTypes = &InteractionResponseTypeEnum{
 
 // InteractionApplicationCommandCallbackData - Optional response message payload
 type InteractionApplicationCommandCallbackData struct {
-	TTS             bool           `json:"tts"`
-	Content         string         `json:"content"`
-	Embeds          []*interface{} `json:"embeds"`           // todo
-	AllowedMentions interface{}    `json:"allowed_mentions"` // todo
+	TTS             bool             `json:"tts"`
+	Content         string           `json:"content"`
+	Embeds          []*Embed         `json:"embeds"`
+	AllowedMentions *AllowedMentions `json:"allowed_mentions"`
 }
