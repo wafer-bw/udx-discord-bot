@@ -1,4 +1,4 @@
-package commands
+package models
 
 // https://discord.com/developers/docs/interactions/slash-commands#applicationcommand
 
@@ -30,14 +30,26 @@ type ApplicationCommandOptionChoice struct {
 // ApplicationCommandOptionType - Types of command options
 type ApplicationCommandOptionType int
 
-// ApplicationCommandOptionType enums
-const (
-	SubCommand      ApplicationCommandOptionType = 1
-	SubCommandGroup ApplicationCommandOptionType = 2
-	String          ApplicationCommandOptionType = 3
-	Integer         ApplicationCommandOptionType = 4
-	Boolean         ApplicationCommandOptionType = 5
-	User            ApplicationCommandOptionType = 6
-	Channel         ApplicationCommandOptionType = 7
-	Role            ApplicationCommandOptionType = 8
-)
+// ApplicationCommandOptionTypeEnum - Acts as an enum struct of all `ApplicationCommandOptionType`s
+type ApplicationCommandOptionTypeEnum struct {
+	SubCommand      ApplicationCommandOptionType
+	SubCommandGroup ApplicationCommandOptionType
+	String          ApplicationCommandOptionType
+	Integer         ApplicationCommandOptionType
+	Boolean         ApplicationCommandOptionType
+	User            ApplicationCommandOptionType
+	Channel         ApplicationCommandOptionType
+	Role            ApplicationCommandOptionType
+}
+
+// ApplicationCommandOptionTypes - `ApplicationCommandOptionTypeEnum`
+var ApplicationCommandOptionTypes = &ApplicationCommandOptionTypeEnum{
+	SubCommand:      1,
+	SubCommandGroup: 2,
+	String:          3,
+	Integer:         4,
+	Boolean:         5,
+	User:            6,
+	Channel:         7,
+	Role:            8,
+}

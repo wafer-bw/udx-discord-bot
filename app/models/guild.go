@@ -1,4 +1,4 @@
-package guilds
+package models
 
 // todo
 // https://discord.com/developers/docs/resources/guild#guild-resource

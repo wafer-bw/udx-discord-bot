@@ -1,4 +1,4 @@
-package interactions
+package models
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response
 
@@ -11,14 +11,23 @@ type InteractionResponse struct {
 // InteractionResponseType - The type of the response
 type InteractionResponseType int
 
-// InteractionResponseType enums
-const (
-	Pong                     InteractionResponseType = 1
-	Acknowledge              InteractionResponseType = 2
-	ChannelMessage           InteractionResponseType = 3
-	ChannelMessageWithSource InteractionResponseType = 4
-	AcknowledgeWithSource    InteractionResponseType = 5
-)
+// InteractionResponseTypeEnum - Acts as an enum struct of all `InteractionResponseType`s
+type InteractionResponseTypeEnum struct {
+	Pong                     InteractionResponseType
+	Acknowledge              InteractionResponseType
+	ChannelMessage           InteractionResponseType
+	ChannelMessageWithSource InteractionResponseType
+	AcknowledgeWithSource    InteractionResponseType
+}
+
+// InteractionResponseTypes - `InteractionResponseTypeEnum`
+var InteractionResponseTypes = &InteractionResponseTypeEnum{
+	Pong:                     1,
+	Acknowledge:              2,
+	ChannelMessage:           3,
+	ChannelMessageWithSource: 4,
+	AcknowledgeWithSource:    5,
+}
 
 // InteractionApplicationCommandCallbackData - Optional response message payload
 type InteractionApplicationCommandCallbackData struct {

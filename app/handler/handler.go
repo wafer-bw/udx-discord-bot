@@ -10,6 +10,7 @@ import (
 	"github.com/wafer-bw/discobottest/app/config"
 	"github.com/wafer-bw/discobottest/app/errs"
 	"github.com/wafer-bw/discobottest/app/interactions"
+	"github.com/wafer-bw/discobottest/app/models"
 )
 
 // Deps defines `Handler` dependencies
@@ -33,6 +34,10 @@ func New(deps *Deps, conf *config.Config) Handler {
 	return &impl{deps: deps, conf: conf}
 }
 
+var pongResponse = &models.InteractionResponse{
+	Type: models.InteractionResponseTypes.Pong,
+}
+
 func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
 	response, err := impl.resolve(r)
 	if err != nil {
@@ -49,7 +54,7 @@ func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
 	impl.respond(w, body, nil)
 }
 
-func (impl *impl) resolve(r *http.Request) (*interactions.InteractionResponse, error) {
+func (impl *impl) resolve(r *http.Request) (*models.InteractionResponse, error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
@@ -65,9 +70,9 @@ func (impl *impl) resolve(r *http.Request) (*interactions.InteractionResponse, e
 	}
 
 	switch interaction.Type {
-	case interactions.Ping:
-		return &interactions.InteractionResponse{Type: interactions.Pong}, nil
-	case interactions.ApplicationCommand:
+	case models.InteractionTypes.Ping:
+		return pongResponse, nil
+	case models.InteractionTypes.ApplicationCommand:
 		return actions.Run(interaction)
 	default:
 		return nil, errs.ErrInvalidInteractionType
@@ -92,14 +97,14 @@ func (impl *impl) respond(w http.ResponseWriter, body []byte, err error) {
 	}
 }
 
-func (impl *impl) unmarshal(data []byte) (*interactions.InteractionRequest, error) {
-	interaction := &interactions.InteractionRequest{}
+func (impl *impl) unmarshal(data []byte) (*models.InteractionRequest, error) {
+	interaction := &models.InteractionRequest{}
 	if err := json.Unmarshal(data, interaction); err != nil {
 		return nil, err
 	}
 	return interaction, nil
 }
 
-func (impl *impl) marshal(response *interactions.InteractionResponse) ([]byte, error) {
+func (impl *impl) marshal(response *models.InteractionResponse) ([]byte, error) {
 	return json.Marshal(response)
 }

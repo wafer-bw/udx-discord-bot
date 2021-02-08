@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/wafer-bw/discobottest/app/interactions"
+	"github.com/wafer-bw/discobottest/app/models"
 )
 
 type payload struct {
@@ -14,23 +14,39 @@ type payload struct {
 	Ask    float64
 }
 
-// ExtrinsicRisk calculates the extrinsic risk of an option provided the
-// `share` price, `strike` price, & `ask` price
-func ExtrinsicRisk(request *interactions.InteractionRequest) (*interactions.InteractionResponse, error) {
+// ExtrinsicRisk calculates the extrinsic risk of an option
+// provided the `share` price, `strike` price, & `ask` price
+func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
+		return responseErr("Error parsing command :("), nil
 	}
-	extrinsicRisk := ((p.Ask - (p.Share - p.Strike)) / p.Share) * 100
-	return &interactions.InteractionResponse{
-		Type: interactions.ChannelMessageWithSource,
-		Data: &interactions.InteractionApplicationCommandCallbackData{
-			Content: fmt.Sprintf("%.2f", extrinsicRisk),
-		},
-	}, nil
+	risk := calcExtrinsicRisk(p)
+	return responseOk(risk), nil
 }
 
-func getPayload(options []*interactions.ApplicationCommandInteractionDataOption) (*payload, error) {
+func calcExtrinsicRisk(p *payload) float64 {
+	return ((p.Ask - (p.Share - p.Strike)) / p.Share) * 100
+}
+
+func responseOk(risk float64) *models.InteractionResponse {
+	return &models.InteractionResponse{
+		Type: models.InteractionResponseTypes.ChannelMessageWithSource,
+		Data: &models.InteractionApplicationCommandCallbackData{
+			Content: fmt.Sprintf("%.2f%%", risk),
+		},
+	}
+}
+
+func responseErr(msg string) *models.InteractionResponse {
+	return &models.InteractionResponse{
+		Type: models.InteractionResponseTypes.ChannelMessageWithSource,
+		Data: &models.InteractionApplicationCommandCallbackData{Content: msg},
+	}
+}
+
+func getPayload(options []*models.ApplicationCommandInteractionDataOption) (*payload, error) {
 	if len(options) != 3 {
 		return nil, errors.New("missing required options")
 	}

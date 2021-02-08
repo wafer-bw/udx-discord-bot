@@ -1,4 +1,4 @@
-package interactions
+package models
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction
 
@@ -17,11 +17,17 @@ type InteractionRequest struct {
 // InteractionType - The type of the interaction
 type InteractionType int
 
-// InteractionType enums
-const (
-	Ping               InteractionType = 1
-	ApplicationCommand InteractionType = 2
-)
+// InteractionTypeEnum - Acts as an enum struct of all `IntaractionType`s
+type InteractionTypeEnum struct {
+	Ping               InteractionType
+	ApplicationCommand InteractionType
+}
+
+// InteractionTypes - `InteractionTypeEnum`
+var InteractionTypes = &InteractionTypeEnum{
+	Ping:               1,
+	ApplicationCommand: 2,
+}
 
 // ApplicationCommandInteractionData - The command data payload
 type ApplicationCommandInteractionData struct {
