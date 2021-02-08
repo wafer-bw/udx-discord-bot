@@ -20,30 +20,26 @@ func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionRespo
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		fmt.Println(err)
-		return responseErr("Error parsing command :("), nil
+		return &models.InteractionResponse{
+			Type: models.InteractionResponseTypeChannelMessageWithSource,
+			Data: &models.InteractionApplicationCommandCallbackData{
+				Content: "Error parsing command :cry:",
+			},
+		}, nil
 	}
+
 	risk := calcExtrinsicRisk(p)
-	return responseOk(risk), nil
+
+	return &models.InteractionResponse{
+		Type: models.InteractionResponseTypeChannelMessageWithSource,
+		Data: &models.InteractionApplicationCommandCallbackData{
+			Content: fmt.Sprintf("%.2f%%", risk),
+		},
+	}, nil
 }
 
 func calcExtrinsicRisk(p *payload) float64 {
 	return ((p.Ask - (p.Share - p.Strike)) / p.Share) * 100
-}
-
-func responseOk(risk float64) *models.InteractionResponse {
-	return &models.InteractionResponse{
-		Type: models.InteractionResponseTypes.ChannelMessageWithSource,
-		Data: &models.InteractionApplicationCommandCallbackData{
-			Content: fmt.Sprintf("%.2f%%", risk),
-		},
-	}
-}
-
-func responseErr(msg string) *models.InteractionResponse {
-	return &models.InteractionResponse{
-		Type: models.InteractionResponseTypes.ChannelMessageWithSource,
-		Data: &models.InteractionApplicationCommandCallbackData{Content: msg},
-	}
 }
 
 func getPayload(options []*models.ApplicationCommandInteractionDataOption) (*payload, error) {

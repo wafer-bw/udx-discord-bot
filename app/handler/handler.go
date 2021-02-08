@@ -35,7 +35,7 @@ func New(deps *Deps, conf *config.Config) Handler {
 }
 
 var pongResponse = &models.InteractionResponse{
-	Type: models.InteractionResponseTypes.Pong,
+	Type: models.InteractionResponseTypePong,
 }
 
 func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
@@ -70,9 +70,9 @@ func (impl *impl) resolve(r *http.Request) (*models.InteractionResponse, error) 
 	}
 
 	switch interaction.Type {
-	case models.InteractionTypes.Ping:
+	case models.InteractionTypePing:
 		return pongResponse, nil
-	case models.InteractionTypes.ApplicationCommand:
+	case models.InteractionTypeApplicationCommand:
 		return actions.Run(interaction)
 	default:
 		return nil, errs.ErrInvalidInteractionType

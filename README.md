@@ -52,12 +52,12 @@ todo
     * Add branch protection for `master`
     * License
 * Code
-    * Models
     * Make simple scripts for registering commands for now
     * Add scripts that act as an alternative for `make`
     * Cleanup `handler.go`
         * Modularize
         * Complete tests
+    * Finish Guild Model
     * Discord type `snowflake` might be marshallable into a different type such as a hex encoded string?
     * Revisit & redesign command error response flow
     * Design command register flow

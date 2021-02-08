@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/wafer-bw/discobottest/app/actions/debug"
 	"github.com/wafer-bw/discobottest/app/actions/stocks"
 	"github.com/wafer-bw/discobottest/app/errs"
 	"github.com/wafer-bw/discobottest/app/models"
@@ -13,6 +14,7 @@ type Action func(request *models.InteractionRequest) (*models.InteractionRespons
 // keys must be all lowercase
 var actions = map[string]Action{
 	"extrinsicrisk": stocks.ExtrinsicRisk,
+	"debug":         debug.Debug,
 }
 
 // Run the action for the provided interaction request

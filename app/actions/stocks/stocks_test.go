@@ -40,7 +40,7 @@ func TestExtrinsicRisk(t *testing.T) {
 				Options: []*models.ApplicationCommandInteractionDataOption{},
 			},
 		}
-		expect := "Error parsing command :("
+		expect := "Error parsing command :cry:"
 
 		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
@@ -57,7 +57,7 @@ func TestExtrinsicRisk(t *testing.T) {
 				},
 			},
 		}
-		expect := "Error parsing command :("
+		expect := "Error parsing command :cry:"
 
 		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
@@ -74,7 +74,7 @@ func TestExtrinsicRisk(t *testing.T) {
 				},
 			},
 		}
-		expect := "Error parsing command :("
+		expect := "Error parsing command :cry:"
 
 		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
@@ -91,7 +91,7 @@ func TestExtrinsicRisk(t *testing.T) {
 				},
 			},
 		}
-		expect := "Error parsing command :("
+		expect := "Error parsing command :cry:"
 
 		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
