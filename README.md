@@ -42,14 +42,11 @@ todo
 todo
 
 ## TODOs
-* Update repo github page
-* Dependabot yml
 * Structs for required models
     * Guild
     * GuildMember
     * Embeds
     * AllowMentions
-* Add log sink back in vercel
 * Figure out command register flow
 * Give bot an image
 * Cleanup handler
