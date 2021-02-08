@@ -1,8 +1,8 @@
 # udx-disco-bot
 A serverless discord bot powered by [Vercel](https://vercel.com/) written in [Golang](https://golang.org/)
 
-![tests](https://github.com/wafer-bw/udx-disco-bot/workflows/tests/badge.svg)
-![lint](https://github.com/wafer-bw/udx-disco-bot/workflows/lint/badge.svg)
+![tests](https://github.com/wafer-bw/udx-discord-bot/workflows/tests/badge.svg)
+![lint](https://github.com/wafer-bw/udx-discord-bot/workflows/lint/badge.svg)
 
 ## Getting Started
 todo
