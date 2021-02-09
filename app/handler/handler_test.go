@@ -11,13 +11,13 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	interactionsMocks "github.com/wafer-bw/discobottest/app/generatedmocks/app/interactions"
-	"github.com/wafer-bw/discobottest/app/mocks"
+	authMocks "github.com/wafer-bw/udx-discord-bot/app/generatedmocks/app/auth"
+	"github.com/wafer-bw/udx-discord-bot/app/mocks"
 )
 
 var url = "http://localhost/api"
-var interactionsMock = &interactionsMocks.Interactions{}
-var handlerImpl = New(&Deps{Interactions: interactionsMock}, mocks.Conf)
+var authMock = &authMocks.Authorization{}
+var handlerImpl = New(&Deps{Auth: authMock}, mocks.Conf)
 var handler = http.HandlerFunc(handlerImpl.Handle)
 
 func TestMain(m *testing.M) {
@@ -33,7 +33,7 @@ func TestNew(t *testing.T) {
 
 func TestHandle(t *testing.T) {
 	headers := map[string]string{"Accept": "application/json"}
-	interactionsMock.On("Verify", mock.Anything, mock.Anything, mock.Anything).Return(true).Times(1)
+	authMock.On("Verify", mock.Anything, mock.Anything, mock.Anything).Return(true).Times(1)
 	body, resp, err := httpRequest(http.MethodGet, url, headers, mocks.PingRequestBody)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, string(body))

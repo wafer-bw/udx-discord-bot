@@ -1,9 +1,3 @@
-# HTTP Request Files
-httpreqs
-
-# Vercel
-.vercel
-
 # Tests
 cypress/screenshots
 cypress/videos
@@ -132,3 +126,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Vercel
+.vercel

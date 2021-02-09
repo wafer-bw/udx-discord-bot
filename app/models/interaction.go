@@ -87,7 +87,7 @@ type ApplicationCommandOption struct {
 	Type        ApplicationCommandOptionType      `json:"type"`
 	Name        string                            `json:"name"`
 	Description string                            `json:"description"`
-	Required    bool                              `json:"boolean"`
+	Required    bool                              `json:"required"`
 	Choices     []*ApplicationCommandOptionChoice `json:"choices"`
 	Options     []*ApplicationCommandOption       `json:"options"`
 }

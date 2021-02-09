@@ -2,23 +2,23 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/wafer-bw/discobottest/app/config"
-	"github.com/wafer-bw/discobottest/app/slashcommands"
-	"github.com/wafer-bw/discobottest/app/utils"
+	"github.com/wafer-bw/udx-discord-bot/app/client"
+	"github.com/wafer-bw/udx-discord-bot/app/config"
+	"github.com/wafer-bw/udx-discord-bot/app/utils"
 )
 
-var com slashcommands.SlashCommands
+var cmd client.Client
 
 func init() {
 	err := godotenv.Load()
 	if err != nil {
 		panic("Error loading .env file")
 	}
-	com = slashcommands.New(&slashcommands.Deps{}, config.New())
+	cmd = client.New(&client.Deps{}, config.New())
 }
 
 func main() {
-	res, err := com.ListGuildApplicationCommands("807764305415372810")
+	res, err := cmd.ListGuildApplicationCommands("807764305415372810")
 	if err != nil {
 		panic(err)
 	}

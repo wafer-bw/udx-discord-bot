@@ -1,4 +1,4 @@
-module github.com/wafer-bw/discobottest
+module github.com/wafer-bw/udx-discord-bot
 
 go 1.15
 

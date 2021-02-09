@@ -1,4 +1,4 @@
-package stocks
+package extrinsicrisk
 
 import (
 	"io/ioutil"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/wafer-bw/discobottest/app/models"
+	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
 func TestMain(m *testing.M) {
@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestExtrinsicRisk(t *testing.T) {
+func TestAction(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		request := &models.InteractionRequest{
 			Data: &models.ApplicationCommandInteractionData{
@@ -29,7 +29,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "4.62%"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := Action(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -42,7 +42,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := Action(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -59,7 +59,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := Action(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -76,7 +76,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := Action(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -93,7 +93,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := Action(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})

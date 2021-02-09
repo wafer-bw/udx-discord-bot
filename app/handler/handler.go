@@ -6,16 +6,17 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/wafer-bw/discobottest/app/actions"
-	"github.com/wafer-bw/discobottest/app/config"
-	"github.com/wafer-bw/discobottest/app/errs"
-	"github.com/wafer-bw/discobottest/app/interactions"
-	"github.com/wafer-bw/discobottest/app/models"
+	"github.com/wafer-bw/udx-discord-bot/app/auth"
+	"github.com/wafer-bw/udx-discord-bot/app/commands"
+	"github.com/wafer-bw/udx-discord-bot/app/config"
+	"github.com/wafer-bw/udx-discord-bot/app/errs"
+	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
 // Deps defines `Handler` dependencies
 type Deps struct {
-	Interactions interactions.Interactions
+	Commands commands.Commands
+	Auth     auth.Authorization
 }
 
 // impl implements `Handler` properties
@@ -39,13 +40,19 @@ var pongResponse = &models.InteractionResponse{
 }
 
 func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
-	response, err := impl.resolve(r)
+	interactionRequest, err := impl.resolve(r)
 	if err != nil {
 		impl.respond(w, nil, err)
 		return
 	}
 
-	body, err := impl.marshal(response)
+	interactionResponse, err := impl.execute(interactionRequest)
+	if err != nil {
+		impl.respond(w, nil, err)
+		return
+	}
+
+	body, err := impl.marshal(interactionResponse)
 	if err != nil {
 		impl.respond(w, nil, err)
 		return
@@ -54,26 +61,25 @@ func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
 	impl.respond(w, body, nil)
 }
 
-func (impl *impl) resolve(r *http.Request) (*models.InteractionResponse, error) {
+func (impl *impl) resolve(r *http.Request) (*models.InteractionRequest, error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	if !impl.deps.Interactions.Verify(body, r.Header, impl.conf.Credentials.PublicKey) {
+	if !impl.deps.Auth.Verify(body, r.Header, impl.conf.Credentials.PublicKey) {
 		return nil, errs.ErrUnauthorized
 	}
 
-	interaction, err := impl.unmarshal(body)
-	if err != nil {
-		return nil, err
-	}
+	return impl.unmarshal(body)
+}
 
+func (impl *impl) execute(interaction *models.InteractionRequest) (*models.InteractionResponse, error) {
 	switch interaction.Type {
 	case models.InteractionTypePing:
 		return pongResponse, nil
 	case models.InteractionTypeApplicationCommand:
-		return actions.Run(interaction)
+		return impl.deps.Commands.Run(interaction)
 	default:
 		return nil, errs.ErrInvalidInteractionType
 	}

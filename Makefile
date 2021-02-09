@@ -33,3 +33,13 @@ precommit:
 	make lint
 	make fmt
 .PHONY: precommit
+
+preview:
+	make precommit
+	vercel
+.PHONY: preview
+
+deploy:
+	make precommit
+	vercel --prod
+.PHONY: deploy

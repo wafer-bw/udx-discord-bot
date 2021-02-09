@@ -1,4 +1,4 @@
-package interactions
+package auth
 
 import (
 	"crypto/ed25519"
@@ -10,13 +10,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/wafer-bw/udx-discord-bot/app/mocks"
 )
 
-var interactionsImpl Interactions
+var authorizationImpl Authorization
 
 func TestMain(m *testing.M) {
 	log.SetOutput(ioutil.Discard)
-	interactionsImpl = New()
+	authorizationImpl = New(&Deps{}, mocks.Conf)
 	exitCode := m.Run()
 	os.Exit(exitCode)
 }
@@ -35,7 +36,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize]))
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.True(t, res)
 	})
 
@@ -47,7 +48,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize]))
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.False(t, res)
 	})
 
@@ -59,7 +60,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", "")
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize]))
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.False(t, res)
 	})
 
@@ -69,7 +70,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", "")
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.False(t, res)
 	})
 
@@ -81,7 +82,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize]))
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey)+"Z")
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey)+"Z")
 		require.False(t, res)
 	})
 
@@ -93,7 +94,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize])+"Z")
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.False(t, res)
 	})
 
@@ -105,7 +106,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize]))
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey)+"1111")
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey)+"1111")
 		require.False(t, res)
 	})
 
@@ -117,7 +118,7 @@ func TestVerify(t *testing.T) {
 		headers.Set("X-Signature-Timestamp", timestamp)
 		headers.Set("X-Signature-Ed25519", hex.EncodeToString(signature[:ed25519.SignatureSize])+"1111")
 
-		res := interactionsImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
+		res := authorizationImpl.Verify([]byte(body), headers, hex.EncodeToString(pubkey))
 		require.False(t, res)
 	})
 }
