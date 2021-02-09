@@ -19,9 +19,16 @@ type EnvVars struct {
 // Config holds all config data
 type Config struct {
 	Credentials *Credentials
+	DiscordAPI  *DiscordAPI
 }
 
-// Credentials for the app
+// DiscordAPI config data
+type DiscordAPI struct {
+	BaseURL    string
+	APIVersion string
+}
+
+// Credentials config data
 type Credentials struct {
 	PublicKey    string
 	ClientID     string
@@ -39,6 +46,10 @@ func New() *Config {
 			ClientID:     env.ClientID,
 			ClientSecret: env.ClientSecret,
 			Token:        env.Token,
+		},
+		DiscordAPI: &DiscordAPI{
+			BaseURL:    "https://discord.com/api",
+			APIVersion: "v8",
 		},
 	}
 }

@@ -3,6 +3,7 @@ module github.com/wafer-bw/discobottest
 go 1.15
 
 require (
+	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect

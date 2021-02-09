@@ -41,6 +41,26 @@ todo
 * [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
 
 ## TODOs
+* Code
+    * Make simple scripts for registering commands for now
+        - [x] ListGuildApplicationCommands
+        - [ ] CreateGlobalApplicationCommand
+        - [ ] EditGlobalApplicationCommand
+        - [x] DeleteGlobalApplicationCommand
+        - [x] ListGlobalApplicationCommands
+        - [ ] CreateGuildApplicationCommand
+        - [ ] EditGuildApplicationCommand
+        - [x] DeleteGuildApplicationCommand
+    * CLI Tool for slash commands
+    * Add scripts that act as an alternative for `make`
+    * Cleanup `handler.go`
+        * Modularize
+        * Complete tests
+    * Finish Guild Model
+    * Discord type `snowflake` might be marshallable into a different type such as a hex encoded string?
+    * Revisit & redesign command error response flow
+    * Design command register flow
+    * Extract slash command code to another repo that can act as a library
 * Bot / Application
     * Give bot an image
 * Repo
@@ -51,14 +71,3 @@ todo
         * [CodeQL](https://github.com/wafer-bw/udx-disco-bot/security)
     * Add branch protection for `master`
     * License
-* Code
-    * Make simple scripts for registering commands for now
-    * Add scripts that act as an alternative for `make`
-    * Cleanup `handler.go`
-        * Modularize
-        * Complete tests
-    * Finish Guild Model
-    * Discord type `snowflake` might be marshallable into a different type such as a hex encoded string?
-    * Revisit & redesign command error response flow
-    * Design command register flow
-    * Extract slash command code to another repo that can act as a library

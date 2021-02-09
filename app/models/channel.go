@@ -1,8 +1,8 @@
 package models
 
-// https://discord.com/developers/docs/resources/channel
-
 import "time"
+
+// https://discord.com/developers/docs/resources/channel
 
 // Embed - an embed object
 type Embed struct {

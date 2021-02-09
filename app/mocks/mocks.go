@@ -13,4 +13,8 @@ var Conf = &config.Config{
 		ClientSecret: "abc123",
 		Token:        "abc123",
 	},
+	DiscordAPI: &config.DiscordAPI{
+		BaseURL:    "https://discord.com/api",
+		APIVersion: "v8",
+	},
 }
