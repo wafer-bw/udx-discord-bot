@@ -23,30 +23,6 @@ const (
 	InteractionTypeApplicationCommand InteractionType = 2
 )
 
-// ApplicationCommandInteractionData - The command data payload
-type ApplicationCommandInteractionData struct {
-	ID      string                                     `json:"id"`
-	Name    string                                     `json:"name"`
-	Options []*ApplicationCommandInteractionDataOption `json:"options"`
-}
-
-// ApplicationCommandInteractionDataOption - The params + values from the user
-type ApplicationCommandInteractionDataOption struct {
-	Name    string                                     `json:"name"`
-	Value   string                                     `json:"value"`
-	Options []*ApplicationCommandInteractionDataOption `json:"options"`
-}
-
-// AllowedMentionType - The type of allowed mention
-type AllowedMentionType string
-
-// AllowedMentionType Enum
-const (
-	AllowedMentionTypeRoleMentions     AllowedMentionType = "roles"
-	AllowedMentionTypeUserMentions     AllowedMentionType = "users"
-	AllowedMentionTypeEveryoneMentions AllowedMentionType = "everyone"
-)
-
 // InteractionResponse - The base model of a response to an interaction request
 type InteractionResponse struct {
 	Type InteractionResponseType                    `json:"type"`
@@ -72,6 +48,30 @@ type InteractionApplicationCommandCallbackData struct {
 	Embeds          []*Embed         `json:"embeds"`
 	AllowedMentions *AllowedMentions `json:"allowed_mentions"`
 }
+
+// ApplicationCommandInteractionData - The command data payload
+type ApplicationCommandInteractionData struct {
+	ID      string                                     `json:"id"`
+	Name    string                                     `json:"name"`
+	Options []*ApplicationCommandInteractionDataOption `json:"options"`
+}
+
+// ApplicationCommandInteractionDataOption - The params + values from the user
+type ApplicationCommandInteractionDataOption struct {
+	Name    string                                     `json:"name"`
+	Value   string                                     `json:"value"`
+	Options []*ApplicationCommandInteractionDataOption `json:"options"`
+}
+
+// AllowedMentionType - The type of allowed mention
+type AllowedMentionType string
+
+// AllowedMentionType Enum
+const (
+	AllowedMentionTypeRoleMentions     AllowedMentionType = "roles"
+	AllowedMentionTypeUserMentions     AllowedMentionType = "users"
+	AllowedMentionTypeEveryoneMentions AllowedMentionType = "everyone"
+)
 
 // ApplicationCommand - The base commmand model that belongs to an application
 type ApplicationCommand struct {
