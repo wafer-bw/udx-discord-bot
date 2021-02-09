@@ -1,22 +1,44 @@
-package stocks
+package extrinsicrisk
 
 import (
 	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/wafer-bw/discobottest/app/models"
+	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
-type payload struct {
-	Share  float64
-	Strike float64
-	Ask    float64
+// Name of the interaction
+var Name = "extrinsicRisk"
+
+// Command schema for the interaction
+var Command = &models.ApplicationCommand{
+	Name:        "extrinsicrisk",
+	Description: "Calculate extrinsic risk % for provided `share`, `strike`, & `ask`",
+	Options: []*models.ApplicationCommandOption{
+		{
+			Type:        models.ApplicationCommandOptionTypeString,
+			Name:        "Share",
+			Description: "Share price",
+			Required:    true,
+		},
+		{
+			Type:        models.ApplicationCommandOptionTypeString,
+			Name:        "Strike",
+			Description: "Strike price",
+			Required:    true,
+		},
+		{
+			Type:        models.ApplicationCommandOptionTypeString,
+			Name:        "Ask",
+			Description: "Ask price",
+			Required:    true,
+		},
+	},
 }
 
-// ExtrinsicRisk calculates the extrinsic risk of an option
-// provided the `share` price, `strike` price, & `ask` price
-func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+// Action which is executed when a user requests the interaction
+func Action(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		fmt.Println(err)
@@ -36,6 +58,12 @@ func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionRespo
 			Content: fmt.Sprintf("%.2f%%", risk),
 		},
 	}, nil
+}
+
+type payload struct {
+	Share  float64
+	Strike float64
+	Ask    float64
 }
 
 func calcExtrinsicRisk(p *payload) float64 {

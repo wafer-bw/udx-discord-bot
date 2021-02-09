@@ -1,6 +1,7 @@
-package slashcommands
+package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,14 +9,14 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/wafer-bw/discobottest/app/config"
-	"github.com/wafer-bw/discobottest/app/models"
+	"github.com/wafer-bw/udx-discord-bot/app/config"
+	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
-// Deps defines `SlashCommands` dependencies
+// Deps defines `Client` dependencies
 type Deps struct{}
 
-// impl implements `SlashCommands` properties
+// impl implements `Client` properties
 type impl struct {
 	deps    *Deps
 	conf    *config.Config
@@ -23,22 +24,25 @@ type impl struct {
 	headers map[string]string
 }
 
-// SlashCommands interfaces `SlashCommands` methods
-type SlashCommands interface {
+// Client interfaces `Client` methods
+type Client interface {
 	ListGlobalApplicationCommands() ([]*models.ApplicationCommand, error)
+	CreateGlobalApplicationCommand(command *models.ApplicationCommand) error
 	DeleteGlobalApplicationCommand(commandID string) error
 	ListGuildApplicationCommands(guildID string) ([]*models.ApplicationCommand, error)
+	CreateGuildApplicationCommand(guildID string, command *models.ApplicationCommand) error
 	DeleteGuildApplicationCommand(guildID string, commandID string) error
 }
 
-// New returns a new `SlashCommands` interface
-func New(deps *Deps, conf *config.Config) SlashCommands {
+// New returns a new `Client` interface
+func New(deps *Deps, conf *config.Config) Client {
 	return &impl{
 		deps:   deps,
 		conf:   conf,
 		apiURL: fmt.Sprintf("%s/%s/applications/%s", conf.DiscordAPI.BaseURL, conf.DiscordAPI.APIVersion, conf.Credentials.ClientID),
 		headers: map[string]string{
 			"Authorization": fmt.Sprintf("Bot %s", conf.Credentials.Token),
+			"Content-Type":  "application/json",
 		},
 	}
 }
@@ -46,6 +50,11 @@ func New(deps *Deps, conf *config.Config) SlashCommands {
 func (impl *impl) ListGlobalApplicationCommands() ([]*models.ApplicationCommand, error) {
 	url := fmt.Sprintf("%s/commands", impl.apiURL)
 	return impl.listApplicationCommands(url)
+}
+
+func (impl *impl) CreateGlobalApplicationCommand(command *models.ApplicationCommand) error {
+	url := fmt.Sprintf("%s/commands", impl.apiURL)
+	return impl.createApplicationCommand(url, command)
 }
 
 func (impl *impl) DeleteGlobalApplicationCommand(commandID string) error {
@@ -56,6 +65,11 @@ func (impl *impl) DeleteGlobalApplicationCommand(commandID string) error {
 func (impl *impl) ListGuildApplicationCommands(guildID string) ([]*models.ApplicationCommand, error) {
 	url := fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
 	return impl.listApplicationCommands(url)
+}
+
+func (impl *impl) CreateGuildApplicationCommand(guildID string, command *models.ApplicationCommand) error {
+	url := fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
+	return impl.createApplicationCommand(url, command)
 }
 
 func (impl *impl) DeleteGuildApplicationCommand(guildID string, commandID string) error {
@@ -75,6 +89,25 @@ func (impl *impl) listApplicationCommands(url string) ([]*models.ApplicationComm
 	return *commands, nil
 }
 
+func (impl *impl) createApplicationCommand(url string, command *models.ApplicationCommand) error {
+	body, err := marshal(command)
+	if err != nil {
+		return err
+	}
+	response, err := httpRequest(http.MethodPost, url, impl.headers, body)
+	if err != nil {
+		return err
+	}
+	if response.StatusCode != http.StatusCreated {
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return err
+		}
+		return errors.New(fmt.Sprint("error - command not created: ", string(body)))
+	}
+	return nil
+}
+
 func (impl *impl) deleteApplicationCommands(url string) error {
 	response, err := httpRequest(http.MethodDelete, url, impl.headers, nil)
 	if err != nil {
@@ -85,7 +118,7 @@ func (impl *impl) deleteApplicationCommands(url string) error {
 		if err != nil {
 			return err
 		}
-		return errors.New(fmt.Sprint("Error: ", string(body)))
+		return errors.New(fmt.Sprint("error - command not deleted: ", string(body)))
 	}
 	return nil
 }
@@ -99,6 +132,14 @@ func unmarshal(responseBody io.ReadCloser, v interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func marshal(v interface{}) (io.Reader, error) {
+	body, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewBuffer(body), nil
 }
 
 func httpRequest(method string, url string, headers map[string]string, body io.Reader) (*http.Response, error) {

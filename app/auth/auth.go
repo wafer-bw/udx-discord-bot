@@ -1,25 +1,31 @@
-package interactions
+package auth
 
 import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"net/http"
+
+	"github.com/wafer-bw/udx-discord-bot/app/config"
 )
 
-// Deps defines `Interactions` dependencies
+// Deps defines `Authorization` dependencies
 type Deps struct{}
 
-// impl implements `Interactions` properties
-type impl struct{}
+// impl implements `Authorization` properties
+type impl struct {
+	deps *Deps
+	conf *config.Config
+}
 
-// Interactions interfaces `Interactions` methods
-type Interactions interface {
+// Authorization interfaces `Authorization` methods
+type Authorization interface {
 	Verify(rawBody []byte, headers http.Header, publicKey string) bool
 }
 
-// New returns a new `Interactions` interface
-func New() Interactions {
-	return &impl{}
+// New returns a new `Authorization` interface
+// todo ingest deps, conf and set public key using conf
+func New(deps *Deps, conf *config.Config) Authorization {
+	return &impl{deps: deps, conf: conf}
 }
 
 // Verify verifies that requests from discord are authorized using ed25519

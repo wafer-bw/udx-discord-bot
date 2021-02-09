@@ -14,6 +14,8 @@ type EnvVars struct {
 	ClientID     string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
 	ClientSecret string `envconfig:"CLIENT_SECRET" required:"true" split_words:"true"`
 	Token        string `envconfig:"TOKEN" required:"true" split_words:"true"`
+	BaseURL      string `envconfig:"DISCORD_API_BASE_URL" required:"true" split_words:"true"`
+	APIVersion   string `envconfig:"DISCORD_API_VERSION" required:"true" split_words:"true"`
 }
 
 // Config holds all config data
@@ -48,8 +50,8 @@ func New() *Config {
 			Token:        env.Token,
 		},
 		DiscordAPI: &DiscordAPI{
-			BaseURL:    "https://discord.com/api",
-			APIVersion: "v8",
+			BaseURL:    env.BaseURL,
+			APIVersion: env.APIVersion,
 		},
 	}
 }
