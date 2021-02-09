@@ -76,9 +76,8 @@ make deploy
     * Design command error response flow
     * Check if it's possible to switch from `fmt` to `log`
 * Vercel
-    * Determine how to manage env vars
-    * Add staging branch and give subdomain
-    * Figure out how to manage dev subdomain/branch/deployment
+    *  Figure out how to manage env vars
+    * Figure out how to manage dev/staging subdomain/branch/deployment
 * Log Drain
     * Parse output from stdout and stderr out of log blob
 * Bot / Application
