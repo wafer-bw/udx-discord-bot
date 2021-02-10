@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/wafer-bw/udx-discord-bot/app/appcontext"
-	"github.com/wafer-bw/udx-discord-bot/slashcommands"
+	"github.com/wafer-bw/udx-discord-bot/udx-slash-commands/slashcommands"
 )
 
 // Handler is exported for use as a vercel serverless function
