@@ -50,11 +50,10 @@ func (impl *impl) add(slashCommands ...models.SlashCommand) {
 }
 
 // NewSlashCommand creates a new slash command instance
-func NewSlashCommand(name string, command *models.ApplicationCommand, action models.Action, global bool) models.SlashCommand {
+func NewSlashCommand(name string, command *models.ApplicationCommand, action models.Action) models.SlashCommand {
 	return models.SlashCommand{
 		Name:    name,
 		Command: command,
 		Action:  action,
-		Global:  global,
 	}
 }

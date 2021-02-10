@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestAction(t *testing.T) {
+func TestExtrinsicRisk(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		request := &models.InteractionRequest{
 			Data: &models.ApplicationCommandInteractionData{
@@ -29,7 +29,7 @@ func TestAction(t *testing.T) {
 		}
 		expect := "4.62%"
 
-		response, err := Action(request)
+		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -42,7 +42,7 @@ func TestAction(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := Action(request)
+		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -59,7 +59,7 @@ func TestAction(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := Action(request)
+		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -76,7 +76,7 @@ func TestAction(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := Action(request)
+		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -93,7 +93,7 @@ func TestAction(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := Action(request)
+		response, err := ExtrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})

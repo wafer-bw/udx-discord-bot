@@ -68,6 +68,9 @@ make deploy
         - EditGlobalApplicationCommand
         - EditGuildApplicationCommand
     * CLI Tool for slash commands
+        * verbose option for list commands
+        * handle errors from API responses
+        * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
     * Add scripts that act as an alternative for `make`
     * Cleanup `handler.go`
         * Modularize

@@ -8,5 +8,4 @@ type SlashCommand struct {
 	Name    string
 	Action  Action
 	Command *ApplicationCommand
-	Global  bool
 }

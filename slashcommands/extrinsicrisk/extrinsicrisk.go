@@ -10,13 +10,10 @@ import (
 )
 
 // SlashCommand - the slash command instance
-var SlashCommand = commands.NewSlashCommand(name, command, action, global)
+var SlashCommand = commands.NewSlashCommand(name, command, ExtrinsicRisk)
 
 // name of the slash command
 var name = "extrinsicRisk"
-
-// global slash command flag
-var global = true
 
 // command schema for the slash command
 var command = &models.ApplicationCommand{
