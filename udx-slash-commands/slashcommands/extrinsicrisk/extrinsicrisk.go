@@ -9,15 +9,14 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
+var name = "extrinsicrisk"
+
 // SlashCommand - the slash command instance
 var SlashCommand = commands.NewSlashCommand(name, command, ExtrinsicRisk)
 
-// name of the slash command
-var name = "extrinsicRisk"
-
 // command schema for the slash command
 var command = &models.ApplicationCommand{
-	Name:        "extrinsicrisk",
+	Name:        name,
 	Description: "Calculate an option's extrinsic risk percentage using the provided share, strike, & ask prices",
 	Options: []*models.ApplicationCommandOption{
 		{

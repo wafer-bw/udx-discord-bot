@@ -2,14 +2,14 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
-// PPrint a formatted JSON representation of the provided `obj`
-func PPrint(obj interface{}) {
+// FormatJSON returns a indent formatted JSON representation of the provided `obj`
+// Panics on any error
+func FormatJSON(obj interface{}) string {
 	jdata, err := json.MarshalIndent(obj, "", "    ")
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
-	fmt.Println(string(jdata))
+	return string(jdata)
 }

@@ -52,7 +52,7 @@ func (impl *impl) add(slashCommands ...models.SlashCommand) {
 // NewSlashCommand creates a new slash command instance
 func NewSlashCommand(name string, command *models.ApplicationCommand, action models.Action) models.SlashCommand {
 	return models.SlashCommand{
-		Name:    name,
+		Name:    strings.ToLower(name),
 		Command: command,
 		Action:  action,
 	}

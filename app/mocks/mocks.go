@@ -2,9 +2,6 @@ package mocks
 
 import "github.com/wafer-bw/udx-discord-bot/app/config"
 
-// PingRequestBody mocks the body of a ping request
-var PingRequestBody = `{"type": 1}`
-
 // Conf mocks the `config.Config` object
 var Conf = &config.Config{
 	Credentials: &config.Credentials{
