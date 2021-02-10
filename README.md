@@ -7,11 +7,15 @@ A serverless discord slash command bot powered by [Vercel](https://vercel.com/) 
 ## Getting Started
 
 ### Prerequisites
+#### Primary
 * [Golang](https://golang.org/dl/)
-* [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
 * [Vercel](https://vercel.com/)
 * [Discord](https://discord.com/)
 * [Discord Application](https://discord.com/developers/applications)
+
+#### Dev
+* [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+* [mockery](https://github.com/vektra/mockery)
 
 ### Setup
 - Clone repo

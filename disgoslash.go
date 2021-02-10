@@ -11,13 +11,6 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/app/utils"
 )
 
-// List global commands
-// List a guild's commands
-// Delete global command
-// Delete a guild command
-// Create global command
-// Create a guild command
-
 var cmd client.Client
 var usage = `Discord Go Slash Commands
 
@@ -31,7 +24,7 @@ Usage:
   disgoslash -h | --help
 
 Options:
-  -h --help                  Show this screen.`
+  -h --help  Show this screen.`
 
 type args struct {
 	List      bool   `docopt:"list"`
