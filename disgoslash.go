@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/docopt/docopt-go"
 	"github.com/joho/godotenv"
 	"github.com/wafer-bw/udx-discord-bot/app/client"
 	"github.com/wafer-bw/udx-discord-bot/app/config"
@@ -8,6 +11,18 @@ import (
 )
 
 var cmd client.Client
+var usage = `Discord Go Slash Commands
+
+Usage:
+  disgoslash list
+  disgoslash list <guilds>...
+  disgoslash delete global <command
+  disgoslash -h | --help
+
+Options:
+  -h --help                  Show this screen.
+  -G --global                Use global scope.
+  -g --guilds=<guildID>...   Apply to list of guilds.`
 
 func init() {
 	err := godotenv.Load()
@@ -23,4 +38,7 @@ func main() {
 		panic(err)
 	}
 	utils.PPrint(res)
+
+	arguments, _ := docopt.ParseDoc(usage)
+	fmt.Println(arguments)
 }

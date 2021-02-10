@@ -5,16 +5,23 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/wafer-bw/udx-discord-bot/app/commands"
 	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
-// Name of the interaction
-var Name = "extrinsicRisk"
+// SlashCommand - the slash command instance
+var SlashCommand = commands.NewSlashCommand(name, command, action, global)
 
-// Command schema for the interaction
-var Command = &models.ApplicationCommand{
+// name of the slash command
+var name = "extrinsicRisk"
+
+// global slash command flag
+var global = true
+
+// command schema for the slash command
+var command = &models.ApplicationCommand{
 	Name:        "extrinsicrisk",
-	Description: "Calculate extrinsic risk % for provided `share`, `strike`, & `ask`",
+	Description: "Calculate an option's extrinsic risk percentage using the provided share, strike, & ask prices",
 	Options: []*models.ApplicationCommandOption{
 		{
 			Type:        models.ApplicationCommandOptionTypeString,
@@ -37,8 +44,9 @@ var Command = &models.ApplicationCommand{
 	},
 }
 
-// Action which is executed when a user requests the interaction
-func Action(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+// ExtrinsicRisk - The action of the slash command.
+// Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
+func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		fmt.Println(err)

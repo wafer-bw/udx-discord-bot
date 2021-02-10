@@ -7,5 +7,5 @@ import (
 
 // SlashCommands that the application / bot supports
 var SlashCommands = []models.SlashCommand{
-	{Name: extrinsicrisk.Name, Command: extrinsicrisk.Command, Action: extrinsicrisk.Action},
+	extrinsicrisk.SlashCommand,
 }
