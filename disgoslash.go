@@ -14,15 +14,14 @@ var cmd client.Client
 var usage = `Discord Go Slash Commands
 
 Usage:
-  disgoslash list
+  disgoslash list global
   disgoslash list <guilds>...
-  disgoslash delete global <command
+  disgoslash delete global <commandID>
+  disgoslash delete <guildID> <commandID>
   disgoslash -h | --help
 
 Options:
-  -h --help                  Show this screen.
-  -G --global                Use global scope.
-  -g --guilds=<guildID>...   Apply to list of guilds.`
+  -h --help                  Show this screen.`
 
 func init() {
 	err := godotenv.Load()
