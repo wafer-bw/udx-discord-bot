@@ -29,7 +29,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "4.62%"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := extrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -42,7 +42,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := extrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -59,7 +59,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := extrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -76,7 +76,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := extrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})
@@ -93,7 +93,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response, err := ExtrinsicRisk(request)
+		response, err := extrinsicRisk(request)
 		require.Nil(t, err)
 		require.Equal(t, expect, response.Data.Content)
 	})

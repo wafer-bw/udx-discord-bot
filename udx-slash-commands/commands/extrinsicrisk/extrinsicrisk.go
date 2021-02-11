@@ -12,7 +12,7 @@ import (
 var name = "extrinsicrisk"
 
 // SlashCommand - the slash command instance
-var SlashCommand = commands.NewSlashCommand(name, command, ExtrinsicRisk)
+var SlashCommand = commands.NewSlashCommand(name, command, extrinsicRisk)
 
 // command schema for the slash command
 var command = &models.ApplicationCommand{
@@ -40,9 +40,9 @@ var command = &models.ApplicationCommand{
 	},
 }
 
-// ExtrinsicRisk - The action of the slash command.
+// extrinsicRisk - The code which completes the desired action of the slash command.
 // Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
-func ExtrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		fmt.Println(err)
