@@ -26,12 +26,9 @@ type impl struct {
 
 // Client interfaces `Client` methods
 type Client interface {
-	ListGlobalApplicationCommands() ([]*models.ApplicationCommand, error)
-	CreateGlobalApplicationCommand(command *models.ApplicationCommand) error
-	DeleteGlobalApplicationCommand(commandID string) error
-	ListGuildApplicationCommands(guildID string) ([]*models.ApplicationCommand, error)
-	CreateGuildApplicationCommand(guildID string, command *models.ApplicationCommand) error
-	DeleteGuildApplicationCommand(guildID string, commandID string) error
+	ListApplicationCommands(guildID string) ([]*models.ApplicationCommand, error)
+	CreateApplicationCommand(guildID string, command *models.ApplicationCommand) error
+	DeleteApplicationCommand(guildID string, commandID string) error
 }
 
 // New returns a new `Client` interface
@@ -47,33 +44,33 @@ func New(deps *Deps, conf *config.Config) Client {
 	}
 }
 
-func (impl *impl) ListGlobalApplicationCommands() ([]*models.ApplicationCommand, error) {
-	url := fmt.Sprintf("%s/commands", impl.apiURL)
+func (impl *impl) ListApplicationCommands(guildID string) ([]*models.ApplicationCommand, error) {
+	var url string
+	if guildID == "" {
+		url = fmt.Sprintf("%s/commands", impl.apiURL)
+	} else {
+		url = fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
+	}
 	return impl.listApplicationCommands(url)
 }
 
-func (impl *impl) CreateGlobalApplicationCommand(command *models.ApplicationCommand) error {
-	url := fmt.Sprintf("%s/commands", impl.apiURL)
+func (impl *impl) CreateApplicationCommand(guildID string, command *models.ApplicationCommand) error {
+	var url string
+	if guildID == "" {
+		url = fmt.Sprintf("%s/commands", impl.apiURL)
+	} else {
+		url = fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
+	}
 	return impl.createApplicationCommand(url, command)
 }
 
-func (impl *impl) DeleteGlobalApplicationCommand(commandID string) error {
-	url := fmt.Sprintf("%s/commands/%s", impl.apiURL, commandID)
-	return impl.deleteApplicationCommands(url)
-}
-
-func (impl *impl) ListGuildApplicationCommands(guildID string) ([]*models.ApplicationCommand, error) {
-	url := fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
-	return impl.listApplicationCommands(url)
-}
-
-func (impl *impl) CreateGuildApplicationCommand(guildID string, command *models.ApplicationCommand) error {
-	url := fmt.Sprintf("%s/guilds/%s/commands", impl.apiURL, guildID)
-	return impl.createApplicationCommand(url, command)
-}
-
-func (impl *impl) DeleteGuildApplicationCommand(guildID string, commandID string) error {
-	url := fmt.Sprintf("%s/guilds/%s/commands/%s", impl.apiURL, guildID, commandID)
+func (impl *impl) DeleteApplicationCommand(guildID string, commandID string) error {
+	var url string
+	if guildID == "" {
+		url = fmt.Sprintf("%s/commands/%s", impl.apiURL, commandID)
+	} else {
+		url = fmt.Sprintf("%s/guilds/%s/commands/%s", impl.apiURL, guildID, commandID)
+	}
 	return impl.deleteApplicationCommands(url)
 }
 
@@ -144,15 +141,12 @@ func marshal(v interface{}) (io.Reader, error) {
 
 func httpRequest(method string, url string, headers map[string]string, body io.Reader) (*http.Response, error) {
 	client := &http.Client{}
-
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}
-
 	for key, val := range headers {
 		request.Header.Set(key, val)
 	}
-
 	return client.Do(request)
 }

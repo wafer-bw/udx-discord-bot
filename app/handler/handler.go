@@ -39,6 +39,7 @@ var pongResponse = &models.InteractionResponse{
 	Type: models.InteractionResponseTypePong,
 }
 
+// Handle handles incoming HTTP requests
 func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
 	interactionRequest, err := impl.resolve(r)
 	if err != nil {

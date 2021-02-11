@@ -34,7 +34,7 @@ func TestNew(t *testing.T) {
 func TestHandle(t *testing.T) {
 	headers := map[string]string{"Accept": "application/json"}
 	authMock.On("Verify", mock.Anything, mock.Anything, mock.Anything).Return(true).Times(1)
-	body, resp, err := httpRequest(http.MethodGet, url, headers, mocks.PingRequestBody)
+	body, resp, err := httpRequest(http.MethodGet, url, headers, `{"type": 1}`)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, string(body))
 }

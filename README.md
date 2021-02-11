@@ -7,11 +7,15 @@ A serverless discord slash command bot powered by [Vercel](https://vercel.com/) 
 ## Getting Started
 
 ### Prerequisites
+#### Primary
 * [Golang](https://golang.org/dl/)
-* [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
 * [Vercel](https://vercel.com/)
 * [Discord](https://discord.com/)
 * [Discord Application](https://discord.com/developers/applications)
+
+#### Dev
+* [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+* [mockery](https://github.com/vektra/mockery)
 
 ### Setup
 - Clone repo
@@ -20,7 +24,7 @@ A serverless discord slash command bot powered by [Vercel](https://vercel.com/) 
     ```
 - Get dependencies
     ```sh
-    make get
+    go get -t -v -d ./...
     ```
 - Make `.env` file from sample
     ```sh
@@ -32,7 +36,7 @@ A serverless discord slash command bot powered by [Vercel](https://vercel.com/) 
     - `PUBLIC_KEY`
     - `TOKEN`
 
-### Usage
+### Usage (POSIX)
 ```sh
 # Run tests
 make test
@@ -46,37 +50,76 @@ make fmt
 make mocks
 # Run all the things you should before you make a commit
 make precommit
-```
-
-### Developing
-todo
-
-### Deploying
-```sh
 # Deploy to preview
 make preview
 # Deploy to production
 make deploy
 ```
 
-## References
-* [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
+### Usage (WINDOWS) (WIP)
+```sh
+# Run tests
+go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+# Run verbose tests
+go test -v -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+# Run linting
+golangci-lint run
+# Run formatting
+gofmt -s -w .
+# Regenerate mocks
+# todo - add `make mock` equivalent
+# Run all the things you should before you make a commit
+# todo - add `make mock` equivalent
+go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+golangci-lint run
+gofmt -s -w .
+# Deploy to preview
+# todo - add `make mock` equivalent
+vercel
+# Deploy to production
+# todo - add `make mock` equivalent
+vercel --prod
+```
+
+### Slash Commands
+
+#### Create
+todo
+
+#### Edit
+todo
+
+#### Delete
+todo
 
 ## TODOs
+* Readme
+    * Document how to use each of the sections and where to code actions for others to use
+    * Add badges after the repo is public
+        * [Go Report Card](https://goreportcard.com/)
+        * [Coveralls](https://coveralls.io/)
+        * [CodeQL](https://github.com/wafer-bw/udx-disco-bot/security)
 * Code
-    * Make simple scripts for registering commands for now
-        - EditGlobalApplicationCommand
-        - EditGuildApplicationCommand
-    * CLI Tool for slash commands
-    * Add scripts that act as an alternative for `make`
-    * Cleanup `handler.go`
-        * Modularize
-        * Complete tests
-    * Finish Guild Model
-    * Design command error response flow
-    * Check if it's possible to switch from `fmt` to `log`
+    * General
+        * Check if it's possible to switch from `fmt` to `log`
+        * Add scripts that act as an alternative for `make`
+    * `commands`
+        * Write tests
+    * `disgoslash`
+        * Write tests
+            * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
+    * `handler`
+        * Write tests
+    * `client`
+        * Handle errors from API responses properly
+        * Write tests
+        * EditGlobalApplicationCommand
+        * EditGuildApplicationCommand
+    * `models`
+        * Finish Guild Model
+    * Decide what to do with `config` within `handler` or `auth` and potentially remove need for `mock`
 * Vercel
-    *  Figure out how to manage env vars
+    * Figure out how to manage env vars
     * Figure out how to manage dev/staging subdomain/branch/deployment
 * Log Drain
     * Parse output from stdout and stderr out of log blob
@@ -84,12 +127,8 @@ make deploy
     * Give bot an image
 * Repo
     * Make public
-    * Add badges requiring the repo be public
-        * [Go Report Card](https://goreportcard.com/)
-        * [Coveralls](https://coveralls.io/)
-        * [CodeQL](https://github.com/wafer-bw/udx-disco-bot/security)
     * Add branch protection for `master`
-* Package Repo
-    * Extract slash command code to another repo that can act as a library
-    * Badges
-    * License
+* Extract `disgoslash.go` & `app` together into separate repo
+
+## References
+* [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth

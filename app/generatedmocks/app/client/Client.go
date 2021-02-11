@@ -12,22 +12,8 @@ type Client struct {
 	mock.Mock
 }
 
-// CreateGlobalApplicationCommand provides a mock function with given fields: command
-func (_m *Client) CreateGlobalApplicationCommand(command *models.ApplicationCommand) error {
-	ret := _m.Called(command)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.ApplicationCommand) error); ok {
-		r0 = rf(command)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// CreateGuildApplicationCommand provides a mock function with given fields: guildID, command
-func (_m *Client) CreateGuildApplicationCommand(guildID string, command *models.ApplicationCommand) error {
+// CreateApplicationCommand provides a mock function with given fields: guildID, command
+func (_m *Client) CreateApplicationCommand(guildID string, command *models.ApplicationCommand) error {
 	ret := _m.Called(guildID, command)
 
 	var r0 error
@@ -40,22 +26,8 @@ func (_m *Client) CreateGuildApplicationCommand(guildID string, command *models.
 	return r0
 }
 
-// DeleteGlobalApplicationCommand provides a mock function with given fields: commandID
-func (_m *Client) DeleteGlobalApplicationCommand(commandID string) error {
-	ret := _m.Called(commandID)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(commandID)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// DeleteGuildApplicationCommand provides a mock function with given fields: guildID, commandID
-func (_m *Client) DeleteGuildApplicationCommand(guildID string, commandID string) error {
+// DeleteApplicationCommand provides a mock function with given fields: guildID, commandID
+func (_m *Client) DeleteApplicationCommand(guildID string, commandID string) error {
 	ret := _m.Called(guildID, commandID)
 
 	var r0 error
@@ -68,31 +40,8 @@ func (_m *Client) DeleteGuildApplicationCommand(guildID string, commandID string
 	return r0
 }
 
-// ListGlobalApplicationCommands provides a mock function with given fields:
-func (_m *Client) ListGlobalApplicationCommands() ([]*models.ApplicationCommand, error) {
-	ret := _m.Called()
-
-	var r0 []*models.ApplicationCommand
-	if rf, ok := ret.Get(0).(func() []*models.ApplicationCommand); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*models.ApplicationCommand)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// ListGuildApplicationCommands provides a mock function with given fields: guildID
-func (_m *Client) ListGuildApplicationCommands(guildID string) ([]*models.ApplicationCommand, error) {
+// ListApplicationCommands provides a mock function with given fields: guildID
+func (_m *Client) ListApplicationCommands(guildID string) ([]*models.ApplicationCommand, error) {
 	ret := _m.Called(guildID)
 
 	var r0 []*models.ApplicationCommand

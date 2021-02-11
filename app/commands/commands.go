@@ -17,7 +17,7 @@ type Deps struct {
 type impl struct {
 	deps          *Deps
 	conf          *config.Config
-	slashCommands models.SlashCommands
+	slashCommands map[string]models.SlashCommand
 }
 
 // Commands interfaces `Commands` methods
@@ -27,7 +27,7 @@ type Commands interface {
 
 // New returns a new `Commands` interface
 func New(deps *Deps, conf *config.Config) Commands {
-	slashCommands := models.SlashCommands{} // todo - prepopulate built in slashCommands
+	slashCommands := map[string]models.SlashCommand{} // todo - prepopulate built in slashCommands
 	commandsImpl := &impl{deps: deps, conf: conf, slashCommands: slashCommands}
 	commandsImpl.add(deps.SlashCommands...)
 	return commandsImpl
@@ -46,5 +46,14 @@ func (impl *impl) add(slashCommands ...models.SlashCommand) {
 	for _, command := range slashCommands {
 		key := strings.ToLower(command.Name)
 		impl.slashCommands[key] = command
+	}
+}
+
+// NewSlashCommand creates a new slash command instance
+func NewSlashCommand(name string, command *models.ApplicationCommand, action models.Action) models.SlashCommand {
+	return models.SlashCommand{
+		Name:    strings.ToLower(name),
+		Command: command,
+		Action:  action,
 	}
 }
