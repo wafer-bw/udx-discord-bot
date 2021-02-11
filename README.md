@@ -1,5 +1,5 @@
 # udx-discord-bot
-A serverless discord slash command bot powered by Vercel written in Golang
+A serverless Discord slash command bot powered by Vercel written in Golang
 
 ![tests](https://github.com/wafer-bw/udx-discord-bot/workflows/tests/badge.svg)
 ![lint](https://github.com/wafer-bw/udx-discord-bot/workflows/lint/badge.svg)
@@ -94,10 +94,9 @@ vercel --prod
     - Found within [./app/models/interaction.go](./app/models/interaction.go)
 - When responding to a slash command we respond with an object of type `InteractionResponse`
     - Found within [./app/models/interaction.go](./app/models/interaction.go)
-- Commands must be registered to discord the data needed to register is defined in an object of type `ApplicationCommand`
+- Commands must be registered to Discord the data needed to register is defined in an object of type `ApplicationCommand`
     - Found within [./app/models/interaction.go](./app/models/interaction.go)
-- A Command `.go` file must export a variable named `SlashCommand` which is created using the method `commands.NewSlashCommand()` which requires a `name (string)`, `command (ApplicationCommand)`, and a function to execute with the signature `func someName(request *models.InteractionRequest) (*models.InteractionResponse, error)`
-    - **The function it requires is where you put all your custom code for the command action**
+- A Command `.go` file must export a variable named `SlashCommand` which is created using the method `commands.NewSlashCommand()` which requires a `name (string)`, `command (ApplicationCommand)`, and a function with the signature `func someName(request *models.InteractionRequest) (*models.InteractionResponse, error)` which is the function where you put all your code that does the work you want.
 - There are two examples that exist already:
     - [helloworld](./udx-slash-commands/commands/helloworld/helloworld.go)
     - [extrinsicrisk](./udx-slash-commands/commands/extrinsicrisk/extrinsicrisk.go)
@@ -107,16 +106,16 @@ vercel --prod
 - You must then [register the command](#register-an-exported-command)
 
 #### Export Commands
-After creating a command we must export it to a JSON which we can use to register it to discord.
+After creating a command we must export it to a JSON file which we later use to register the command in Discord.
 To export all commands within the `./udx-slash-commands/commands/` directory `cd` into `udx-slash-commands` and run `go run export.go` which will export all commands into JSON files within `./udx-slash-commands/raw`.
 
 #### Register an Exported Command
-Commands must be registerd with discord in order for discord to start supporting the slash command.
+Commands must be registerd with Discord in order for Discord to start supporting the slash command.
 - To register an exported command globally on your application use
     ```sh
     go run disgoslash.go register <pathToExportedCommand>
     ```
-    - Global commands take up to an hour for changes to be made live by discord.
+    - Global commands take up to an hour for changes to be made live by Discord.
 - To register an exported command to a specific guild (server) use
     ```sh
     go run disgoslash.go register <serverID> <pathToExportedCommand>
@@ -177,9 +176,6 @@ Commands must be registerd with discord in order for discord to start supporting
     * Parse output from stdout and stderr out of log blob
 * Bot / Application
     * Give bot an image
-* Repo
-    * Make public
-    * Add branch protection for `master`
 * Extract `disgoslash.go` & `app` together into separate repo
 
 ## References
