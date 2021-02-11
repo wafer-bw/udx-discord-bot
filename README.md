@@ -3,6 +3,9 @@ A serverless discord slash command bot powered by Vercel written in Golang
 
 ![tests](https://github.com/wafer-bw/udx-discord-bot/workflows/tests/badge.svg)
 ![lint](https://github.com/wafer-bw/udx-discord-bot/workflows/lint/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wafer-bw/udx-discord-bot)](https://goreportcard.com/report/github.com/wafer-bw/udx-discord-bot)
+![CodeQL](https://github.com/wafer-bw/udx-discord-bot/workflows/CodeQL/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/wafer-bw/udx-discord-bot/badge.svg)](https://coveralls.io/github/wafer-bw/udx-discord-bot)
 
 ## Getting Started
 
@@ -148,11 +151,6 @@ Commands must be registerd with discord in order for discord to start supporting
     ```
 
 ## TODOs
-* Readme
-    * Add badges after the repo is public
-        * [Go Report Card](https://goreportcard.com/)
-        * [Coveralls](https://coveralls.io/)
-        * [CodeQL](https://github.com/wafer-bw/udx-discord-bot/security)
 * Code
     * General
         * Check if it's possible to switch from `fmt` to `log`
