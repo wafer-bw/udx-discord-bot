@@ -50,6 +50,10 @@ make fmt
 make mocks
 # Run all the things you should before you make a commit
 make precommit
+# Deploy to preview
+make preview
+# Deploy to production
+make deploy
 ```
 
 ### Usage (WINDOWS) (WIP)
@@ -69,6 +73,12 @@ gofmt -s -w .
 go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
 golangci-lint run
 gofmt -s -w .
+# Deploy to preview
+# todo - add `make mock` equivalent
+vercel
+# Deploy to production
+# todo - add `make mock` equivalent
+vercel --prod
 ```
 
 ### Slash Commands
@@ -82,17 +92,6 @@ todo
 #### Delete
 todo
 
-### Deploying
-```sh
-# Deploy to preview
-make preview
-# Deploy to production
-make deploy
-```
-
-## References
-* [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
-
 ## TODOs
 * Readme
     * Document how to use each of the sections and where to code actions for others to use
@@ -104,6 +103,8 @@ make deploy
     * General
         * Check if it's possible to switch from `fmt` to `log`
         * Add scripts that act as an alternative for `make`
+    * `commands`
+        * Write tests
     * `disgoslash`
         * Write tests
             * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
@@ -128,3 +129,6 @@ make deploy
     * Make public
     * Add branch protection for `master`
 * Extract `disgoslash.go` & `app` together into separate repo
+
+## References
+* [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
