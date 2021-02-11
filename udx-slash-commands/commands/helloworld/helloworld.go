@@ -5,10 +5,10 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
-var commandName = "hello"
+var commandName = "helloworld"
 
 // SlashCommand - the slash command instance
-var SlashCommand = commands.NewSlashCommand(commandName, command, Hello)
+var SlashCommand = commands.NewSlashCommand(commandName, command, hello)
 
 // command schema for the slash command
 var command = &models.ApplicationCommand{
@@ -24,8 +24,8 @@ var command = &models.ApplicationCommand{
 	},
 }
 
-// Hello - This is where we put the code to run when a user uses our slash command
-func Hello(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+// hello - This is where we put the code to run when a user uses our slash command
+func hello(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	username := request.Data.Options[0].Value
 	return &models.InteractionResponse{
 		Type: models.InteractionResponseTypeChannelMessageWithSource,

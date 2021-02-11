@@ -16,8 +16,8 @@ import (
 type appargs struct {
 	List        bool   `docopt:"list"`
 	Verbose     bool   `docopt:"-v,--verbose"`
-	Delete      bool   `docopt:"delete"`
-	Create      bool   `docopt:"create"`
+	Delete      bool   `docopt:"unregister"`
+	Create      bool   `docopt:"register"`
 	Global      bool   `docopt:"global"`
 	GuildID     string `docopt:"<guildID>"`
 	CommandID   string `docopt:"<commandID>"`
@@ -31,10 +31,10 @@ var usage = `Discord Go Slash Commands
 Usage:
   disgoslash list [-v|--verbose]
   disgoslash list <guildID> [-v|--verbose]
-  disgoslash delete <commandID>
-  disgoslash delete <guildID> <commandID>
-  disgoslash create <command-json-path>
-  disgoslash create <guildID> <command-json-path>
+  disgoslash unregister <commandID>
+  disgoslash unregister <guildID> <commandID>
+  disgoslash register <command-json-path>
+  disgoslash register <guildID> <command-json-path>
   disgoslash -h | --help
 
 Options:
@@ -103,7 +103,7 @@ func main() {
 	args = parseArgs()
 
 	if args.List {
-		list(cmd, args.GuildID, args.Verbose)
+		fmt.Println(list(cmd, args.GuildID, args.Verbose))
 	} else if args.Delete && args.CommandID != "" {
 		delete(cmd, args.GuildID, args.CommandID)
 	} else if args.Create && args.CommandPath != "" {
