@@ -56,7 +56,7 @@ make preview
 make deploy
 ```
 
-### Usage (WINDOWS) (WIP)
+### Usage (Windows) (WIP)
 ```sh
 # Run tests
 go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
@@ -81,15 +81,30 @@ vercel
 vercel --prod
 ```
 
-### Slash Commands
+### Command Management
 
-#### Create
-todo
+#### List Existing
+```sh
+go run disgoslash.go list [-v|--verbose]            # Lists global commands
+# OR
+go run disgoslash.go list <guildID> [-v|--verbose]  # Lists guild commands
+```
+
+#### Register New
+```sh
+go run disgoslash.go create <command-json-path>            # Registers a global command
+# OR
+go run disgoslash.go create <guildID> <command-json-path>  # Registers a guild command
+```
+
+#### Delete Existing
+```sh
+go run disgoslash.go delete <commandID>            # Delete a global command
+# OR
+go run disgoslash.go delete <guildID> <commandID>  # Delete a guild command
+```
 
 #### Edit
-todo
-
-#### Delete
 todo
 
 ## TODOs
