@@ -3,7 +3,6 @@ package client
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -75,12 +74,16 @@ func (impl *impl) DeleteApplicationCommand(guildID string, commandID string) err
 }
 
 func (impl *impl) listApplicationCommands(url string) ([]*models.ApplicationCommand, error) {
-	response, err := httpRequest(http.MethodGet, url, impl.headers, nil)
+	status, data, err := httpRequest(http.MethodGet, url, impl.headers, nil)
+	fmt.Println(status)
 	if err != nil {
 		return nil, err
+	} else if status != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", status, string(data))
 	}
+
 	commands := &[]*models.ApplicationCommand{}
-	if err := unmarshal(response.Body, commands); err != nil {
+	if err := unmarshal(data, commands); err != nil {
 		return nil, err
 	}
 	return *commands, nil
@@ -91,40 +94,25 @@ func (impl *impl) createApplicationCommand(url string, command *models.Applicati
 	if err != nil {
 		return err
 	}
-	response, err := httpRequest(http.MethodPost, url, impl.headers, body)
-	if err != nil {
+
+	if status, data, err := httpRequest(http.MethodPost, url, impl.headers, body); err != nil {
 		return err
-	}
-	if response.StatusCode != http.StatusCreated {
-		body, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			return err
-		}
-		return errors.New(fmt.Sprint("error - command not created: ", string(body)))
+	} else if status != http.StatusCreated {
+		return fmt.Errorf("%d - %s", status, string(data))
 	}
 	return nil
 }
 
 func (impl *impl) deleteApplicationCommands(url string) error {
-	response, err := httpRequest(http.MethodDelete, url, impl.headers, nil)
-	if err != nil {
+	if status, data, err := httpRequest(http.MethodDelete, url, impl.headers, nil); err != nil {
 		return err
-	}
-	if response.StatusCode != http.StatusNoContent {
-		body, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			return err
-		}
-		return errors.New(fmt.Sprint("error - command not deleted: ", string(body)))
+	} else if status != http.StatusNoContent {
+		return fmt.Errorf("%d - %s", status, string(data))
 	}
 	return nil
 }
 
-func unmarshal(responseBody io.ReadCloser, v interface{}) error {
-	body, err := ioutil.ReadAll(responseBody)
-	if err != nil {
-		return err
-	}
+func unmarshal(body []byte, v interface{}) error {
 	if err := json.Unmarshal(body, v); err != nil {
 		return err
 	}
@@ -139,14 +127,25 @@ func marshal(v interface{}) (io.Reader, error) {
 	return bytes.NewBuffer(body), nil
 }
 
-func httpRequest(method string, url string, headers map[string]string, body io.Reader) (*http.Response, error) {
+func httpRequest(method string, url string, headers map[string]string, body io.Reader) (int, []byte, error) {
 	client := &http.Client{}
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
+
 	for key, val := range headers {
 		request.Header.Set(key, val)
 	}
-	return client.Do(request)
+	response, err := client.Do(request)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return response.StatusCode, data, nil
 }
