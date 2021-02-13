@@ -41,6 +41,10 @@ A serverless Discord slash command bot powered by Vercel written in Golang
 
 ### Usage (POSIX)
 ```sh
+# Get Dependencies
+make get
+# Tidy go.mod
+make tidy
 # Run tests
 make test
 # Run verbose tests
@@ -61,6 +65,10 @@ make deploy
 
 ### Usage (Windows) (WIP)
 ```sh
+# Get Dependencies
+go get -t -v -d ./...
+# Tidy go.mod
+go mod tidy
 # Run tests
 go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
 # Run verbose tests
