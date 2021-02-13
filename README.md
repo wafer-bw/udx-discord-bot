@@ -151,11 +151,10 @@ Commands must be registerd with Discord in order for Discord to start supporting
 
 ## TODOs
 * Code
+    * Get rid of exporter and add a CLI to register that uses exported slash command array
     * General
         * Check if it's possible to switch from `fmt` to `log`
         * Add scripts that act as an alternative for `make`
-    * `commands`
-        * Write tests
     * `disgoslash`
         * Write tests
             * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
@@ -163,9 +162,9 @@ Commands must be registerd with Discord in order for Discord to start supporting
         * Write tests
     * `client`
         * Handle errors from API responses properly
-        * Write tests
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
+        * Write tests
     * `models`
         * Finish Guild Model
     * Decide what to do with `config` within `handler` or `auth` and potentially remove need for `mock`
