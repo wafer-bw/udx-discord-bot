@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/wafer-bw/udx-discord-bot/app/config"
+	"github.com/wafer-bw/udx-discord-bot/app/errs"
 	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
 
@@ -80,7 +81,6 @@ func (impl *impl) listApplicationCommands(url string) ([]*models.ApplicationComm
 	} else if status != http.StatusOK {
 		return nil, fmt.Errorf("%d - %s", status, string(data))
 	}
-
 	commands := &[]*models.ApplicationCommand{}
 	if err := unmarshal(data, commands); err != nil {
 		return nil, err
@@ -93,9 +93,10 @@ func (impl *impl) createApplicationCommand(url string, command *models.Applicati
 	if err != nil {
 		return err
 	}
-
 	if status, data, err := httpRequest(http.MethodPost, url, impl.headers, body); err != nil {
 		return err
+	} else if status == http.StatusOK {
+		return errs.ErrAlreadyExists
 	} else if status != http.StatusCreated {
 		return fmt.Errorf("%d - %s", status, string(data))
 	}

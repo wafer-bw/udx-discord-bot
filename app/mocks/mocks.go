@@ -1,6 +1,8 @@
 package mocks
 
-import "github.com/wafer-bw/udx-discord-bot/app/config"
+import (
+	"github.com/wafer-bw/udx-discord-bot/app/config"
+)
 
 // Conf mocks the `config.Config` object
 var Conf = &config.Config{

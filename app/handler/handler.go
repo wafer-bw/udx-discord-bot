@@ -7,16 +7,16 @@ import (
 	"net/http"
 
 	"github.com/wafer-bw/udx-discord-bot/app/auth"
-	"github.com/wafer-bw/udx-discord-bot/app/commands"
 	"github.com/wafer-bw/udx-discord-bot/app/config"
 	"github.com/wafer-bw/udx-discord-bot/app/errs"
 	"github.com/wafer-bw/udx-discord-bot/app/models"
+	"github.com/wafer-bw/udx-discord-bot/app/slashcommands"
 )
 
 // Deps defines `Handler` dependencies
 type Deps struct {
-	Commands commands.Commands
-	Auth     auth.Authorization
+	SlashCommands slashcommands.SlashCommands
+	Auth          auth.Authorization
 }
 
 // impl implements `Handler` properties
@@ -80,7 +80,7 @@ func (impl *impl) execute(interaction *models.InteractionRequest) (*models.Inter
 	case models.InteractionTypePing:
 		return pongResponse, nil
 	case models.InteractionTypeApplicationCommand:
-		return impl.deps.Commands.Run(interaction)
+		return impl.deps.SlashCommands.Run(interaction)
 	default:
 		return nil, errs.ErrInvalidInteractionType
 	}

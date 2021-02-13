@@ -9,8 +9,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wafer-bw/udx-discord-bot/app/errs"
 	"github.com/wafer-bw/udx-discord-bot/app/mocks"
 	"github.com/wafer-bw/udx-discord-bot/app/models"
 )
@@ -36,8 +36,8 @@ func TestListApplicationCommands(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		commands, err := clientImpl.ListApplicationCommands("")
-		assert.NoError(t, err)
-		assert.Equal(t, commands[0].Name, commandName)
+		require.NoError(t, err)
+		require.Equal(t, commands[0].Name, commandName)
 	})
 	t.Run("success/guild", func(t *testing.T) {
 		commandName := `hello`
@@ -51,8 +51,8 @@ func TestListApplicationCommands(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		commands, err := clientImpl.ListApplicationCommands(guildID)
-		assert.NoError(t, err)
-		assert.Equal(t, commands[0].Name, commandName)
+		require.NoError(t, err)
+		require.Equal(t, commands[0].Name, commandName)
 	})
 	t.Run("failure/unauthorized", func(t *testing.T) {
 		mockResponse := `{"message": "401: Unauthorized", "code": 0}`
@@ -80,7 +80,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("", "12345")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 	t.Run("success/guild", func(t *testing.T) {
 		mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -91,7 +91,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("12345", "12345")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 	t.Run("failure/unauthorized", func(t *testing.T) {
 		mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -102,7 +102,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("12345", "12345")
-		assert.Error(t, err)
+		require.Error(t, err)
 	})
 }
 
@@ -116,7 +116,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("", &models.ApplicationCommand{})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 	t.Run("success/guild", func(t *testing.T) {
 		mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -127,7 +127,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 	t.Run("failure/unauthorized", func(t *testing.T) {
 		mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -138,6 +138,18 @@ func TestCreateApplicationCommand(t *testing.T) {
 		clientImpl := New(&Deps{}, mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
-		assert.Error(t, err)
+		require.Error(t, err)
+	})
+	t.Run("failure/already exists", func(t *testing.T) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		}))
+		defer func() { mockServer.Close() }()
+		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
+		clientImpl := New(&Deps{}, mocks.Conf)
+
+		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
+		require.Error(t, err)
+		require.Equal(t, err, errs.ErrAlreadyExists)
 	})
 }

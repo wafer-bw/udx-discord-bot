@@ -159,23 +159,25 @@ Commands must be registerd with Discord in order for Discord to start supporting
 
 ## TODOs
 * Code
-    * Get rid of exporter and add a CLI to register that uses exported slash command array
     * General
+        * Stop using config and just accept the token as an arg to app context
         * Check if it's possible to switch from `fmt` to `log`
         * Add scripts that act as an alternative for `make`
-    * `disgoslash`
-        * Write tests
-            * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
-    * `handler`
-        * Write tests
     * `client`
         * Handle errors from API responses properly
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
         * Write tests
+    * `resync`
+        * Retry after rate limit duration - [example response](https://discord.com/developers/docs/topics/rate-limits#exceeding-a-rate-limit-example-rate-limit-response).
+        * Write tests
+    * `handler`
+        * Write tests
+    * `disgoslash`
+        * Write tests
+            * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
     * `models`
         * Finish Guild Model
-    * Decide what to do with `config` within `handler` or `auth` and potentially remove need for `mock`
 * Vercel
     * Figure out how to manage env vars
     * Figure out how to manage dev/staging subdomain/branch/deployment
