@@ -27,7 +27,13 @@ fmt:
 	gofmt -s -w .
 .PHONY: fmt
 
+tidy:
+	go mod tidy
+.PHONY: tidy
+
 precommit:
+	make get
+	make tidy
 	make mocks
 	make test
 	make lint
