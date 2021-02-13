@@ -75,7 +75,6 @@ func (impl *impl) DeleteApplicationCommand(guildID string, commandID string) err
 
 func (impl *impl) listApplicationCommands(url string) ([]*models.ApplicationCommand, error) {
 	status, data, err := httpRequest(http.MethodGet, url, impl.headers, nil)
-	fmt.Println(status)
 	if err != nil {
 		return nil, err
 	} else if status != http.StatusOK {
