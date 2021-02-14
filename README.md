@@ -104,11 +104,10 @@ vercel --prod
         * EditGuildApplicationCommand
         * Write tests
     * `resync`
-        * Retry after rate limit duration - [example response](https://discord.com/developers/docs/topics/rate-limits#exceeding-a-rate-limit-example-rate-limit-response).
         * Write tests
+        * Retry after rate limit duration - [example response](https://discord.com/developers/docs/topics/rate-limits#exceeding-a-rate-limit-example-rate-limit-response).
         * After `client` has edit, edit instead of unregister-register
     * `handler`
-        * rename to `api`
         * Organize better
         * Write tests
     * `disgoslash`
