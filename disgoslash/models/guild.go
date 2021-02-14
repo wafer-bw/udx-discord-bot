@@ -2,9 +2,6 @@ package models
 
 import "time"
 
-// todo
-// https://discord.com/developers/docs/resources/guild#guild-resource
-
 // Guild - the base model of a guild / server
 type Guild struct {
 	ID                          string                     `json:"id"`
@@ -24,9 +21,9 @@ type Guild struct {
 	VerificationLevel           VerificationLevel          `json:"verification_level"`
 	DefaultMessageNotifications NotificationLevel          `json:"default_message_notifications"`
 	ExplicitContentFilter       ExplicitContentFilterLevel `json:"explicit_content_filter"`
-	Roles                       []*interface{}             `json:"roles"`    // todo struct
-	Emojis                      []*interface{}             `json:"emojis"`   // todo struct
-	Features                    []*interface{}             `json:"features"` // todo struct
+	Roles                       []Role                     `json:"roles"`
+	Emojis                      []interface{}              `json:"emojis"`   // todo struct https://discord.com/developers/docs/resources/emoji#emoji-object
+	Features                    []interface{}              `json:"features"` // todo enum https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 	MFALevel                    MFALevel                   `json:"mfa_level"`
 	ApplicationID               string                     `json:"application_id"`
 	SystemChannelID             string                     `json:"system_channel_id"`
@@ -39,7 +36,7 @@ type Guild struct {
 	VoiceStates                 []*interface{}             `json:"voice_states"` // todo struct https://discord.com/developers/docs/resources/voice#voice-state-object
 	Members                     []*GuildMember             `json:"members"`      //
 	Channels                    []*interface{}             `json:"channels"`     // todo struct https://discord.com/developers/docs/resources/channel#channel-object
-	Presences                   []*interface{}             `json:"presences"`    // todo struct https://discord.com/developers/docs/topics/gateway#presence-update
+	Presences                   []*Presence                `json:"presences"`
 	MaxPresences                int                        `json:"max_presences"`
 	MaxMembers                  int                        `json:"max_members"`
 	VanityURLCode               string                     `json:"vanity_url_code"`
