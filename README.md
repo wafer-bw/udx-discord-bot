@@ -70,9 +70,9 @@ go get -t -v -d ./...
 # Tidy go.mod
 go mod tidy
 # Run tests
-go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 # Run verbose tests
-go test -v -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+go test -v -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 # Run linting
 golangci-lint run
 # Run formatting
@@ -81,7 +81,7 @@ gofmt -s -w .
 # todo - add `make mock` equivalent
 # Run all the things you should before you make a commit
 # todo - add `make mock` equivalent
-go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 golangci-lint run
 gofmt -s -w .
 # Deploy to preview
@@ -92,92 +92,33 @@ vercel
 vercel --prod
 ```
 
-### Slash Commands
-
-#### Developing Commands
-- Commands are located within [./udx-slash-commands/commands](./udx-slash-commands/commands).
-- Commands must be a `.go` file that resides in it's own folder within the `./udx-slash-commands/commands` directory
-    - Ex: `helloworld/helloworld.go`
-- When a user executes a slash command it will be received as an object of type `InteractionRequest`
-    - Found within [./app/models/interaction.go](./app/models/interaction.go)
-- When responding to a slash command we respond with an object of type `InteractionResponse`
-    - Found within [./app/models/interaction.go](./app/models/interaction.go)
-- Commands must be registered to Discord the data needed to register is defined in an object of type `ApplicationCommand`
-    - Found within [./app/models/interaction.go](./app/models/interaction.go)
-- A Command `.go` file must export a variable named `SlashCommand` which is created using the method `commands.NewSlashCommand()` which requires a `name (string)`, `command (ApplicationCommand)`, and a function with the signature `func someName(request *models.InteractionRequest) (*models.InteractionResponse, error)` which is the function where you put all your code that does the work you want.
-- There are two examples that exist already:
-    - [helloworld](./udx-slash-commands/commands/helloworld/helloworld.go)
-    - [extrinsicrisk](./udx-slash-commands/commands/extrinsicrisk/extrinsicrisk.go)
-- The `SlashCommand` variable must be added to the array of slash commands inside [./udx-slash-commands/commands/commands.go](./udx-slash-commands/commands/commands.go)
-- The above code changes must be merged into the `master` branch and pushed to GitHub.
-- You must then [export the command](#export-commands)
-- You must then [register the command](#register-an-exported-command)
-
-#### Export Commands
-After creating a command we must export it to a JSON file which we later use to register the command in Discord.
-To export all commands within the `./udx-slash-commands/commands/` directory `cd` into `udx-slash-commands` and run `go run export.go` which will export all commands into JSON files within `./udx-slash-commands/raw`.
-
-#### Register an Exported Command
-Commands must be registerd with Discord in order for Discord to start supporting the slash command.
-- To register an exported command globally on your application use
-    ```sh
-    go run disgoslash.go register <pathToExportedCommand>
-    ```
-    - Global commands take up to an hour for changes to be made live by Discord.
-- To register an exported command to a specific guild (server) use
-    ```sh
-    go run disgoslash.go register <serverID> <pathToExportedCommand>
-    # Example:
-    # go run disgoslash.go register 12345 udx-slash-commands/raw/helloworld.json
-    ```
-
-#### Listing Registered Commands
-- Global
-    ```sh
-    go run disgoslash.go list
-    ```
-    - Guild / Server commands will not appear here, they are separate from global commands.
-- Guild / Server
-    ```sh
-    go run disgoslash.go list <serverID>
-    # Example:
-    # go run disgoslash.go list 12345
-    ```
-
-#### Unregister a Command
-- Global
-    ```sh
-    go run disgoslash.go unregister <commandID> # Command ID found by listing the registered commands
-    ```
-    - Guild / Server commands will not appear here, they are separate from global commands.
-- Guild / Server
-    ```sh
-    go run disgoslash.go unregister <serverID> <commandID>
-    # Example:
-    # go run disgoslash.go unregister 67890 12345
-    ```
-
 ## TODOs
 * Code
     * General
-        * Stop using config and just accept the token as an arg to app context
-        * Check if it's possible to switch from `fmt` to `log`
+        * Remove `appcontext`
+        * Check if it's possible to move `udx-slash-commands` into `api`
+        * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
     * `client`
-        * Handle errors from API responses properly
+        * Parse and handle errors from API responses properly
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
         * Write tests
     * `resync`
         * Retry after rate limit duration - [example response](https://discord.com/developers/docs/topics/rate-limits#exceeding-a-rate-limit-example-rate-limit-response).
         * Write tests
+        * After `client` has edit, edit instead of unregister-register
     * `handler`
+        * rename to `api`
+        * Organize better
         * Write tests
     * `disgoslash`
         * Write tests
             * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
     * `models`
         * Finish Guild Model
+    * `exporter`
+        * Recreate as package
 * Vercel
     * Figure out how to manage env vars
     * Figure out how to manage dev/staging subdomain/branch/deployment
@@ -185,7 +126,8 @@ Commands must be registerd with Discord in order for Discord to start supporting
     * Parse output from stdout and stderr out of log blob
 * Bot / Application
     * Give bot an image
-* Extract `disgoslash.go` & `app` together into separate repo
+* Extract `disgoslash` into a separate repo
+* Resync Workflow
 
 ## References
 * [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth

@@ -5,19 +5,19 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/wafer-bw/udx-discord-bot/app/models"
-	"github.com/wafer-bw/udx-discord-bot/app/slashcommands/slashcommand"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
 var name = "extrinsicrisk"
-var global = true
+var global = false
 var guildIDs = []string{
 	"116036580094902275", // UDX
 	"810227107967402056", // UDX Bot Dev
 }
 
 // SlashCommand - the slash command instance
-var SlashCommand = slashcommand.New(name, command, extrinsicRisk, global, guildIDs)
+var SlashCommand = slashcommands.New(name, command, extrinsicRisk, global, guildIDs)
 
 // command schema for the slash command
 var command = &models.ApplicationCommand{
