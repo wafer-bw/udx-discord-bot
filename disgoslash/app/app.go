@@ -1,4 +1,4 @@
-package appcontext
+package app
 
 import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/auth"
@@ -7,19 +7,17 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
-// AppContext implements `AppContext` properties
-type AppContext struct {
+// App implements `App` properties
+type App struct {
 	Handler handler.Handler
 }
 
-// New returns a new `AppContext` struct
-func New(slashCommandMap slashcommands.Map) *AppContext {
+// New returns a new `App` struct
+func New(slashCommandMap slashcommands.Map) *App {
 	conf := config.New()
-
 	hndl := handler.New(&handler.Deps{
 		Auth:             auth.New(&auth.Deps{}, conf),
 		SlashCommandsMap: slashCommandMap,
 	}, conf)
-
-	return &AppContext{Handler: hndl}
+	return &App{Handler: hndl}
 }

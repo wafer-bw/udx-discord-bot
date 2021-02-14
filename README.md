@@ -95,7 +95,6 @@ vercel --prod
 ## TODOs
 * Code
     * General
-        * Remove `appcontext`
         * Check if it's possible to move `udx-slash-commands` into `api`
         * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
