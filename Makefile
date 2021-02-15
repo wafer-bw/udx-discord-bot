@@ -3,20 +3,20 @@ get:
 .PHONY: get
 
 mocks:
-	rm -rf app/generatedmocks/*
-	mockery --all --output="app/generatedmocks" --keeptree
+	rm -rf disgoslash/generatedmocks/*
+	mockery --all --output="disgoslash/generatedmocks" --keeptree
 .PHONY: mocks
 
 test:
-	go test -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+	go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 .PHONY: test
 
 testv:
-	go test -v -coverprofile=cover.out `go list ./... | grep -v ./app/generatedmocks`
+	go test -v -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 .PHONY: test
 
 test-ci:
-	go test -covermode=count -coverprofile=coverage.out `go list ./... | grep -v ./app/generatedmocks`
+	go test -covermode=count -coverprofile=coverage.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 .PHONY: test
 
 lint:
@@ -33,8 +33,8 @@ tidy:
 
 precommit:
 	make get
-	make tidy
 	make mocks
+	make tidy
 	make test
 	make lint
 	make fmt

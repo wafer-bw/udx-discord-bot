@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/wafer-bw/udx-discord-bot/app/models"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
 )
 
 func TestMain(m *testing.M) {
