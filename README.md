@@ -98,13 +98,11 @@ vercel --prod
         * Check if it's possible to move `udx-slash-commands` into `api`
         * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
+    * `auth`
+        * Use conf to get publickey
     * `client`
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
-        * Write tests
-    * `syncer`
-        * Write tests
-        * After `client` has edit, edit instead of unregister-register
     * `handler`
         * Organize better
         * Write tests
@@ -115,11 +113,6 @@ vercel --prod
         * Finish Guild Model
     * `exporter`
         * Recreate as package
-* Vercel
-    * Figure out how to manage env vars
-    * Figure out how to manage dev/staging subdomain/branch/deployment
-* Log Drain
-    * Parse output from stdout and stderr out of log blob
 * Bot / Application
     * Give bot an image
 * Extract `disgoslash` into a separate repo

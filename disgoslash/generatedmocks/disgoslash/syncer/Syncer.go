@@ -13,14 +13,16 @@ type Syncer struct {
 }
 
 // Run provides a mock function with given fields: guildIDs, slashCommandMap
-func (_m *Syncer) Run(guildIDs []string, slashCommandMap slashcommands.Map) error {
+func (_m *Syncer) Run(guildIDs []string, slashCommandMap slashcommands.Map) []error {
 	ret := _m.Called(guildIDs, slashCommandMap)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func([]string, slashcommands.Map) error); ok {
+	var r0 []error
+	if rf, ok := ret.Get(0).(func([]string, slashcommands.Map) []error); ok {
 		r0 = rf(guildIDs, slashCommandMap)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]error)
+		}
 	}
 
 	return r0

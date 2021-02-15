@@ -12,6 +12,6 @@ import (
 // https://vercel.com/docs/serverless-functions/supported-languages#go
 // https://discord.com/developers/docs/interactions/slash-commands#responding-to-an-interaction
 func Handler(w http.ResponseWriter, r *http.Request) {
-	app := app.New(commands.SlashCommandMap)
-	app.Handler.Handle(w, r)
+	handler := app.NewHandler(commands.SlashCommandMap)
+	handler.Handle(w, r)
 }

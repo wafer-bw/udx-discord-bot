@@ -10,12 +10,11 @@ import (
 
 // EnvVars defines expected & required environment variables
 type EnvVars struct {
-	PublicKey    string `envconfig:"PUBLIC_KEY" required:"true" split_words:"true"`
-	ClientID     string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
-	ClientSecret string `envconfig:"CLIENT_SECRET" required:"true" split_words:"true"`
-	Token        string `envconfig:"TOKEN" required:"true" split_words:"true"`
-	BaseURL      string `envconfig:"DISCORD_API_BASE_URL" required:"true" split_words:"true"`
-	APIVersion   string `envconfig:"DISCORD_API_VERSION" required:"true" split_words:"true"`
+	PublicKey  string `envconfig:"PUBLIC_KEY" required:"true" split_words:"true"`
+	ClientID   string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
+	Token      string `envconfig:"TOKEN" required:"true" split_words:"true"`
+	BaseURL    string `envconfig:"DISCORD_API_BASE_URL" required:"true" split_words:"true"`
+	APIVersion string `envconfig:"DISCORD_API_VERSION" required:"true" split_words:"true"`
 }
 
 // Config holds all config data

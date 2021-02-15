@@ -2,22 +2,47 @@ package app
 
 import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/auth"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/client"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/config"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/handler"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/syncer"
 )
 
-// App implements `App` properties
-type App struct {
-	Handler handler.Handler
+var conf *config.Config
+
+// LoadConf loads the configuration object from arg or env
+func LoadConf(newConf *config.Config) *config.Config {
+	if conf == nil {
+		if newConf != nil {
+			conf = newConf
+		} else {
+			conf = config.New()
+		}
+	}
+	return conf
 }
 
-// New returns a new `App` struct
-func New(slashCommandMap slashcommands.Map) *App {
-	conf := config.New()
-	hndl := handler.New(&handler.Deps{
+// NewHandler returns a new handler interface
+func NewHandler(slashCommandMap slashcommands.Map) handler.Handler {
+	conf := LoadConf(nil)
+	h := handler.New(&handler.Deps{
 		Auth:             auth.New(&auth.Deps{}, conf),
 		SlashCommandsMap: slashCommandMap,
 	}, conf)
-	return &App{Handler: hndl}
+	return h
+}
+
+// NewSyncer returns a new syncer interface
+func NewSyncer() syncer.Syncer {
+	conf := LoadConf(nil)
+	return syncer.New(&syncer.Deps{
+		Client: NewClient(),
+	}, conf)
+}
+
+// NewClient returns a new client interface
+func NewClient() client.Client {
+	conf := LoadConf(nil)
+	return client.New(&client.Deps{}, conf)
 }
