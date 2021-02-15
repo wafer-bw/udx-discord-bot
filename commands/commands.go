@@ -6,7 +6,7 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
-// SlashCommandMap for the application
+// SlashCommandMap containing slash commands to be deployed and used live
 var SlashCommandMap = slashcommands.NewMap(
 	extrinsicrisk.SlashCommand,
 	helloworld.SlashCommand,

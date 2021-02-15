@@ -98,12 +98,12 @@ vercel --prod
 3. Use the existing commands as referance for what your script will need.
 4. Make sure your new script exports a variable `SlashCommand` like this:
     ```golang
-    // SlashCommand - the slash command instance
+    // SlashCommand instance
     var SlashCommand = slashcommands.New(name, command, hello, global, guildIDs)
     ```
 5. Add your exported `SlashCommand` variable to the list within [./commands/commands.go](./commands/commands.go) like this:
     ```golang
-    // SlashCommandMap for the application
+    // SlashCommandMap containing slash commands to be deployed and used live
     var SlashCommandMap = slashcommands.NewMap(
         extrinsicrisk.SlashCommand,
         helloworld.SlashCommand,

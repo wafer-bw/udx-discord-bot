@@ -16,7 +16,7 @@ var guildIDs = []string{
 	"116036580094902275", // UDX
 }
 
-// SlashCommand - the slash command instance
+// SlashCommand instance
 var SlashCommand = slashcommands.New(name, command, extrinsicRisk, global, guildIDs)
 
 // command schema for the slash command

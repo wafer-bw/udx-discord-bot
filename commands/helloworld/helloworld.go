@@ -11,7 +11,7 @@ var guildIDs = []string{
 	"810227107967402056", // UDX Bot Dev
 }
 
-// SlashCommand - the slash command instance
+// SlashCommand instance
 var SlashCommand = slashcommands.New(name, command, hello, global, guildIDs)
 
 // command schema for the slash command
