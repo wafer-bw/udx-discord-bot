@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/wafer-bw/udx-discord-bot/api/commands"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
-	"github.com/wafer-bw/udx-discord-bot/udx-slash-commands/commands"
 )
 
 func main() {
