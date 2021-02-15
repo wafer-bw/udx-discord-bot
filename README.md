@@ -110,7 +110,7 @@ vercel --prod
         yourcommand.SlashCommand,
     )
     ```
-6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to discord by the [Sync Workflow](./.github/workflows/sync.yml)
+6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
 
 ## TODOs
 * Code
