@@ -5,6 +5,7 @@ import (
 
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/client"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/config"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/errs"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
@@ -49,7 +50,18 @@ func (impl *impl) registerCommands(commandMap slashcommands.Map) error {
 	log.Println("Registering new commands...")
 	for _, command := range commandMap {
 		for _, guildID := range command.GuildIDs {
-			if err := impl.client.CreateApplicationCommand(guildID, command.AppCommand); err != nil {
+			err := impl.client.CreateApplicationCommand(guildID, command.AppCommand)
+			switch err {
+			case errs.ErrForbidden, errs.ErrUnauthorized:
+				if guildID == "" {
+					log.Printf("\t- ERROR: Could not register global command %s. (%s)\n", command.Name, err.Error())
+				} else {
+					log.Printf("\t- ERROR: Could not register command %s in guild %s. (%s)\n", command.Name, guildID, err.Error())
+				}
+				continue
+			case nil:
+				// pass
+			default:
 				return err
 			}
 			if guildID == "" {
@@ -68,7 +80,17 @@ func (impl *impl) getCommandsToUnregister(guildIDs []string, commandMap slashcom
 	log.Println("Collecting outdated commands...")
 	for _, guildID := range uniqueGuildIDs {
 		guildCommands, err := impl.client.ListApplicationCommands(guildID)
-		if err != nil {
+		switch err {
+		case errs.ErrForbidden, errs.ErrUnauthorized:
+			if guildID == "" {
+				log.Printf("\t- ERROR: Could not collect global command data. (%s)\n", err.Error())
+			} else {
+				log.Printf("\t- ERROR: Could not collect command data for guild %s. (%s)\n", guildID, err.Error())
+			}
+			continue
+		case nil:
+			// pass
+		default:
 			return nil, err
 		}
 		for _, guildCommand := range guildCommands {
@@ -92,16 +114,26 @@ func (impl *impl) unregisterCommands(guildIDs []string, slashCommandMap slashcom
 	if err != nil {
 		return err
 	}
-
 	log.Println("Unregistering outdated commands...")
 	for _, target := range unregisterTargets {
-		if err := impl.client.DeleteApplicationCommand(target.guildID, target.commandID); err != nil {
+		err := impl.client.DeleteApplicationCommand(target.guildID, target.commandID)
+		switch err {
+		case errs.ErrForbidden, errs.ErrUnauthorized:
+			if target.guildID == "" {
+				log.Printf("\t- ERROR: Could not unregister global command %s. (%s)\n", target.name, err.Error())
+			} else {
+				log.Printf("\t- ERROR: Could not unregister command %s in guild %s. (%s)\n", target.name, target.guildID, err.Error())
+			}
+			continue
+		case nil:
+			// pass
+		default:
 			return err
 		}
 		if target.guildID == "" {
 			log.Printf("\t- Unregistered global command %s\n", target.name)
 		} else {
-			log.Printf("\t- Unregistered command %s from guild %s\n", target.name, target.guildID)
+			log.Printf("\t- Unregistered command %s in guild %s\n", target.name, target.guildID)
 		}
 	}
 	return nil

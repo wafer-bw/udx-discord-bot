@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/config"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/errs"
@@ -128,24 +129,58 @@ func marshal(v interface{}) (io.Reader, error) {
 }
 
 func httpRequest(method string, url string, headers map[string]string, body io.Reader) (int, []byte, error) {
-	client := &http.Client{}
-	request, err := http.NewRequest(method, url, body)
-	if err != nil {
-		return 0, nil, err
-	}
+	attempts := 0
+	maxAttempts := 3
 
-	for key, val := range headers {
-		request.Header.Set(key, val)
-	}
-	response, err := client.Do(request)
-	if err != nil {
-		return 0, nil, err
-	}
+	for attempts < maxAttempts {
+		attempts++
 
-	data, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return 0, nil, err
-	}
+		client := &http.Client{}
+		request, err := http.NewRequest(method, url, body)
+		if err != nil {
+			return 0, nil, err
+		}
 
-	return response.StatusCode, data, nil
+		for key, val := range headers {
+			request.Header.Set(key, val)
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			return 0, nil, err
+		}
+
+		switch response.StatusCode {
+		case http.StatusForbidden:
+			return 0, nil, errs.ErrForbidden
+		case http.StatusUnauthorized:
+			return 0, nil, errs.ErrUnauthorized
+		}
+
+		data, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return 0, nil, err
+		}
+
+		waitTime, err := determineRetry(response.StatusCode, data)
+		if err != nil {
+			return 0, nil, err
+		}
+
+		if waitTime <= 0 {
+			return response.StatusCode, data, nil
+		}
+		time.Sleep(waitTime)
+	}
+	return 0, nil, errs.ErrMaxRetries
+}
+
+func determineRetry(statusCode int, data []byte) (time.Duration, error) {
+	if statusCode != http.StatusTooManyRequests {
+		return 0, nil
+	}
+	responseErr := &models.APIErrorResponse{}
+	if err := unmarshal(data, responseErr); err != nil {
+		return 0, err
+	}
+	return time.Duration(responseErr.RetryAfter) * time.Second, nil
 }

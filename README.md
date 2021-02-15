@@ -99,13 +99,11 @@ vercel --prod
         * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
     * `client`
-        * Parse and handle errors from API responses properly
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
         * Write tests
-    * `resync`
+    * `syncer`
         * Write tests
-        * Retry after rate limit duration - [example response](https://discord.com/developers/docs/topics/rate-limits#exceeding-a-rate-limit-example-rate-limit-response).
         * After `client` has edit, edit instead of unregister-register
     * `handler`
         * Organize better
