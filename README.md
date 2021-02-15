@@ -101,7 +101,7 @@ vercel --prod
     // SlashCommand - the slash command instance
     var SlashCommand = slashcommands.New(name, command, hello, global, guildIDs)
     ```
-5. Add your exported `SlashCommand` variable to list within [./commands](./commands/commands.go) like this:
+5. Add your exported `SlashCommand` variable to the list within [./commands/commands.go](./commands/commands.go) like this:
     ```golang
     // SlashCommandMap for the application
     var SlashCommandMap = slashcommands.NewMap(
