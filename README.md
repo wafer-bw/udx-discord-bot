@@ -101,10 +101,10 @@ vercel --prod
     var SlashCommand = slashcommands.New(name, command, do, global, guildIDs)
     ```
     - `name string`: The name of your slash command.
-    - `appCommand *ApplicationCommand`: A definition of the [ApplicationCommand object](https://discord.com/developers/docs/interactions/slash-commands#applicationcommand) needed to by the automatic registering script.
+    - `appCommand *ApplicationCommand`: A definition of the [ApplicationCommand object](https://discord.com/developers/docs/interactions/slash-commands#applicationcommand) needed to automatically register the command.
     - `do func`: The function where all your slash command work lives.
     - `global bool`: Whether or not the slash command should be registered globally across all servers your bot has access to.
-    - `guildIDs []string`: The guild IDs to register your slash command to.
+    - `guildIDs []string`: The guild (server) IDs to register your slash command to.
 5. Add your exported `SlashCommand` variable to the list within [./commands/commands.go](./commands/commands.go) like this:
     ```golang
     // SlashCommandMap containing slash commands to be deployed and used live
