@@ -107,7 +107,7 @@ vercel --prod
     var SlashCommandMap = slashcommands.NewMap(
         extrinsicrisk.SlashCommand,
         helloworld.SlashCommand,
-        yourcommand.SlashCommand,
+        yourcommand.SlashCommand, // <-- Your command goes here.
     )
     ```
 6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
