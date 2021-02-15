@@ -106,7 +106,6 @@ vercel --prod
 * Bot / Application
     * Give bot an image
 * Extract `disgoslash` into a separate repo
-* Resync Workflow
 
 ## References
 * [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
