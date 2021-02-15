@@ -3,6 +3,7 @@ package extrinsicrisk
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
@@ -13,7 +14,6 @@ var name = "extrinsicrisk"
 var global = false
 var guildIDs = []string{
 	"116036580094902275", // UDX
-	"810227107967402056", // UDX Bot Dev
 }
 
 // SlashCommand - the slash command instance
@@ -50,7 +50,7 @@ var command = &models.ApplicationCommand{
 func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return &models.InteractionResponse{
 			Type: models.InteractionResponseTypeChannelMessageWithSource,
 			Data: &models.InteractionApplicationCommandCallbackData{

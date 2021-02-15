@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
+	"github.com/wafer-bw/udx-discord-bot/commands"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
-	"github.com/wafer-bw/udx-discord-bot/udx-slash-commands/commands"
 )
 
 // Handler is exported for use as a vercel serverless function

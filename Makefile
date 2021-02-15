@@ -49,3 +49,7 @@ deploy:
 	make precommit
 	vercel --prod
 .PHONY: deploy
+
+sync:
+	go run sync/sync.go
+.PHONY: sync

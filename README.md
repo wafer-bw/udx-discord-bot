@@ -92,11 +92,29 @@ vercel
 vercel --prod
 ```
 
+### Developing Slash Commands
+1. Make a new folder for your command within [./commands](./commands) using the name of your command.
+2. Make a new `.go` script in your new folder for your command.
+3. Use the existing commands as referance for what your script will need.
+4. Make sure your new script exports a variable `SlashCommand` like this:
+    ```golang
+    // SlashCommand - the slash command instance
+    var SlashCommand = slashcommands.New(name, command, hello, global, guildIDs)
+    ```
+5. Add your exported `SlashCommand` variable to list within [./commands](./commands/commands.go) like this:
+    ```golang
+    // SlashCommandMap for the application
+    var SlashCommandMap = slashcommands.NewMap(
+        extrinsicrisk.SlashCommand,
+        helloworld.SlashCommand,
+        yourcommand.SlashCommand,
+    )
+    ```
+6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
+
 ## TODOs
 * Code
     * General
-        * Check if it's possible to move `udx-slash-commands` into `api`
-        * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
     * `client`
         * EditGlobalApplicationCommand
@@ -108,7 +126,6 @@ vercel --prod
 * Bot / Application
     * Give bot an image
 * Extract `disgoslash` into a separate repo
-* Resync Workflow
 
 ## References
 * [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
