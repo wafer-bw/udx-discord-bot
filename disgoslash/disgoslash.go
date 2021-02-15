@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 
 	"github.com/docopt/docopt-go"
 	"github.com/joho/godotenv"
@@ -24,7 +25,6 @@ type appargs struct {
 	CommandPath string `docopt:"<command-json-path>"`
 }
 
-var args *appargs
 var cmd client.Client
 var usage = `Discord Go Slash Commands
 
@@ -32,9 +32,9 @@ Usage:
   disgoslash list [-v|--verbose]
   disgoslash list <guildID> [-v|--verbose]
   disgoslash unregister <commandID>
-  disgoslash unregister <guildID> <commandID>
+  disgoslash unregister <commandID> <guildID>
   disgoslash register <command-json-path>
-  disgoslash register <guildID> <command-json-path>
+  disgoslash register <command-json-path> <guildID>
   disgoslash -h | --help
 
 Options:
@@ -47,66 +47,79 @@ func loadEnv() {
 	}
 }
 
-func parseArgs() *appargs {
+func parseArgs() (*appargs, error) {
 	args := &appargs{}
 	arguments, err := docopt.ParseDoc(usage)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if err := arguments.Bind(&args); err != nil {
-		panic(err)
+		return nil, err
 	}
-	return args
+	return args, nil
 }
 
-func list(cmd client.Client, guildID string, verbose bool) string {
+func list(cmd client.Client, guildID string, verbose bool) (string, error) {
 	res, err := cmd.ListApplicationCommands(guildID)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	if verbose {
-		return utils.FormatJSON(res)
+		return utils.FormatJSON(res), nil
 	}
 	output := ""
 	for _, command := range res {
 		output += fmt.Sprintf("%s - %s: %s\n", command.ID, command.Name, command.Description)
 	}
-	return output
+	return output, nil
 }
 
-func delete(cmd client.Client, guildID string, commandID string) {
-	err := cmd.DeleteApplicationCommand(guildID, commandID)
-	if err != nil {
-		panic(err)
-	}
-
+func delete(cmd client.Client, guildID string, commandID string) error {
+	return cmd.DeleteApplicationCommand(guildID, commandID)
 }
 
-func create(cmd client.Client, guildID string, commandPath string) {
+func create(cmd client.Client, guildID string, command *models.ApplicationCommand) error {
+	return cmd.CreateApplicationCommand(guildID, command)
+}
+
+func loadCommand(commandPath string) (*models.ApplicationCommand, error) {
 	command := &models.ApplicationCommand{}
 	file, err := ioutil.ReadFile(commandPath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if err := json.Unmarshal(file, command); err != nil {
-		panic(err)
+		return nil, err
 	}
-	if err := cmd.CreateApplicationCommand(guildID, command); err != nil {
-		panic(err)
-	}
-	fmt.Println("Done!")
+	return command, nil
 }
 
 func main() {
 	loadEnv()
 	cmd = client.New(&client.Deps{}, config.New())
-	args = parseArgs()
+	args, err := parseArgs()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if args.List {
-		fmt.Println(list(cmd, args.GuildID, args.Verbose))
+		msg, err := list(cmd, args.GuildID, args.Verbose)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(msg)
 	} else if args.Delete && args.CommandID != "" {
-		delete(cmd, args.GuildID, args.CommandID)
+		if err := delete(cmd, args.GuildID, args.CommandID); err != nil {
+			log.Fatal(err)
+		}
 	} else if args.Create && args.CommandPath != "" {
-		create(cmd, args.GuildID, args.CommandPath)
+		command, err := loadCommand(args.CommandPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := create(cmd, args.GuildID, command); err != nil {
+			log.Fatal(err)
+		}
 	}
+	fmt.Println("Done!")
 }

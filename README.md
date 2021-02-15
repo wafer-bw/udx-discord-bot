@@ -101,12 +101,6 @@ vercel --prod
     * `client`
         * EditGlobalApplicationCommand
         * EditGuildApplicationCommand
-    * `handler`
-        * Organize better
-        * Write tests
-    * `disgoslash`
-        * Write tests
-            * [unit test argparsing](https://github.com/docopt/docopt.go/blob/master/examples/unit_test/unit_test.go)
     * `models`
         * Finish Guild Model
     * `exporter`

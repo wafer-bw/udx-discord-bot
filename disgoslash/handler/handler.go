@@ -47,7 +47,7 @@ func (impl *impl) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	interactionResponse, err := impl.execute(interactionRequest)
+	interactionResponse, err := impl.triage(interactionRequest)
 	if err != nil {
 		impl.respond(w, nil, err)
 		return
@@ -75,19 +75,23 @@ func (impl *impl) resolve(r *http.Request) (*models.InteractionRequest, error) {
 	return impl.unmarshal(body)
 }
 
-func (impl *impl) execute(interaction *models.InteractionRequest) (*models.InteractionResponse, error) {
+func (impl *impl) triage(interaction *models.InteractionRequest) (*models.InteractionResponse, error) {
 	switch interaction.Type {
 	case models.InteractionTypePing:
 		return pongResponse, nil
 	case models.InteractionTypeApplicationCommand:
-		slashCommand, ok := impl.deps.SlashCommandsMap[interaction.Data.Name]
-		if !ok {
-			return nil, errs.ErrNotImplemented
-		}
-		return slashCommand.Do(interaction)
+		return impl.execute(interaction)
 	default:
 		return nil, errs.ErrInvalidInteractionType
 	}
+}
+
+func (impl *impl) execute(interaction *models.InteractionRequest) (*models.InteractionResponse, error) {
+	slashCommand, ok := impl.deps.SlashCommandsMap[interaction.Data.Name]
+	if !ok {
+		return nil, errs.ErrNotImplemented
+	}
+	return slashCommand.Do(interaction)
 }
 
 func (impl *impl) respond(w http.ResponseWriter, body []byte, err error) {
