@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/auth"
@@ -107,7 +107,7 @@ func (impl *impl) respond(w http.ResponseWriter, body []byte, err error) {
 	case errs.ErrNotImplemented:
 		http.Error(w, err.Error(), http.StatusNotImplemented)
 	default:
-		fmt.Println(err)
+		log.Printf("ERROR: %s\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

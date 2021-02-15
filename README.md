@@ -95,7 +95,6 @@ vercel --prod
 ## TODOs
 * Code
     * General
-        * Check if it's possible to switch from `fmt` to `log` while using vercel
         * Add scripts that act as an alternative for `make`
     * `client`
         * EditGlobalApplicationCommand
