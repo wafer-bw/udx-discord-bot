@@ -3,6 +3,7 @@ package extrinsicrisk
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
@@ -49,6 +50,8 @@ var command = &models.ApplicationCommand{
 // Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
 func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
+	fmt.Println("HERE:")
+	log.Println(p.Ask)
 	if err != nil {
 		fmt.Println(err)
 		return &models.InteractionResponse{
