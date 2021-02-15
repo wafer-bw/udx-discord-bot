@@ -1,0 +1,16 @@
+name: Register Discord Slash Commands
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  sync:
+    name: sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Reregister All Discord Slash Commands
+        run: make sync
