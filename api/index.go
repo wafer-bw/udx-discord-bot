@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/wafer-bw/udx-discord-bot/api/commands"
+	"github.com/wafer-bw/udx-discord-bot/commands"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
 )
 

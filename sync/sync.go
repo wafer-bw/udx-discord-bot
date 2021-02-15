@@ -1,11 +1,11 @@
-package main
+package sync
 
 import (
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/wafer-bw/udx-discord-bot/api/commands"
+	"github.com/wafer-bw/udx-discord-bot/commands"
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
 )
 
