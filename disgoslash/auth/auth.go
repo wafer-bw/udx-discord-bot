@@ -19,18 +19,17 @@ type impl struct {
 
 // Authorization interfaces `Authorization` methods
 type Authorization interface {
-	Verify(rawBody []byte, headers http.Header, publicKey string) bool
+	Verify(rawBody []byte, headers http.Header) bool
 }
 
 // New returns a new `Authorization` interface
-// todo ingest deps, conf and set public key using conf
 func New(deps *Deps, conf *config.Config) Authorization {
 	return &impl{deps: deps, conf: conf}
 }
 
 // Verify verifies that requests from discord are authorized using ed25519
 // https://discord.com/developers/docs/interactions/slash-commands#security-and-authorization
-func (impl *impl) Verify(rawBody []byte, headers http.Header, publicKey string) bool {
+func (impl *impl) Verify(rawBody []byte, headers http.Header) bool {
 	signature := headers.Get("x-signature-ed25519")
 	if signature == "" {
 		return false
@@ -50,7 +49,7 @@ func (impl *impl) Verify(rawBody []byte, headers http.Header, publicKey string) 
 		return false
 	}
 
-	keyBytes, err := hex.DecodeString(publicKey)
+	keyBytes, err := hex.DecodeString(impl.conf.Credentials.PublicKey)
 	if err != nil {
 		return false
 	}

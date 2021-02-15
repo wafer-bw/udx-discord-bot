@@ -22,15 +22,20 @@ func SlashCommandDo(request *models.InteractionRequest) (*models.InteractionResp
 	return InteractionResponse, nil
 }
 
-// Conf mocks the `config.Config` object
-var Conf = &config.Config{
-	Credentials: &config.Credentials{
-		PublicKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-		ClientID:  "abc123",
-		Token:     "abc123",
-	},
-	DiscordAPI: &config.DiscordAPI{
-		BaseURL:    "https://discord.com/api",
-		APIVersion: "v8",
-	},
+// GetConf returns a new instance of a mocked config object
+func GetConf() *config.Config {
+	return &config.Config{
+		Credentials: &config.Credentials{
+			PublicKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+			ClientID:  "abc123",
+			Token:     "abc123",
+		},
+		DiscordAPI: &config.DiscordAPI{
+			BaseURL:    "https://discord.com/api",
+			APIVersion: "v8",
+		},
+	}
 }
+
+// Conf mocks the `config.Config` object
+var Conf = GetConf()

@@ -68,7 +68,7 @@ func (impl *impl) resolve(r *http.Request) (*models.InteractionRequest, error) {
 		return nil, err
 	}
 
-	if !impl.deps.Auth.Verify(body, r.Header, impl.conf.Credentials.PublicKey) {
+	if !impl.deps.Auth.Verify(body, r.Header) {
 		return nil, errs.ErrUnauthorized
 	}
 
