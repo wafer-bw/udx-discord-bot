@@ -30,7 +30,8 @@ type Client interface {
 
 // New returns a new `Client` interface
 func New(creds *config.Credentials) Client {
-	return construct(config.New(creds))
+	conf := config.New(creds)
+	return construct(conf)
 }
 
 // construct a new `Client` interface
