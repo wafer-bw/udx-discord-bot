@@ -31,8 +31,9 @@ func GetConf() *config.Config {
 			Token:     "abc123",
 		},
 		DiscordAPI: &config.DiscordAPI{
-			BaseURL:    "https://discord.com/api",
-			APIVersion: "v8",
+			BaseURL:     "https://discord.com/api",
+			APIVersion:  "v8",
+			ContentType: "application/json",
 		},
 	}
 }
