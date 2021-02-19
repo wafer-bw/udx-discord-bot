@@ -107,7 +107,7 @@ vercel --prod
     - `guildIDs []string`: The guild (server) IDs to register your slash command to.
 5. Add your exported `SlashCommand` variable to the list within [./commands/commands.go](./commands/commands.go) like this:
     ```golang
-    // SlashCommandMap containing slash commands to be deployed and used live
+    // SlashCommandMap to be deployed and used live
     var SlashCommandMap = slashcommands.NewMap(
         extrinsicrisk.SlashCommand,
         helloworld.SlashCommand,
