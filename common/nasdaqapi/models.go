@@ -1,7 +1,5 @@
 package nasdaqapi
 
-import "time"
-
 // GreeksResponse object
 type GreeksResponse struct {
 	Data    GreeksData     `json:"data"`
@@ -18,8 +16,8 @@ type GreeksData struct {
 
 // OptionsFilter date of option expiry
 type OptionsFilter struct {
-	Label string    `json:"label"`
-	Value time.Time `json:"value"`
+	Label string `json:"label"`
+	Value string `json:"value"`
 }
 
 // GreeksOptionsTable object
