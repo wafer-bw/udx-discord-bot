@@ -2,11 +2,6 @@ get:
 	go get -t -v -d ./...
 .PHONY: get
 
-mocks:
-	rm -rf disgoslash/generatedmocks/*
-	mockery --all --output="disgoslash/generatedmocks" --keeptree
-.PHONY: mocks
-
 test:
 	go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 .PHONY: test
@@ -33,7 +28,6 @@ tidy:
 
 precommit:
 	make get
-	make mocks
 	make tidy
 	make test
 	make lint

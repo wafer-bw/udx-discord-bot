@@ -7,8 +7,8 @@ import (
 
 	"github.com/docopt/docopt-go"
 	"github.com/joho/godotenv"
+	"github.com/wafer-bw/disgoslash/syncer"
 	"github.com/wafer-bw/udx-discord-bot/commands"
-	"github.com/wafer-bw/udx-discord-bot/disgoslash/syncer"
 )
 
 type appargs struct {
