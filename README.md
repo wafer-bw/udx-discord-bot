@@ -1,5 +1,5 @@
 # udx-discord-bot
-A serverless Discord slash command bot powered by Vercel written in Golang
+A serverless Discord slash command bot powered by Vercel written in Golang using [disgoslash](https://github.com/wafer-bw/disgoslash).
 
 ![tests](https://github.com/wafer-bw/udx-discord-bot/workflows/tests/badge.svg)
 ![lint](https://github.com/wafer-bw/udx-discord-bot/workflows/lint/badge.svg)
