@@ -1,8 +1,8 @@
 package helloworld
 
 import (
-	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
-	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
+	"github.com/wafer-bw/disgoslash/models"
+	"github.com/wafer-bw/disgoslash/slashcommands"
 )
 
 var name = "helloworld"

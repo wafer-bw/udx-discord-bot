@@ -53,8 +53,6 @@ make testv
 make lint
 # Run formatting
 make fmt
-# Regenerate mocks
-make mocks
 # Run all the things you should before you make a commit
 make precommit
 # Deploy to preview
@@ -77,18 +75,13 @@ go test -v -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generat
 golangci-lint run
 # Run formatting
 gofmt -s -w .
-# Regenerate mocks
-# todo - add `make mock` equivalent
 # Run all the things you should before you make a commit
-# todo - add `make mock` equivalent
 go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
 golangci-lint run
 gofmt -s -w .
 # Deploy to preview
-# todo - add `make mock` equivalent
 vercel
 # Deploy to production
-# todo - add `make mock` equivalent
 vercel --prod
 ```
 
@@ -117,19 +110,6 @@ vercel --prod
 6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
 
 ## TODOs
-* Code
-    * General
-        * Add scripts that act as an alternative for `make`
-    * `client`
-        * EditGlobalApplicationCommand
-        * EditGuildApplicationCommand
-    * `models`
-        * Finish Guild Model
-    * `exporter`
-        * Recreate as package
-* Bot / Application
-    * Give bot an image
-* Extract `disgoslash` into a separate repo
-
-## References
-* [discordgo](https://github.com/bwmarrin/discordgo) - ed25519 auth
+* Get option chains from NASDAQ API
+    * Dates at `https://api.nasdaq.com/api/quote/JETS/option-chain/greeks?assetclass=etf`
+    * Greeks at `https://api.nasdaq.com/api/quote/JETS/option-chain/greeks?assetclass=etf&date=2021-02-26`
