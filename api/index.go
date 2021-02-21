@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/wafer-bw/udx-discord-bot/commands"
-	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/handler"
 )
 
 // Handler is exported for use as a vercel serverless function
@@ -12,6 +12,6 @@ import (
 // https://vercel.com/docs/serverless-functions/supported-languages#go
 // https://discord.com/developers/docs/interactions/slash-commands#responding-to-an-interaction
 func Handler(w http.ResponseWriter, r *http.Request) {
-	handler := app.NewHandler(commands.SlashCommandMap)
+	handler := handler.New(commands.SlashCommandMap, nil)
 	handler.Handle(w, r)
 }
