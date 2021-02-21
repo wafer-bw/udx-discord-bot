@@ -13,15 +13,15 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
-// Deps defines `Handler` dependencies
-type Deps struct {
-	SlashCommandsMap slashcommands.Map
-	Auth             auth.Authorization
+// deps defines `Handler` dependencies
+type deps struct {
+	slashCommandsMap slashcommands.Map
+	auth             auth.Authorization
 }
 
 // impl implements `Handler` properties
 type impl struct {
-	deps *Deps
+	deps *deps
 	conf *config.Config
 }
 
@@ -31,7 +31,16 @@ type Handler interface {
 }
 
 // New returns a new `Handler` interface
-func New(deps *Deps, conf *config.Config) Handler {
+func New(slashCommandMap slashcommands.Map, creds *config.Credentials) Handler {
+	conf := config.New(creds)
+	return construct(&deps{
+		auth:             auth.New(&auth.Deps{}, conf),
+		slashCommandsMap: slashCommandMap,
+	}, conf)
+}
+
+// construct a new `Handler` interface
+func construct(deps *deps, conf *config.Config) Handler {
 	return &impl{deps: deps, conf: conf}
 }
 
@@ -68,7 +77,7 @@ func (impl *impl) resolve(r *http.Request) (*models.InteractionRequest, error) {
 		return nil, err
 	}
 
-	if !impl.deps.Auth.Verify(body, r.Header) {
+	if !impl.deps.auth.Verify(body, r.Header) {
 		return nil, errs.ErrUnauthorized
 	}
 
@@ -87,7 +96,7 @@ func (impl *impl) triage(interaction *models.InteractionRequest) (*models.Intera
 }
 
 func (impl *impl) execute(interaction *models.InteractionRequest) (*models.InteractionResponse, error) {
-	slashCommand, ok := impl.deps.SlashCommandsMap[interaction.Data.Name]
+	slashCommand, ok := impl.deps.slashCommandsMap[interaction.Data.Name]
 	if !ok {
 		return nil, errs.ErrNotImplemented
 	}

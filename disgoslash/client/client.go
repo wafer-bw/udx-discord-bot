@@ -14,12 +14,8 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/models"
 )
 
-// Deps defines `Client` dependencies
-type Deps struct{}
-
 // impl implements `Client` properties
 type impl struct {
-	deps    *Deps
 	conf    *config.Config
 	apiURL  string
 	headers map[string]string
@@ -33,14 +29,19 @@ type Client interface {
 }
 
 // New returns a new `Client` interface
-func New(deps *Deps, conf *config.Config) Client {
+func New(creds *config.Credentials) Client {
+	conf := config.New(creds)
+	return construct(conf)
+}
+
+// construct a new `Client` interface
+func construct(conf *config.Config) Client {
 	return &impl{
-		deps:   deps,
 		conf:   conf,
 		apiURL: fmt.Sprintf("%s/%s/applications/%s", conf.DiscordAPI.BaseURL, conf.DiscordAPI.APIVersion, conf.Credentials.ClientID),
 		headers: map[string]string{
 			"Authorization": fmt.Sprintf("Bot %s", conf.Credentials.Token),
-			"Content-Type":  "application/json",
+			"Content-Type":  conf.DiscordAPI.ContentType,
 		},
 	}
 }

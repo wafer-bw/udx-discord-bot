@@ -10,11 +10,9 @@ import (
 
 // EnvVars defines expected & required environment variables
 type EnvVars struct {
-	PublicKey  string `envconfig:"PUBLIC_KEY" required:"true" split_words:"true"`
-	ClientID   string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
-	Token      string `envconfig:"TOKEN" required:"true" split_words:"true"`
-	BaseURL    string `envconfig:"DISCORD_API_BASE_URL" required:"true" split_words:"true"`
-	APIVersion string `envconfig:"DISCORD_API_VERSION" required:"true" split_words:"true"`
+	PublicKey string `envconfig:"PUBLIC_KEY" required:"true" split_words:"true"`
+	ClientID  string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
+	Token     string `envconfig:"TOKEN" required:"true" split_words:"true"`
 }
 
 // Config holds all config data
@@ -25,8 +23,9 @@ type Config struct {
 
 // DiscordAPI config data
 type DiscordAPI struct {
-	BaseURL    string
-	APIVersion string
+	BaseURL     string
+	APIVersion  string
+	ContentType string
 }
 
 // Credentials config data
@@ -36,8 +35,19 @@ type Credentials struct {
 	Token     string
 }
 
+// DiscordAPIConf object
+var DiscordAPIConf = &DiscordAPI{
+	BaseURL:     "https://discord.com/api",
+	APIVersion:  "v8",
+	ContentType: "application/json",
+}
+
 // New returns a new `Config` struct; panics if unable
-func New() *Config {
+func New(creds *Credentials) *Config {
+	if creds != nil {
+		return &Config{Credentials: creds, DiscordAPI: DiscordAPIConf}
+	}
+
 	env := getEnvVars()
 	ensureNoBlankEnvVars(env)
 	return &Config{
@@ -46,10 +56,7 @@ func New() *Config {
 			ClientID:  env.ClientID,
 			Token:     env.Token,
 		},
-		DiscordAPI: &DiscordAPI{
-			BaseURL:    env.BaseURL,
-			APIVersion: env.APIVersion,
-		},
+		DiscordAPI: DiscordAPIConf,
 	}
 }
 

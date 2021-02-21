@@ -1,6 +1,8 @@
 package syncer
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 
@@ -13,10 +15,10 @@ import (
 )
 
 var clientMock = &clientMocks.Client{}
-var syncerImpl = New(&Deps{Client: clientMock}, mocks.Conf)
+var syncerImpl = construct(&deps{client: clientMock}, mocks.Conf)
 
 func TestMain(m *testing.M) {
-	// log.SetOutput(ioutil.Discard)
+	log.SetOutput(ioutil.Discard)
 	exitCode := m.Run()
 	os.Exit(exitCode)
 }

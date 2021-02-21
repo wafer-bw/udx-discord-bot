@@ -8,7 +8,7 @@ import (
 	"github.com/docopt/docopt-go"
 	"github.com/joho/godotenv"
 	"github.com/wafer-bw/udx-discord-bot/commands"
-	"github.com/wafer-bw/udx-discord-bot/disgoslash/app"
+	"github.com/wafer-bw/udx-discord-bot/disgoslash/syncer"
 )
 
 type appargs struct {
@@ -57,7 +57,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	syncer := app.NewSyncer()
+	syncer := syncer.New(nil)
 	if errs := syncer.Run(args.GuildIDs, commands.SlashCommandMap); len(errs) > 0 {
 		log.Println(strings.Join(getErrsStrings(errs), "\n"))
 		os.Exit(1)

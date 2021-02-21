@@ -16,7 +16,18 @@ func TestMain(m *testing.M) {
 }
 
 func TestNew(t *testing.T) {
-	require.Panics(t, func() { New() })
+	t.Run("success", func(t *testing.T) {
+		require.NotPanics(t, func() {
+			New(&Credentials{
+				Token:     "a",
+				ClientID:  "b",
+				PublicKey: "c",
+			})
+		})
+	})
+	t.Run("failure/panics", func(t *testing.T) {
+		require.Panics(t, func() { New(nil) })
+	})
 }
 
 func TestFindBlankEnvVars(t *testing.T) {

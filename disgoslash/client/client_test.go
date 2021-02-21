@@ -33,7 +33,7 @@ func TestListApplicationCommands(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		commands, err := clientImpl.ListApplicationCommands("")
 		require.NoError(t, err)
@@ -48,7 +48,7 @@ func TestListApplicationCommands(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		commands, err := clientImpl.ListApplicationCommands(guildID)
 		require.NoError(t, err)
@@ -63,7 +63,7 @@ func TestListApplicationCommands(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		_, err := clientImpl.ListApplicationCommands(guildID)
 		require.Error(t, err)
@@ -77,7 +77,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("", "12345")
 		require.NoError(t, err)
@@ -88,7 +88,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("12345", "12345")
 		require.NoError(t, err)
@@ -99,7 +99,7 @@ func TestDeleteApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.DeleteApplicationCommand("12345", "12345")
 		require.Error(t, err)
@@ -113,7 +113,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("", &models.ApplicationCommand{})
 		require.NoError(t, err)
@@ -124,7 +124,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
 		require.NoError(t, err)
@@ -135,7 +135,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
 		require.Error(t, err)
@@ -146,7 +146,7 @@ func TestCreateApplicationCommand(t *testing.T) {
 		}))
 		defer func() { mockServer.Close() }()
 		mocks.Conf.DiscordAPI.BaseURL = mockServer.URL
-		clientImpl := New(&Deps{}, mocks.Conf)
+		clientImpl := construct(mocks.Conf)
 
 		err := clientImpl.CreateApplicationCommand("12345", &models.ApplicationCommand{})
 		require.Error(t, err)

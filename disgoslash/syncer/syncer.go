@@ -8,14 +8,14 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/disgoslash/slashcommands"
 )
 
-// Deps defines `Syncer` dependencies
-type Deps struct {
-	Client client.Client
+// deps defines `Syncer` dependencies
+type deps struct {
+	client client.Client
 }
 
 // impl implements `Syncer` properties
 type impl struct {
-	deps *Deps
+	deps *deps
 	conf *config.Config
 }
 
@@ -31,7 +31,13 @@ type unregisterTarget struct {
 }
 
 // New returns a new `Syncer` interface
-func New(deps *Deps, conf *config.Config) Syncer {
+func New(creds *config.Credentials) Syncer {
+	conf := config.New(creds)
+	client := client.New(creds)
+	return construct(&deps{client: client}, conf)
+}
+
+func construct(deps *deps, conf *config.Config) Syncer {
 	return &impl{deps: deps, conf: conf}
 }
 
@@ -54,7 +60,7 @@ func (impl *impl) getCommandsToUnregister(guildIDs []string, commandMap slashcom
 	unregisterTargets := []unregisterTarget{}
 	for _, guildID := range uniqueGuildIDs {
 		log.Printf("\t- Guild: %s\n", guildText(guildID))
-		commands, err := impl.deps.Client.ListApplicationCommands(guildID)
+		commands, err := impl.deps.client.ListApplicationCommands(guildID)
 		if err != nil {
 			log.Printf("\t\t- ERROR: %s\n", err.Error())
 			errs = append(errs, err)
@@ -78,7 +84,7 @@ func (impl *impl) registerCommands(commandMap slashcommands.Map) []error {
 	for _, command := range commandMap {
 		for _, guildID := range command.GuildIDs {
 			log.Printf("\t- Guild: %s, Command: %s\n", guildText(guildID), command.Name)
-			err := impl.deps.Client.CreateApplicationCommand(guildID, command.AppCommand)
+			err := impl.deps.client.CreateApplicationCommand(guildID, command.AppCommand)
 			if err != nil {
 				log.Printf("\t\t- ERROR: %s\n", err.Error())
 				errs = append(errs, err)
@@ -95,7 +101,7 @@ func (impl *impl) unregisterCommands(unregisterTargets []unregisterTarget) []err
 	log.Println("Unregistering outdated commands...")
 	for _, target := range unregisterTargets {
 		log.Printf("\t- Guild: %s, Command: %s\n", guildText(target.guildID), target.name)
-		err := impl.deps.Client.DeleteApplicationCommand(target.guildID, target.commandID)
+		err := impl.deps.client.DeleteApplicationCommand(target.guildID, target.commandID)
 		if err != nil {
 			log.Printf("\t\t- ERROR: %s\n", err.Error())
 			errs = append(errs, err)

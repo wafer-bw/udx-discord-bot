@@ -21,9 +21,9 @@ import (
 var url = "http://localhost/api"
 var authMock = &authMocks.Authorization{}
 var interactionName = "interaction"
-var handlerImpl = New(&Deps{
-	Auth: authMock,
-	SlashCommandsMap: slashcommands.NewMap(
+var handlerImpl = construct(&deps{
+	auth: authMock,
+	slashCommandsMap: slashcommands.NewMap(
 		slashcommands.New(interactionName, &models.ApplicationCommand{Name: interactionName, Description: "desc"}, mocks.SlashCommandDo, true, []string{"11111"}),
 	),
 }, mocks.Conf)
