@@ -2,9 +2,9 @@ package chstrat
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/wafer-bw/disgoslash/models"
 	"github.com/wafer-bw/disgoslash/slashcommands"
@@ -53,28 +53,50 @@ func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, e
 	//        may also need to limit number of chains to request if we start getting rate limited by the nasdaq API by doing the above
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
-	url := fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/option-chain/greeks?assetclass=%s", symbol, assetClass)
-	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
-	status, data, err := common.Request(http.MethodGet, url, headers, nil)
+
+	greeks, err := getGreeks(symbol, assetClass, "")
 	if err != nil {
 		// todo - handle properly
 		return nil, err
 	}
-	if status != http.StatusOK {
-		// todo - handle properly
-		return nil, errors.New("!OK STATUS")
-	}
-	greeks := &nasdaqapi.GreeksResponse{}
-	if err := json.Unmarshal(data, greeks); err != nil {
-		// todo - handle properly
-		return nil, err
-	}
 	for _, filter := range greeks.Data.Filters {
-		fmt.Println(filter.Value)
-		// todo - request each option chain that's >100 days out
+		date, err := time.Parse("2006-01-02", filter.Value)
+		if err != nil {
+			// todo - handle properly
+			return nil, err
+		}
+		// Skip options that are less than 100 days away
+		earliestTargetDate := time.Now().AddDate(0, 0, 99)
+		if date.Unix() < earliestTargetDate.Unix() {
+			fmt.Println("skipping ", filter.Value)
+			continue
+		}
+		fmt.Println("requesting ", filter.Value)
+
+		// todo - request option chain using `date`
 		//        Find calls with delta ~75%, what should +/- be?
 		//        Calc call extrinsic risk targeting those <10%
 		//        Return matching calls in a message
 	}
 	return nil, nil
+}
+
+func getGreeks(symbol string, assetClass string, date string) (*nasdaqapi.GreeksResponse, error) {
+	url := fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/option-chain/greeks?assetclass=%s", symbol, assetClass)
+	if date != "" {
+		url += fmt.Sprintf("&date=%s", date)
+	}
+	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
+	status, data, err := common.Request(http.MethodGet, url, headers, nil)
+	if err != nil {
+		return nil, err
+	}
+	if status != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", status, data)
+	}
+	greeks := &nasdaqapi.GreeksResponse{}
+	if err := json.Unmarshal(data, greeks); err != nil {
+		return nil, err
+	}
+	return greeks, nil
 }
