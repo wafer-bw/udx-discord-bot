@@ -9,25 +9,25 @@ type GreeksResponse struct {
 
 // GreeksData object
 type GreeksData struct {
-	PageTitle string             `json:"pageTitle"`
-	Table     GreeksOptionsTable `json:"table"`
-	Filters   []OptionsFilter    `json:"filters"`
+	PageTitle string         `json:"pageTitle"`
+	Table     GreeksTable    `json:"table"`
+	Filters   []GreeksFilter `json:"filters"`
 }
 
-// OptionsFilter date of option expiry
-type OptionsFilter struct {
+// GreeksFilter date of option expiry
+type GreeksFilter struct {
 	Label string `json:"label"`
 	Value string `json:"value"`
 }
 
-// GreeksOptionsTable object
-type GreeksOptionsTable struct {
+// GreeksTable object
+type GreeksTable struct {
 	Headers map[string]string `json:"headers"`
-	Options []Greeks          `json:"rows"`
+	Rows    []GreeksOption    `json:"rows"`
 }
 
-// Greeks for an option
-type Greeks struct {
+// GreeksOption for an option
+type GreeksOption struct {
 	CallDelta float64 `json:"cDelta"`
 	CallGamma float64 `json:"cGamma"`
 	CallRho   float64 `json:"cRho"`
@@ -42,11 +42,4 @@ type Greeks struct {
 	PutVega   float64 `json:"pVega"`
 	PutIV     float64 `json:"pIV"`
 	URL       string  `json:"url"`
-}
-
-// ResponseStatus of request
-type ResponseStatus struct {
-	CodeMessage      string `json:"bCodeMessage"`
-	DeveloperMessage string `json:"developerMessage"`
-	StatusCode       int    `json:"rCode"`
 }

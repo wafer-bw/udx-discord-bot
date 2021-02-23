@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/wafer-bw/disgoslash/models"
 	"github.com/wafer-bw/disgoslash/slashcommands"
@@ -48,36 +47,48 @@ var command = &models.ApplicationCommand{
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, error) {
-	// todo - warning we only have 10 seconds to respond on current vercel free plan
-	//        may need to parrellize some work here using goroutines depending on the speed of the nasdaq API
-	//        may also need to limit number of chains to request if we start getting rate limited by the nasdaq API by doing the above
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
 
-	greeks, err := getGreeks(symbol, assetClass, "")
-	if err != nil {
-		// todo - handle properly
-		return nil, err
-	}
-	for _, filter := range greeks.Data.Filters {
-		date, err := time.Parse("2006-01-02", filter.Value)
-		if err != nil {
-			// todo - handle properly
-			return nil, err
-		}
-		// Skip options that are less than 100 days away
-		earliestTargetDate := time.Now().AddDate(0, 0, 99)
-		if date.Unix() < earliestTargetDate.Unix() {
-			fmt.Println("skipping ", filter.Value)
-			continue
-		}
-		fmt.Println("requesting ", filter.Value)
+	// get share price
+	// get and iterate over options
+	// get greeks for options with EV% <= 10
+	// return call with closest match of 75% delta
 
-		// todo - request option chain using `date`
-		//        Find calls with delta ~75%, what should +/- be?
-		//        Calc call extrinsic risk targeting those <10%
-		//        Return matching calls in a message
-	}
+	// options, err := getOptions(symbol, assetClass)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// for _, option := range options.Data.Table.Rows {
+	// }
+
+	// for _, filter := range greeks.Data.Filters {
+	// 	date, err := time.Parse("2006-01-02", filter.Value)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	// Skip options that are less than 100 days away
+	// 	earliestTargetDate := time.Now().AddDate(0, 0, 99)
+	// 	if date.Unix() < earliestTargetDate.Unix() {
+	// 		continue
+	// 	}
+
+	// 	greeks, err := getGreeks(symbol, assetClass, filter.Value)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	for _, optionGreeks := range greeks.Data.Table.Rows {
+
+	// 	}
+
+	// 	// todo - request option chain using `date`
+	// 	//        Find calls with delta ~75%, what should +/- be?
+	// 	//        Calc call extrinsic risk targeting those <10%
+	// 	//        Return matching calls in a message
+	// }
 	return nil, nil
 }
 
@@ -99,4 +110,21 @@ func getGreeks(symbol string, assetClass string, date string) (*nasdaqapi.Greeks
 		return nil, err
 	}
 	return greeks, nil
+}
+
+func getOptions(symbol string, assetClass string) (*nasdaqapi.OptionsResponse, error) {
+	url := fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/option-chain?assetclass=%s&excode=oprac&callput=call&money=at&type=all", symbol, assetClass)
+	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
+	status, data, err := common.Request(http.MethodGet, url, headers, nil)
+	if err != nil {
+		return nil, err
+	}
+	if status != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", status, data)
+	}
+	options := &nasdaqapi.OptionsResponse{}
+	if err := json.Unmarshal(data, options); err != nil {
+		return nil, err
+	}
+	return options, nil
 }

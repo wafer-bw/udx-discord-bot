@@ -110,6 +110,8 @@ vercel --prod
 6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
 
 ## TODOs
-* Get option chains from NASDAQ API
-    * Dates at `https://api.nasdaq.com/api/quote/JETS/option-chain/greeks?assetclass=etf`
-    * Greeks at `https://api.nasdaq.com/api/quote/JETS/option-chain/greeks?assetclass=etf&date=2021-02-26`
+* Get option chains and greeks from NASDAQ API
+    * https://api.nasdaq.com/api/quote/JETS/info?assetclass=etf
+    * https://api.nasdaq.com/api/quote/JETS/realtime-trades?&limit=5
+    * handle errors properly and respond in discord
+    * determine limit param to use and handle properly
