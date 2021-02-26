@@ -5,9 +5,6 @@ import (
 	"log"
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/require"
-	"github.com/wafer-bw/disgoslash/models"
 )
 
 func TestMain(m *testing.M) {
@@ -16,19 +13,20 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestChstrat(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		request := &models.InteractionRequest{
-			Data: &models.ApplicationCommandInteractionData{
-				Options: []*models.ApplicationCommandInteractionDataOption{
-					{Name: "symbol", Value: "AAPL"},
-					{Name: "Asset Class", Value: "stocks"},
-				},
-			},
-		}
+// // todo use mocks so it doesnt spam the api
+// func TestChstrat(t *testing.T) {
+// 	t.Run("success", func(t *testing.T) {
+// 		request := &models.InteractionRequest{
+// 			Data: &models.ApplicationCommandInteractionData{
+// 				Options: []*models.ApplicationCommandInteractionDataOption{
+// 					{Name: "symbol", Value: "AAPL"},
+// 					{Name: "Asset Class", Value: "stocks"},
+// 				},
+// 			},
+// 		}
 
-		response, err := chstrat(request)
-		require.Nil(t, err)
-		require.NotNil(t, response)
-	})
-}
+// 		response, err := chstrat(request)
+// 		require.Nil(t, err)
+// 		require.Equal(t, "", response.Data.Content)
+// 	})
+// }

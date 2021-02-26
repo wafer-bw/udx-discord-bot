@@ -1,4 +1,4 @@
-package common
+package formulas
 
 import (
 	"io/ioutil"

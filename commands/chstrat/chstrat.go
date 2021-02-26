@@ -1,13 +1,15 @@
 package chstrat
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
+	"math"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/wafer-bw/disgoslash/models"
 	"github.com/wafer-bw/disgoslash/slashcommands"
-	"github.com/wafer-bw/udx-discord-bot/common"
+	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 	"github.com/wafer-bw/udx-discord-bot/common/nasdaqapi"
 )
 
@@ -45,86 +47,144 @@ var command = &models.ApplicationCommand{
 	},
 }
 
+type calls map[string][]call
+
+type call struct {
+	ask              float64
+	share            float64
+	strike           float64
+	extrinsicRisk    float64
+	delta            float64
+	expires          time.Time
+	expiresDatestamp string
+	expiresReadout   string
+}
+
+const targetDelta float64 = 0.75
+const targetDeltaPlusMinus float64 = 0.5
+
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
 
-	// get share price
-	// get and iterate over options
-	// get greeks for options with EV% <= 10
-	// return call with closest match of 75% delta
+	napi := nasdaqapi.NewClient()
 
-	// options, err := getOptions(symbol, assetClass)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// for _, option := range options.Data.Table.Rows {
-	// }
-
-	// for _, filter := range greeks.Data.Filters {
-	// 	date, err := time.Parse("2006-01-02", filter.Value)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	// Skip options that are less than 100 days away
-	// 	earliestTargetDate := time.Now().AddDate(0, 0, 99)
-	// 	if date.Unix() < earliestTargetDate.Unix() {
-	// 		continue
-	// 	}
-
-	// 	greeks, err := getGreeks(symbol, assetClass, filter.Value)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	for _, optionGreeks := range greeks.Data.Table.Rows {
-
-	// 	}
-
-	// 	// todo - request option chain using `date`
-	// 	//        Find calls with delta ~75%, what should +/- be?
-	// 	//        Calc call extrinsic risk targeting those <10%
-	// 	//        Return matching calls in a message
-	// }
-	return nil, nil
-}
-
-func getGreeks(symbol string, assetClass string, date string) (*nasdaqapi.GreeksResponse, error) {
-	url := fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/option-chain/greeks?assetclass=%s", symbol, assetClass)
-	if date != "" {
-		url += fmt.Sprintf("&date=%s", date)
-	}
-	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
-	status, data, err := common.Request(http.MethodGet, url, headers, nil)
+	share, err := getSharePrice(napi, symbol, assetClass)
 	if err != nil {
 		return nil, err
 	}
-	if status != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", status, data)
-	}
-	greeks := &nasdaqapi.GreeksResponse{}
-	if err := json.Unmarshal(data, greeks); err != nil {
-		return nil, err
-	}
-	return greeks, nil
-}
 
-func getOptions(symbol string, assetClass string) (*nasdaqapi.OptionsResponse, error) {
-	url := fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/option-chain?assetclass=%s&excode=oprac&callput=call&money=at&type=all", symbol, assetClass)
-	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
-	status, data, err := common.Request(http.MethodGet, url, headers, nil)
+	options, err := napi.GetOptions(symbol, assetClass)
 	if err != nil {
 		return nil, err
 	}
-	if status != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", status, data)
-	}
-	options := &nasdaqapi.OptionsResponse{}
-	if err := json.Unmarshal(data, options); err != nil {
+
+	calls, err := getCalls(share, options)
+	if err != nil {
 		return nil, err
 	}
-	return options, nil
+
+	// todo
+
+	var bestCall string = ""
+	bestMatchValue := float64(0.1)
+	for expiry, strikes := range stikesByExpiry {
+		greeks, err := getGreeks(symbol, assetClass, expiry)
+		if err != nil {
+			return nil, err
+		}
+		for _, greek := range greeks.Data.Table.Rows {
+			if _, found := find(strikes, greek.Strike); !found {
+				continue
+			}
+			if greek.CallDelta > 0.80 || greek.CallDelta < 0.70 {
+				continue
+			}
+			score := math.Abs(targetDelta - greek.CallDelta)
+			if score < bestMatchValue {
+				date, err := time.Parse("2006-01-02", expiry)
+				if err != nil {
+					return nil, err
+				}
+				dateString := date.Format("Jan02'06")
+				url := "https://www.nasdaq.com" + greek.URL
+				bestCall = fmt.Sprintf("%s %.0f CALL Δ%.2f\n%s", dateString, greek.Strike, greek.CallDelta, url)
+				bestMatchValue = score
+			}
+		}
+	}
+	if bestCall != "" {
+		return &models.InteractionResponse{
+			Type: models.InteractionResponseTypeChannelMessageWithSource,
+			Data: &models.InteractionApplicationCommandCallbackData{
+				Content: bestCall,
+			},
+		}, nil
+	}
+	return &models.InteractionResponse{
+		Type: models.InteractionResponseTypeChannelMessageWithSource,
+		Data: &models.InteractionApplicationCommandCallbackData{
+			Content: "No valid calls found",
+		},
+	}, nil
+}
+
+func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass string) (float64, error) {
+	quote, err := napi.GetQuote(symbol, assetClass)
+	if err != nil {
+		return 0, err
+	}
+
+	share, err := strconv.ParseFloat(strings.ReplaceAll(quote.Data.PrimaryData.LastSalePrice, "$", ""), 64)
+	if err != nil {
+		return 0, err
+	}
+	return share, nil
+}
+
+func getCalls(share float64, options *nasdaqapi.OptionsResponse) (calls, error) {
+	calls := calls{}
+	expiryGroup := ""
+	earliestTargetDate := time.Now().AddDate(0, 0, 99)
+
+	for _, option := range options.Data.Table.Rows {
+		var err error
+		if option.ExpiryGroup != "" {
+			expiryGroup = option.ExpiryGroup
+		}
+		if expiryGroup == "" {
+			continue
+		}
+
+		call := call{share: share}
+		call.expires, err = time.Parse("January 02, 2006", expiryGroup)
+		if err != nil {
+			continue
+		}
+		if call.expires.Unix() < earliestTargetDate.Unix() {
+			continue
+		}
+		call.expiresDatestamp = call.expires.Format("2006-01-02")
+		call.expiresReadout = call.expires.Format("Jan02'06")
+
+		call.strike, err = strconv.ParseFloat(option.Strike, 64)
+		if err != nil {
+			continue
+		}
+
+		call.ask, err = strconv.ParseFloat(option.CallAsk, 64)
+		if err != nil {
+			continue
+		}
+
+		call.extrinsicRisk = formulas.GetExtrinsicRisk(call.share, call.strike, call.ask)
+		if call.extrinsicRisk > 10 {
+			continue
+		}
+
+		calls[call.expiresDatestamp] = append(calls[call.expiresDatestamp], call)
+	}
+	return calls, nil
 }

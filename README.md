@@ -111,7 +111,5 @@ vercel --prod
 
 ## TODOs
 * Get option chains and greeks from NASDAQ API
-    * https://api.nasdaq.com/api/quote/JETS/info?assetclass=etf
-    * https://api.nasdaq.com/api/quote/JETS/realtime-trades?&limit=5
     * handle errors properly and respond in discord
     * determine limit param to use and handle properly
