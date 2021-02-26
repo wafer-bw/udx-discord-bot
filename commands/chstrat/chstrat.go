@@ -47,7 +47,7 @@ var command = &models.ApplicationCommand{
 	},
 }
 
-type calls map[string][]call
+type callsMap map[string][]*call
 
 type call struct {
 	ask              float64
@@ -58,6 +58,9 @@ type call struct {
 	expires          time.Time
 	expiresDatestamp string
 	expiresReadout   string
+	optionURL        string
+	greeksURL        string
+	content          string
 }
 
 const targetDelta float64 = 0.75
@@ -81,54 +84,38 @@ func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, e
 		return nil, err
 	}
 
-	calls, err := getCalls(share, options)
+	callsMap, err := getCalls(share, options)
 	if err != nil {
 		return nil, err
 	}
 
-	// todo
+	bestCall, err := getBestCall(napi, callsMap, symbol, assetClass)
+	if err != nil {
+		return nil, err
+	}
 
-	var bestCall string = ""
-	bestMatchValue := float64(0.1)
-	for expiry, strikes := range stikesByExpiry {
-		greeks, err := getGreeks(symbol, assetClass, expiry)
-		if err != nil {
-			return nil, err
-		}
-		for _, greek := range greeks.Data.Table.Rows {
-			if _, found := find(strikes, greek.Strike); !found {
-				continue
-			}
-			if greek.CallDelta > 0.80 || greek.CallDelta < 0.70 {
-				continue
-			}
-			score := math.Abs(targetDelta - greek.CallDelta)
-			if score < bestMatchValue {
-				date, err := time.Parse("2006-01-02", expiry)
-				if err != nil {
-					return nil, err
-				}
-				dateString := date.Format("Jan02'06")
-				url := "https://www.nasdaq.com" + greek.URL
-				bestCall = fmt.Sprintf("%s %.0f CALL Δ%.2f\n%s", dateString, greek.Strike, greek.CallDelta, url)
-				bestMatchValue = score
-			}
-		}
+	var content string = ""
+	if bestCall != nil {
+		content = bestCall.content
+	} else {
+		content = "No valid calls found"
 	}
-	if bestCall != "" {
-		return &models.InteractionResponse{
-			Type: models.InteractionResponseTypeChannelMessageWithSource,
-			Data: &models.InteractionApplicationCommandCallbackData{
-				Content: bestCall,
-			},
-		}, nil
-	}
+
 	return &models.InteractionResponse{
 		Type: models.InteractionResponseTypeChannelMessageWithSource,
 		Data: &models.InteractionApplicationCommandCallbackData{
-			Content: "No valid calls found",
+			Content: content,
 		},
 	}, nil
+}
+
+func findCallByStrike(calls []*call, strike float64) (*call, bool) {
+	for _, call := range calls {
+		if call.strike == strike {
+			return call, true
+		}
+	}
+	return nil, false
 }
 
 func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass string) (float64, error) {
@@ -144,8 +131,8 @@ func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass str
 	return share, nil
 }
 
-func getCalls(share float64, options *nasdaqapi.OptionsResponse) (calls, error) {
-	calls := calls{}
+func getCalls(share float64, options *nasdaqapi.OptionsResponse) (callsMap, error) {
+	calls := callsMap{}
 	expiryGroup := ""
 	earliestTargetDate := time.Now().AddDate(0, 0, 99)
 
@@ -158,7 +145,7 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (calls, error) 
 			continue
 		}
 
-		call := call{share: share}
+		call := &call{share: share}
 		call.expires, err = time.Parse("January 02, 2006", expiryGroup)
 		if err != nil {
 			continue
@@ -168,6 +155,7 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (calls, error) 
 		}
 		call.expiresDatestamp = call.expires.Format("2006-01-02")
 		call.expiresReadout = call.expires.Format("Jan02'06")
+		call.optionURL = nasdaqapi.SiteBaseURL + option.URL
 
 		call.strike, err = strconv.ParseFloat(option.Strike, 64)
 		if err != nil {
@@ -187,4 +175,36 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (calls, error) 
 		calls[call.expiresDatestamp] = append(calls[call.expiresDatestamp], call)
 	}
 	return calls, nil
+}
+
+func getBestCall(napi nasdaqapi.ClientInterface, callsMap callsMap, symbol string, assetClass string) (*call, error) {
+	var bestCall *call = nil
+	bestMatchValue := float64(1)
+	for expiry, calls := range callsMap {
+		greeks, err := napi.GetGreeks(symbol, assetClass, expiry)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, greek := range greeks.Data.Table.Rows {
+			call, found := findCallByStrike(calls, greek.Strike)
+			if !found {
+				continue
+			}
+			if greek.CallDelta > 0.80 || greek.CallDelta < 0.70 { // todo use plusminus
+				continue
+			}
+
+			score := math.Abs(targetDelta - greek.CallDelta)
+			if score < bestMatchValue {
+				call.greeksURL = nasdaqapi.SiteBaseURL + greek.URL
+				call.content = fmt.Sprintf(
+					"%s %.0f CALL Δ%.2f\n%s",
+					call.expiresReadout, greek.Strike, greek.CallDelta, call.optionURL)
+				bestMatchValue = score
+				bestCall = call
+			}
+		}
+	}
+	return bestCall, nil
 }

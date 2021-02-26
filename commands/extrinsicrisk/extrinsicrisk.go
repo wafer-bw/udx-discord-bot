@@ -8,7 +8,7 @@ import (
 
 	"github.com/wafer-bw/disgoslash/models"
 	"github.com/wafer-bw/disgoslash/slashcommands"
-	"github.com/wafer-bw/udx-discord-bot/common"
+	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 )
 
 var name = "extrinsicrisk"
@@ -59,8 +59,7 @@ func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionRespo
 			},
 		}, nil
 	}
-
-	risk := common.GetExtrinsicRisk(p.Share, p.Strike, p.Ask)
+	risk := formulas.GetExtrinsicRisk(p.Share, p.Strike, p.Ask)
 
 	return &models.InteractionResponse{
 		Type: models.InteractionResponseTypeChannelMessageWithSource,

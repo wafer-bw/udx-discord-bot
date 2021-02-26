@@ -3,15 +3,15 @@ get:
 .PHONY: get
 
 test:
-	go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+	go test -coverprofile=cover.out `go list ./... | grep -v ./generatedmocks`
 .PHONY: test
 
 testv:
-	go test -v -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+	go test -v -coverprofile=cover.out `go list ./... | grep -v ./generatedmocks`
 .PHONY: test
 
 test-ci:
-	go test -covermode=count -coverprofile=coverage.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+	go test -covermode=count -coverprofile=coverage.out `go list ./... | grep -v ./generatedmocks`
 .PHONY: test
 
 lint:
