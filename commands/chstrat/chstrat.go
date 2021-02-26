@@ -54,17 +54,18 @@ type call struct {
 	share            float64
 	strike           float64
 	extrinsicRisk    float64
-	delta            float64
 	expires          time.Time
 	expiresDatestamp string
 	expiresReadout   string
 	optionURL        string
 	greeksURL        string
 	content          string
+	// delta         float64
 }
 
 const targetDelta float64 = 0.75
-const targetDeltaPlusMinus float64 = 0.5
+
+// const targetDeltaPlusMinus float64 = 0.5
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, error) {
@@ -94,7 +95,7 @@ func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, e
 		return nil, err
 	}
 
-	var content string = ""
+	var content string
 	if bestCall != nil {
 		content = bestCall.content
 	} else {
