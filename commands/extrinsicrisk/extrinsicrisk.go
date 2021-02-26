@@ -69,6 +69,8 @@ func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionRespo
 	}, nil
 }
 
+//a
+
 type payload struct {
 	Share  float64
 	Strike float64
