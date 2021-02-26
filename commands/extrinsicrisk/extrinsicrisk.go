@@ -59,6 +59,7 @@ func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionRespo
 		}, nil
 	}
 
+	// a
 	risk := calcExtrinsicRisk(p)
 
 	return &models.InteractionResponse{
