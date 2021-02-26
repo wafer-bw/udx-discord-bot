@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/wafer-bw/udx-discord-bot/common/request"
+	"github.com/wafer-bw/udx-discord-bot/app/request"
 )
 
 // SiteBaseURL is the NASDAQ Website Base URL

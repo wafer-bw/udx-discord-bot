@@ -8,7 +8,7 @@ import (
 
 	"github.com/wafer-bw/disgoslash/models"
 	"github.com/wafer-bw/disgoslash/slashcommands"
-	"github.com/wafer-bw/udx-discord-bot/common/formulas"
+	"github.com/wafer-bw/udx-discord-bot/app/formulas"
 )
 
 var name = "extrinsicrisk"
