@@ -47,9 +47,9 @@ var command = &models.ApplicationCommand{
 	},
 }
 
-type callsMap map[string][]*call
+type viableCallsMap map[string][]*viableCall
 
-type call struct {
+type viableCall struct {
 	ask              float64
 	share            float64
 	strike           float64
@@ -110,7 +110,7 @@ func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, e
 	}, nil
 }
 
-func findCallByStrike(calls []*call, strike float64) (*call, bool) {
+func findCallByStrike(calls []*viableCall, strike float64) (*viableCall, bool) {
 	for _, call := range calls {
 		if call.strike == strike {
 			return call, true
@@ -132,8 +132,8 @@ func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass str
 	return share, nil
 }
 
-func getCalls(share float64, options *nasdaqapi.OptionsResponse) (callsMap, error) {
-	calls := callsMap{}
+func getCalls(share float64, options *nasdaqapi.OptionsResponse) (viableCallsMap, error) {
+	calls := viableCallsMap{}
 	expiryGroup := ""
 	earliestTargetDate := time.Now().AddDate(0, 0, 99)
 
@@ -146,7 +146,7 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (callsMap, erro
 			continue
 		}
 
-		call := &call{share: share}
+		call := &viableCall{share: share}
 		call.expires, err = time.Parse("January 02, 2006", expiryGroup)
 		if err != nil {
 			continue
@@ -178,8 +178,8 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (callsMap, erro
 	return calls, nil
 }
 
-func getBestCall(napi nasdaqapi.ClientInterface, callsMap callsMap, symbol string, assetClass string) (*call, error) {
-	var bestCall *call = nil
+func getBestCall(napi nasdaqapi.ClientInterface, callsMap viableCallsMap, symbol string, assetClass string) (*viableCall, error) {
+	var bestCall *viableCall = nil
 	bestMatchValue := float64(1)
 	for expiry, calls := range callsMap {
 		greeks, err := napi.GetGreeks(symbol, assetClass, expiry)
