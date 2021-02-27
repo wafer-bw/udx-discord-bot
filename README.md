@@ -59,6 +59,8 @@ make precommit
 make preview
 # Deploy to production
 make deploy
+# Sync commands to Discord
+make sync
 ```
 
 ### Usage (Windows) (WIP)
@@ -83,6 +85,8 @@ gofmt -s -w .
 vercel
 # Deploy to production
 vercel --prod
+# Sync commands to Discord
+go run sync/sync.go
 ```
 
 ### Developing Slash Commands
@@ -109,8 +113,16 @@ vercel --prod
     ```
 6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
 
+
 ## TODOs
+* readme
+    * table of contents
 * `chstrat`
     * handle errors properly and respond in discord
-    * cancel out and return before 10s vercel time limit
-    * tests
+    * use goroutines
+        * cancel out and return before 10s vercel time limit
+    * write tests
+* `sync`
+    * move to cmd folder and convert to command
+* webhooks
+    * Use Discord [webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) to notify when a sync happens in the botcommand channel.

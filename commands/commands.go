@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/wafer-bw/disgoslash"
+	"github.com/wafer-bw/udx-discord-bot/commands/chstrat"
 	"github.com/wafer-bw/udx-discord-bot/commands/extrinsicrisk"
 	"github.com/wafer-bw/udx-discord-bot/commands/helloworld"
 )
@@ -10,4 +11,5 @@ import (
 var SlashCommandMap = disgoslash.NewSlashCommandMap(
 	extrinsicrisk.SlashCommand,
 	helloworld.SlashCommand,
+	chstrat.SlashCommand,
 )
