@@ -1,0 +1,12 @@
+{
+    "status": {
+        "rCode": 400,
+        "bCodeMessage": [
+            {
+                "code": 1011,
+                "errorMessage": "Bad or No parameter"
+            }
+        ],
+        "developerMessage": null
+    }
+}

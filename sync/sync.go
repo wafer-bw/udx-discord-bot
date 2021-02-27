@@ -7,8 +7,9 @@ import (
 
 	"github.com/docopt/docopt-go"
 	"github.com/joho/godotenv"
-	"github.com/wafer-bw/disgoslash/syncer"
+	"github.com/wafer-bw/disgoslash"
 	"github.com/wafer-bw/udx-discord-bot/commands"
+	"github.com/wafer-bw/udx-discord-bot/common/creds"
 )
 
 type appargs struct {
@@ -57,8 +58,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	syncer := syncer.New(nil)
-	if errs := syncer.Run(args.GuildIDs, commands.SlashCommandMap); len(errs) > 0 {
+	syncer := &disgoslash.Syncer{
+		Creds:           creds.New(),
+		SlashCommandMap: commands.SlashCommandMap,
+		GuildIDs:        args.GuildIDs,
+	}
+	if errs := syncer.Sync(); len(errs) > 0 {
 		log.Println(strings.Join(getErrsStrings(errs), "\n"))
 		os.Exit(1)
 	}
