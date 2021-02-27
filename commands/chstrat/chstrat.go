@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wafer-bw/disgoslash/models"
-	"github.com/wafer-bw/disgoslash/slashcommands"
+	"github.com/wafer-bw/disgoslash"
+	"github.com/wafer-bw/disgoslash/discord"
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 	"github.com/wafer-bw/udx-discord-bot/common/nasdaqapi"
 )
@@ -21,25 +21,25 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = slashcommands.New(name, command, chstrat, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, guildIDs)
 
 // command schema for the slash command
-var command = &models.ApplicationCommand{
+var command = &discord.ApplicationCommand{
 	Name:        name,
 	Description: "Find optimal option calls with an extrinsic risk under 10%",
-	Options: []*models.ApplicationCommandOption{
+	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        models.ApplicationCommandOptionTypeString,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Symbol",
 			Description: "Ex: AMD, TSLA, or YOLO",
 			Required:    true,
 		},
 		{
-			Type:        models.ApplicationCommandOptionTypeString,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Asset Class",
 			Description: "",
 			Required:    true,
-			Choices: []*models.ApplicationCommandOptionChoice{
+			Choices: []*discord.ApplicationCommandOptionChoice{
 				{Name: "Stock", Value: "stocks"},
 				{Name: "ETF", Value: "etf"},
 			},
@@ -68,7 +68,7 @@ const targetDelta float64 = 0.75
 // const targetDeltaPlusMinus float64 = 0.5
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
-func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
 
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
@@ -102,9 +102,9 @@ func chstrat(request *models.InteractionRequest) (*models.InteractionResponse, e
 		content = "No valid calls found"
 	}
 
-	return &models.InteractionResponse{
-		Type: models.InteractionResponseTypeChannelMessageWithSource,
-		Data: &models.InteractionApplicationCommandCallbackData{
+	return &discord.InteractionResponse{
+		Type: discord.InteractionResponseTypeChannelMessageWithSource,
+		Data: &discord.InteractionApplicationCommandCallbackData{
 			Content: content,
 		},
 	}, nil

@@ -6,8 +6,8 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/wafer-bw/disgoslash/models"
-	"github.com/wafer-bw/disgoslash/slashcommands"
+	"github.com/wafer-bw/disgoslash"
+	"github.com/wafer-bw/disgoslash/discord"
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 )
 
@@ -18,27 +18,27 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = slashcommands.New(name, command, extrinsicRisk, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(name, command, extrinsicRisk, global, guildIDs)
 
 // command schema for the slash command
-var command = &models.ApplicationCommand{
+var command = &discord.ApplicationCommand{
 	Name:        name,
 	Description: "Calculate an option's extrinsic risk percentage using the provided share, strike, & ask prices",
-	Options: []*models.ApplicationCommandOption{
+	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        models.ApplicationCommandOptionTypeString,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Share",
 			Description: "Share price",
 			Required:    true,
 		},
 		{
-			Type:        models.ApplicationCommandOptionTypeString,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Strike",
 			Description: "Strike price",
 			Required:    true,
 		},
 		{
-			Type:        models.ApplicationCommandOptionTypeString,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Ask",
 			Description: "Ask price",
 			Required:    true,
@@ -48,22 +48,22 @@ var command = &models.ApplicationCommand{
 
 // extrinsicRisk - The code which completes the desired action of the slash command.
 // Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
-func extrinsicRisk(request *models.InteractionRequest) (*models.InteractionResponse, error) {
+func extrinsicRisk(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		log.Println(err)
-		return &models.InteractionResponse{
-			Type: models.InteractionResponseTypeChannelMessageWithSource,
-			Data: &models.InteractionApplicationCommandCallbackData{
+		return &discord.InteractionResponse{
+			Type: discord.InteractionResponseTypeChannelMessageWithSource,
+			Data: &discord.InteractionApplicationCommandCallbackData{
 				Content: "Error parsing command :cry:",
 			},
 		}, nil
 	}
 	risk := formulas.GetExtrinsicRisk(p.Share, p.Strike, p.Ask)
 
-	return &models.InteractionResponse{
-		Type: models.InteractionResponseTypeChannelMessageWithSource,
-		Data: &models.InteractionApplicationCommandCallbackData{
+	return &discord.InteractionResponse{
+		Type: discord.InteractionResponseTypeChannelMessageWithSource,
+		Data: &discord.InteractionApplicationCommandCallbackData{
 			Content: fmt.Sprintf("%.2f%%", risk),
 		},
 	}, nil
@@ -75,7 +75,7 @@ type payload struct {
 	Ask    float64
 }
 
-func getPayload(options []*models.ApplicationCommandInteractionDataOption) (*payload, error) {
+func getPayload(options []*discord.ApplicationCommandInteractionDataOption) (*payload, error) {
 	if len(options) != 3 {
 		return nil, errors.New("missing required options")
 	}
