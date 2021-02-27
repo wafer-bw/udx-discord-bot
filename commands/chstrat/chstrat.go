@@ -29,19 +29,25 @@ var command = &discord.ApplicationCommand{
 	Description: "Find optimal option calls with an extrinsic risk under 10%",
 	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        discord.ApplicationCommandOptionTypeString,
-			Name:        "Symbol",
-			Description: "The symbol/ticker for the underlying. Ex: AMD, TSLA, or YOLO",
 			Required:    true,
+			Name:        "Symbol",
+			Description: "The symbol for the underlying like TSLA",
+			Type:        discord.ApplicationCommandOptionTypeString,
 		},
 		{
-			Type:        discord.ApplicationCommandOptionTypeString,
+			Required:    true,
 			Name:        "Asset Class",
 			Description: "The asset class of the underlying",
-			Required:    true,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Choices: []*discord.ApplicationCommandOptionChoice{
-				{Name: "Stock", Value: "stocks"},
-				{Name: "ETF", Value: "etf"},
+				{
+					Name:  "Stock",
+					Value: "stocks",
+				},
+				{
+					Name:  "ETF",
+					Value: "etf",
+				},
 			},
 		},
 	},
