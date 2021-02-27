@@ -31,13 +31,13 @@ var command = &discord.ApplicationCommand{
 		{
 			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Symbol",
-			Description: "Ex: AMD, TSLA, or YOLO",
+			Description: "The symbol/ticker for the underlying. Ex: AMD, TSLA, or YOLO",
 			Required:    true,
 		},
 		{
 			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Asset Class",
-			Description: "",
+			Description: "The asset class of the underlying",
 			Required:    true,
 			Choices: []*discord.ApplicationCommandOptionChoice{
 				{Name: "Stock", Value: "stocks"},
