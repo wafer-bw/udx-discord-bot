@@ -1,4 +1,4 @@
-package nasdaqapi
+package nasdaq
 
 import (
 	"encoding/json"

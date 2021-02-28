@@ -1,0 +1,8 @@
+{
+    "fault": {
+        "faultstring": "Invalid API call as no apiproduct match found",
+        "detail": {
+            "errorcode": "keymanagement.service.InvalidAPICallAsNoApiProductMatchFound"
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "quotes": {
+        "quote": {
+            "symbol": "AAPL",
+            "description": "Apple Inc",
+            "exch": "Q",
+            "type": "stock",
+            "last": 121.26,
+            "change": 0.27,
+            "volume": 164560390,
+            "open": 122.59,
+            "high": 124.85,
+            "low": 121.2,
+            "close": 121.26,
+            "bid": 121.69,
+            "ask": 121.76,
+            "change_percentage": 0.23,
+            "average_volume": 105025607,
+            "last_volume": 16655878,
+            "trade_date": 1614373201223,
+            "prevclose": 120.99,
+            "week_52_high": 145.09,
+            "week_52_low": 53.1525,
+            "bidsize": 2,
+            "bidexch": "P",
+            "bid_date": 1614387593000,
+            "asksize": 4,
+            "askexch": "P",
+            "ask_date": 1614387599000,
+            "root_symbols": "AAPL"
+        },
+        "unmatched_symbols": {
+            "symbol": [
+                "VXX190517P00016000",
+                "AFDSHJDSAKHFAJDS"
+            ]
+        }
+    }
+}

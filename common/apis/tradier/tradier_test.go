@@ -1,4 +1,4 @@
-package nasdaqapi
+package tradier
 
 import (
 	"io/ioutil"

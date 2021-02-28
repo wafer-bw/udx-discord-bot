@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/wafer-bw/disgoslash"
 	"github.com/wafer-bw/udx-discord-bot/commands"
-	"github.com/wafer-bw/udx-discord-bot/common/creds"
+	"github.com/wafer-bw/udx-discord-bot/common/config"
 )
 
 type appargs struct {
@@ -58,8 +58,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	conf := config.New()
 	syncer := &disgoslash.Syncer{
-		Creds:           creds.New(),
+		Creds:           conf.Discord,
 		SlashCommandMap: commands.SlashCommandMap,
 		GuildIDs:        args.GuildIDs,
 	}

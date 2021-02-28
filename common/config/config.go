@@ -1,4 +1,4 @@
-package creds
+package config
 
 import (
 	"fmt"
@@ -11,19 +11,39 @@ import (
 
 // EnvVars defines expected & required environment variables
 type EnvVars struct {
-	PublicKey string `envconfig:"PUBLIC_KEY" required:"true" split_words:"true"`
-	ClientID  string `envconfig:"CLIENT_ID" required:"true" split_words:"true"`
-	Token     string `envconfig:"TOKEN" required:"true" split_words:"true"`
+	DiscordPublicKey string `envconfig:"DISCORD_PUBLIC_KEY" required:"true" split_words:"true"`
+	DiscordClientID  string `envconfig:"DISCORD_CLIENT_ID" required:"true" split_words:"true"`
+	DiscordToken     string `envconfig:"DISCORD_TOKEN" required:"true" split_words:"true"`
+	TradierEndpoint  string `envconfig:"TRADIER_ENDPOINT" required:"true" split_words:"true"`
+	TradierToken     string `envconfig:"TRADIER_TOKEN" required:"true" split_words:"true"`
+}
+
+// TradierConfig data
+type TradierConfig struct {
+	Endpoint string
+	Token    string
+}
+
+// Config data
+type Config struct {
+	Discord *discord.Credentials
+	Tradier *TradierConfig
 }
 
 // New returns a new `Config` struct; panics if unable
-func New() *discord.Credentials {
+func New() *Config {
 	env := getEnvVars()
 	ensureNoBlankEnvVars(env)
-	return &discord.Credentials{
-		PublicKey: env.PublicKey,
-		ClientID:  env.ClientID,
-		Token:     env.Token,
+	return &Config{
+		Discord: &discord.Credentials{
+			PublicKey: env.DiscordPublicKey,
+			ClientID:  env.DiscordClientID,
+			Token:     env.DiscordToken,
+		},
+		Tradier: &TradierConfig{
+			Endpoint: env.TradierEndpoint,
+			Token:    env.TradierToken,
+		},
 	}
 }
 

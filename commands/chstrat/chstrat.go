@@ -9,8 +9,10 @@ import (
 
 	"github.com/wafer-bw/disgoslash"
 	"github.com/wafer-bw/disgoslash/discord"
+	"github.com/wafer-bw/udx-discord-bot/common/apis/nasdaq"
+	"github.com/wafer-bw/udx-discord-bot/common/apis/tradier"
+	"github.com/wafer-bw/udx-discord-bot/common/config"
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
-	"github.com/wafer-bw/udx-discord-bot/common/nasdaqapi"
 )
 
 var name = "chstrat"
@@ -78,7 +80,16 @@ func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse,
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
 
-	napi := nasdaqapi.NewClient()
+	conf := config.New()
+	tapi := &tradier.Client{Token: conf.Tradier.Token, Endpoint: conf.Tradier.Endpoint}
+
+	quote, err := tapi.GetQuote(symbol, false)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(quote)
+
+	napi := nasdaq.NewClient()
 
 	share, err := getSharePrice(napi, symbol, assetClass)
 	if err != nil {
@@ -124,7 +135,7 @@ func findCallByStrike(calls []*viableCall, strike float64) (*viableCall, bool) {
 	return nil, false
 }
 
-func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass string) (float64, error) {
+func getSharePrice(napi nasdaq.ClientInterface, symbol string, assetClass string) (float64, error) {
 	quote, err := napi.GetQuote(symbol, assetClass)
 	if err != nil {
 		return 0, err
@@ -137,7 +148,7 @@ func getSharePrice(napi nasdaqapi.ClientInterface, symbol string, assetClass str
 	return share, nil
 }
 
-func getCalls(share float64, options *nasdaqapi.OptionsResponse) (viableCallsMap, error) {
+func getCalls(share float64, options *nasdaq.OptionsResponse) (viableCallsMap, error) {
 	calls := viableCallsMap{}
 	expiryGroup := ""
 	earliestTargetDate := time.Now().AddDate(0, 0, 99)
@@ -161,7 +172,7 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (viableCallsMap
 		}
 		call.expiresDatestamp = call.expires.Format("2006-01-02")
 		call.expiresReadout = call.expires.Format("Jan02'06")
-		call.optionURL = nasdaqapi.SiteBaseURL + option.URL
+		call.optionURL = nasdaq.SiteBaseURL + option.URL
 
 		call.strike, err = strconv.ParseFloat(option.Strike, 64)
 		if err != nil {
@@ -183,7 +194,7 @@ func getCalls(share float64, options *nasdaqapi.OptionsResponse) (viableCallsMap
 	return calls, nil
 }
 
-func getBestCall(napi nasdaqapi.ClientInterface, callsMap viableCallsMap, symbol string, assetClass string) (*viableCall, error) {
+func getBestCall(napi nasdaq.ClientInterface, callsMap viableCallsMap, symbol string, assetClass string) (*viableCall, error) {
 	var bestCall *viableCall = nil
 	bestMatchValue := float64(1)
 	for expiry, calls := range callsMap {
@@ -203,7 +214,7 @@ func getBestCall(napi nasdaqapi.ClientInterface, callsMap viableCallsMap, symbol
 
 			score := math.Abs(targetDelta - greek.CallDelta)
 			if score < bestMatchValue {
-				call.greeksURL = nasdaqapi.SiteBaseURL + greek.URL
+				call.greeksURL = nasdaq.SiteBaseURL + greek.URL
 				call.content = fmt.Sprintf(
 					"%s %.0f CALL Δ%.2f\n%s",
 					call.expiresReadout, greek.Strike, greek.CallDelta, call.optionURL)

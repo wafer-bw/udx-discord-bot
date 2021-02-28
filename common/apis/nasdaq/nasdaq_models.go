@@ -1,4 +1,4 @@
-package nasdaqapi
+package nasdaq
 
 // ResponseStatus of request
 type ResponseStatus struct {
