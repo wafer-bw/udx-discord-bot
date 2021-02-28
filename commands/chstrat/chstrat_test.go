@@ -16,9 +16,9 @@ func TestMain(m *testing.M) {
 // todo use mocks so it doesnt spam the api
 // func TestChstrat(t *testing.T) {
 // 	t.Run("success", func(t *testing.T) {
-// 		request := &models.InteractionRequest{
-// 			Data: &models.ApplicationCommandInteractionData{
-// 				Options: []*models.ApplicationCommandInteractionDataOption{
+// 		request := &discord.InteractionRequest{
+// 			Data: &discord.ApplicationCommandInteractionData{
+// 				Options: []*discord.ApplicationCommandInteractionDataOption{
 // 					{Name: "symbol", Value: "AAPL"},
 // 					{Name: "Asset Class", Value: "stocks"},
 // 				},
