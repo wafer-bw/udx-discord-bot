@@ -3,7 +3,6 @@ package chstrat
 import (
 	"fmt"
 	"math"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -12,7 +11,6 @@ import (
 	"github.com/wafer-bw/disgoslash/discord"
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 	"github.com/wafer-bw/udx-discord-bot/common/nasdaqapi"
-	"github.com/wafer-bw/udx-discord-bot/common/request"
 )
 
 var name = "chstrat"
@@ -215,16 +213,4 @@ func getBestCall(napi nasdaqapi.ClientInterface, callsMap viableCallsMap, symbol
 		}
 	}
 	return bestCall, nil
-}
-
-func getIP() {
-	url := "https://whatsmyip.wafer-bw.vercel.app/api"
-	headers := map[string]string{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}
-	status, _, err := request.Do(http.MethodGet, url, headers, nil)
-	if err != nil {
-		panic(err)
-	}
-	if status != http.StatusOK {
-		panic(status)
-	}
 }
