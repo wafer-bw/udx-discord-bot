@@ -77,8 +77,6 @@ const targetDelta float64 = 0.75
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
-	getIP()
-
 	symbol := request.Data.Options[0].Value
 	assetClass := request.Data.Options[1].Value
 
