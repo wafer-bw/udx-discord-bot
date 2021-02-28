@@ -14,9 +14,9 @@ import (
 )
 
 var name = "chstrat"
-var global = true
+var global = false
 var guildIDs = []string{
-	"116036580094902275", // UDX
+	// "116036580094902275", // UDX
 	"810227107967402056", // UDX Bot Dev
 }
 
@@ -31,12 +31,12 @@ var command = &discord.ApplicationCommand{
 		{
 			Required:    true,
 			Name:        "Symbol",
-			Description: "The symbol for the underlying like TSLA",
+			Description: "The symbol for the underlying. Ex: TSLA",
 			Type:        discord.ApplicationCommandOptionTypeString,
 		},
 		{
 			Required:    true,
-			Name:        "Asset Class",
+			Name:        "AssetClass",
 			Description: "The asset class of the underlying",
 			Type:        discord.ApplicationCommandOptionTypeString,
 			Choices: []*discord.ApplicationCommandOptionChoice{
