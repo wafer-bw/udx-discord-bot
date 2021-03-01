@@ -12,9 +12,10 @@ import (
 )
 
 var name = "extrinsicrisk"
-var global = false
+var global = true
 var guildIDs = []string{
 	"116036580094902275", // UDX
+	"810227107967402056", // UDX Bot Dev
 }
 
 // SlashCommand instance
