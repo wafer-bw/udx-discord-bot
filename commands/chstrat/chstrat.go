@@ -199,7 +199,7 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall) *discord
 	fmt.Fprint(tabber, strings.Join(rows, "\n"))
 	tabber.Flush()
 
-	return response(fmt.Sprintf("```\n%s - %.2f\n%s\n```", symbol, share, buffer.String()))
+	return response(fmt.Sprintf("```\n%s - $%.2f\n%s\n```", symbol, share, buffer.String()))
 }
 
 func response(content string) *discord.InteractionResponse {
