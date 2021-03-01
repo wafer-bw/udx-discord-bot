@@ -41,7 +41,6 @@ func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
-	fmt.Println(response.Header)
 	quotes := &QuotesResponse{}
 	if err := json.Unmarshal(data, quotes); err != nil {
 		return nil, err
@@ -60,7 +59,6 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
-	fmt.Println(response.Header)
 	expirations := &OptionExpirationsResponse{}
 	if err := json.Unmarshal(data, expirations); err != nil {
 		return nil, err
@@ -79,7 +77,6 @@ func (client Client) GetOptionChain(symbol string, expiration string, greeks boo
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
-	fmt.Println(response.Header)
 	optionChain := &OptionChainsResponse{}
 	if err := json.Unmarshal(data, optionChain); err != nil {
 		return nil, err
