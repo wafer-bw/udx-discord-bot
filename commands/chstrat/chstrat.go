@@ -18,7 +18,7 @@ import (
 )
 
 var name = "chstrat"
-var global = true
+var global = false
 var guildIDs = []string{
 	"116036580094902275", // UDX
 	"810227107967402056", // UDX Bot Dev
