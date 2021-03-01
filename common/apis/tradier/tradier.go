@@ -35,12 +35,13 @@ func New(conf config.TradierConfig) ClientInterface {
 func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 	url := fmt.Sprintf("%s/markets/quotes?symbols=%s&greeks=%t", client.Endpoint, symbol, greeks)
 	headers := map[string]string{"accept": contentType, "Authorization": fmt.Sprintf("Bearer %s", client.Token)}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
-	} else if status != http.StatusOK {
+	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
+	fmt.Println(response.Header)
 	quotes := &QuotesResponse{}
 	if err := json.Unmarshal(data, quotes); err != nil {
 		return nil, err
@@ -53,12 +54,13 @@ func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, strikes bool) (Expirations, error) {
 	url := fmt.Sprintf("%s/markets/options/expirations?symbol=%s&includeAllRoots=%t&strikes=%t", client.Endpoint, symbol, includeAllRoots, strikes)
 	headers := map[string]string{"accept": contentType, "Authorization": fmt.Sprintf("Bearer %s", client.Token)}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
-	} else if status != http.StatusOK {
+	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
+	fmt.Println(response.Header)
 	expirations := &OptionExpirationsResponse{}
 	if err := json.Unmarshal(data, expirations); err != nil {
 		return nil, err
@@ -71,12 +73,13 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 func (client Client) GetOptionChain(symbol string, expiration string, greeks bool) (Chain, error) {
 	url := fmt.Sprintf("%s/markets/options/chains?symbol=%s&expiration=%s&greeks=%t", client.Endpoint, symbol, expiration, greeks)
 	headers := map[string]string{"accept": contentType, "Authorization": fmt.Sprintf("Bearer %s", client.Token)}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
-	} else if status != http.StatusOK {
+	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data)
 	}
+	fmt.Println(response.Header)
 	optionChain := &OptionChainsResponse{}
 	if err := json.Unmarshal(data, optionChain); err != nil {
 		return nil, err
