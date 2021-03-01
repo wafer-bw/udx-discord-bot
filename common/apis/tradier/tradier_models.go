@@ -57,15 +57,10 @@ type OptionExpirationsResponse struct {
 }
 
 type OptionExpirations struct {
-	Expiration Expirations `json:"expiration"`
+	Expirations Expirations `json:"date"`
 }
 
-type Expirations []*Expiration
-
-type Expiration struct {
-	Date    string   `json:"date"`
-	Strikes *Strikes `json:"strikes"`
-}
+type Expirations []string
 
 type Strikes struct {
 	Strikes []float64 `json:"strike"`

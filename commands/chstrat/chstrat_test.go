@@ -15,12 +15,16 @@ func TestMain(m *testing.M) {
 
 // todo use mocks so it doesnt spam the api
 // func TestChstrat(t *testing.T) {
+// 	err := godotenv.Load("../../.env")
+// 	if err != nil {
+// 		log.Println("Warning: could not load .env file")
+// 	}
+
 // 	t.Run("success", func(t *testing.T) {
 // 		request := &discord.InteractionRequest{
 // 			Data: &discord.ApplicationCommandInteractionData{
 // 				Options: []*discord.ApplicationCommandInteractionDataOption{
 // 					{Name: "symbol", Value: "AAPL"},
-// 					{Name: "Asset Class", Value: "stocks"},
 // 				},
 // 			},
 // 		}

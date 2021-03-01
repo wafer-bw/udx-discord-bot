@@ -101,7 +101,7 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 
 	calls := viableCalls{}
 	for _, expiry := range expirations {
-		expires, err := time.Parse("2006-01-02", expiry.Date)
+		expires, err := time.Parse("2006-01-02", expiry)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -110,7 +110,7 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 			continue
 		}
 
-		chain, err := tapi.GetOptionChain(symbol, expiry.Date, true)
+		chain, err := tapi.GetOptionChain(symbol, expiry, true)
 		if err != nil {
 			return nil, err
 		}

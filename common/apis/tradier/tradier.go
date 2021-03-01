@@ -63,7 +63,7 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 	if err := json.Unmarshal(data, expirations); err != nil {
 		return nil, err
 	}
-	return expirations.Expirations.Expiration, nil
+	return expirations.Expirations.Expirations, nil
 }
 
 //GetOptionChain at provided expiration for provided symbol

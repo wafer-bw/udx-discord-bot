@@ -32,6 +32,10 @@ type Config struct {
 
 // New returns a new `Config` struct; panics if unable
 func New() *Config {
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Println("Warning: could not load .env file")
+	// }
 	env := getEnvVars()
 	ensureNoBlankEnvVars(env)
 	return &Config{
