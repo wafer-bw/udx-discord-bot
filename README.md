@@ -113,9 +113,14 @@ go run sync/sync.go
     ```
 6. Open a PR or push to master. Once your changes have been merged/pushed to master they will be automatically deployed to Discord by the [Sync Workflow](./.github/workflows/sync.yml)
 
+## Info
+* Tradier API
+    * Quotes are delayed by 15min
+    * Greeks/IV are updated once per hour
+
 
 ## TODOs
-* readme
+* `readme`
     * table of contents
 * `chstrat`
     * handle errors properly and respond in discord
@@ -126,3 +131,6 @@ go run sync/sync.go
     * move to cmd folder and convert to command
 * webhooks
     * Use Discord [webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) to notify when a sync happens in the botcommand channel.
+* `apis`
+    * `tradier`
+        * Might need to replace `.` with `/` in symbols

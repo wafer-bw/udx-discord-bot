@@ -1,5 +1,18 @@
 package tradier
 
+type FaultResponse struct {
+	Fault Fault `json:"fault"`
+}
+
+type Fault struct {
+	Fault  string      `json:"faultstring"`
+	Detail FaultDetail `json:"detail"`
+}
+
+type FaultDetail struct {
+	ErrorCode string `json:"errorcode"`
+}
+
 type QuotesResponse struct {
 	Quotes           *Quotes                `json:"quotes"`
 	UnmatchedSymbols map[string]interface{} `json:"unmatched_symbols"`
@@ -10,31 +23,126 @@ type Quotes struct {
 }
 
 type Quote struct {
-	Symbol           string  `json:"symbol"`            // "AAPL",
-	Description      string  `json:"description"`       // "Apple Inc",
-	Exchange         string  `json:"exch"`              // "Q",
-	Type             string  `json:"type"`              // "stock",
-	Last             float64 `json:"last"`              // 121.26,
-	Change           float64 `json:"change"`            // 0.27,
-	Volume           float64 `json:"volume"`            // 164560390,
-	Open             float64 `json:"open"`              // 122.59,
-	High             float64 `json:"high"`              // 124.85,
-	Low              float64 `json:"low"`               // 121.2,
-	Close            float64 `json:"close"`             // 121.26,
-	Bid              float64 `json:"bid"`               // 121.69,
-	Ask              float64 `json:"ask"`               // 121.76,
-	ChangePercentage float64 `json:"change_percentage"` // 0.23,
-	AverageVolume    int     `json:"average_volume"`    // 105025607,
-	LastVolume       int     `json:"last_volume"`       // 16655878,
-	TradeDate        int64   `json:"trade_date"`        // 1614373201223,
-	PreviousClose    float64 `json:"prevclose"`         // 120.99,
-	Week52High       float64 `json:"week_52_high"`      // 145.09,
-	Week52Low        float64 `json:"week_52_low"`       // 53.1525,
-	BidSize          int     `json:"bidsize"`           // 2,
-	BidExchange      string  `json:"bidexch"`           // "P",
-	BidDate          int64   `json:"bid_date"`          // 1614387593000,
-	AskSize          int     `json:"asksize"`           // 4,
-	AskExchange      string  `json:"askexch"`           // "P",
-	AskDate          int64   `json:"ask_date"`          // 1614387599000,
-	RootSymbols      string  `json:"root_symbols"`      // "AAPL"
+	Symbol           string    `json:"symbol"`
+	Description      string    `json:"description"`
+	Exchange         string    `json:"exch"`
+	Type             QuoteType `json:"type"`
+	Last             float64   `json:"last"`
+	Change           float64   `json:"change"`
+	Volume           float64   `json:"volume"`
+	Open             float64   `json:"open"`
+	High             float64   `json:"high"`
+	Low              float64   `json:"low"`
+	Close            float64   `json:"close"`
+	Bid              float64   `json:"bid"`
+	Ask              float64   `json:"ask"`
+	ChangePercentage float64   `json:"change_percentage"`
+	AverageVolume    int       `json:"average_volume"`
+	LastVolume       int       `json:"last_volume"`
+	TradeDate        int64     `json:"trade_date"`
+	PreviousClose    float64   `json:"prevclose"`
+	Week52High       float64   `json:"week_52_high"`
+	Week52Low        float64   `json:"week_52_low"`
+	BidSize          int       `json:"bidsize"`
+	BidExchange      string    `json:"bidexch"`
+	BidDate          int64     `json:"bid_date"`
+	AskSize          int       `json:"asksize"`
+	AskExchange      string    `json:"askexch"`
+	AskDate          int64     `json:"ask_date"`
+	RootSymbols      string    `json:"root_symbols"`
 }
+
+type ExpirationsResponse struct {
+	Expirations *Expirations `json:"expirations"`
+}
+
+type Expirations struct {
+	Expirations []*Expiration `json:"expiration"`
+}
+
+type Expiration struct {
+	Date    string   `json:"date"`
+	Strikes *Strikes `json:"strikes"`
+}
+
+type Strikes struct {
+	Strikes []float64 `json:"strike"`
+}
+
+type OptionsChainResponse struct {
+	Options *Options `json:"options"`
+}
+
+type Chain []*Option
+
+type Options struct {
+	Chain Chain `json:"option"`
+}
+
+type Option struct {
+	Symbol           string     `json:"symbol"`
+	Description      string     `json:"description"`
+	Exchange         string     `json:"exch"`
+	Type             QuoteType  `json:"type"`
+	Last             float64    `json:"last"`
+	Change           float64    `json:"change"`
+	Volume           float64    `json:"volume"`
+	Open             float64    `json:"open"`
+	High             float64    `json:"high"`
+	Low              float64    `json:"low"`
+	Close            float64    `json:"close"`
+	Bid              float64    `json:"bid"`
+	Ask              float64    `json:"ask"`
+	UnderlyingSymbol string     `json:"underlying"`
+	Strike           float64    `json:"strike"`
+	Greeks           *Greeks    `json:"greeks"`
+	ChangePercentage float64    `json:"change_percentage"`
+	AverageVolume    int        `json:"average_volume"`
+	LastVolume       int        `json:"last_volume"`
+	TradeDate        int64      `json:"trade_date"`
+	PreviousClose    float64    `json:"prevclose"`
+	Week52High       float64    `json:"week_52_high"`
+	Week52Low        float64    `json:"week_52_low"`
+	BidSize          int        `json:"bidsize"`
+	BidExchange      string     `json:"bidexch"`
+	BidDate          int64      `json:"bid_date"`
+	AskSize          int        `json:"asksize"`
+	AskExchange      string     `json:"askexch"`
+	AskDate          int64      `json:"ask_date"`
+	OpenInterest     float64    `json:"open_interest"`
+	ContractSize     float64    `json:"contract_size"`
+	ExpirationDate   string     `json:"expiration_date"`
+	ExpirationType   string     `json:"expiration_type"` // todo enum
+	OptionType       OptionType `json:"option_type"`
+	RootSymbol       string     `json:"root_symbol"`
+}
+
+type Greeks struct {
+	Delta     float64 `json:"delta"`
+	Gamma     float64 `json:"gamma"`
+	Theta     float64 `json:"theta"`
+	Vega      float64 `json:"vega"`
+	Rho       float64 `json:"rho"`
+	Phi       float64 `json:"phi"`
+	BidIV     float64 `json:"bid_iv"`
+	MidIV     float64 `json:"mid_iv"`
+	AskIV     float64 `json:"ask_iv"`
+	SMVVol    float64 `json:"smv_vol"`
+	UpdatedAt string  `json:"updated_at"`
+}
+
+type QuoteType string
+
+const (
+	QuoteTypeOption QuoteType = "option"
+	QuoteTypeStock  QuoteType = "stock"
+	QuoteTypeETF    QuoteType = "etf"
+)
+
+type OptionType string
+
+const (
+	OptionTypeNil  OptionType = ""
+	OptionTypePut  OptionType = "put"
+	OptionTypeCall OptionType = "call"
+)
