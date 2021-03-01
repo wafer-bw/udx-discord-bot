@@ -188,11 +188,11 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall) *discord
 		row := []string{
 			call.expiry,
 			fmt.Sprintf("%.2f", call.strike),
-			fmt.Sprintf("%.2fΔ", call.delta),
+			fmt.Sprintf("%.0fΔ", call.delta*100),
 			fmt.Sprintf("%.2fER", call.extrinsicRisk),
-			fmt.Sprintf("b/a %.2f", call.bid),
+			fmt.Sprintf("b%.2f", call.bid),
 			"-",
-			fmt.Sprintf("%.2f", call.ask),
+			fmt.Sprintf("a%.2f", call.ask),
 		}
 		rows = append(rows, strings.Join(row, "\t"))
 	}
