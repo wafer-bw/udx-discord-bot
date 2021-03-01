@@ -132,9 +132,9 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 				ask:           option.Ask,
 				extrinsicRisk: extrinsicRisk,
 				delta:         option.Greeks.Delta,
-				content: fmt.Sprintf("%s\n%.2fΔ %.2fER - Bid: %.2f Ask: %.2f",
+				content: fmt.Sprintf(".\n%s\n%.2fΔ %.2fER - Bid: %.2f Ask: %.2f Share: %.2f",
 					option.Description, option.Greeks.Delta,
-					extrinsicRisk, option.Bid, option.Ask,
+					extrinsicRisk, option.Bid, option.Ask, share,
 				),
 			})
 		}
