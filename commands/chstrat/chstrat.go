@@ -2,14 +2,12 @@ package chstrat
 
 import (
 	"fmt"
+	"log"
 	"math"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/wafer-bw/disgoslash"
 	"github.com/wafer-bw/disgoslash/discord"
-	"github.com/wafer-bw/udx-discord-bot/common/apis/nasdaq"
 	"github.com/wafer-bw/udx-discord-bot/common/apis/tradier"
 	"github.com/wafer-bw/udx-discord-bot/common/config"
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
@@ -28,200 +26,146 @@ var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, gu
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
 	Name:        name,
-	Description: "Find optimal option calls with an extrinsic risk under 10%",
+	Description: "Find a call w/ an ER under 10% and a Δ between .70-.80 as close to .75 as possible.",
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Required:    true,
-			Name:        "Symbol",
+			Name:        "symbol",
 			Description: "The symbol for the underlying. Ex: TSLA",
 			Type:        discord.ApplicationCommandOptionTypeString,
-		},
-		{
-			Required:    true,
-			Name:        "AssetClass",
-			Description: "The asset class of the underlying",
-			Type:        discord.ApplicationCommandOptionTypeString,
-			Choices: []*discord.ApplicationCommandOptionChoice{
-				{
-					Name:  "Stock",
-					Value: "stocks",
-				},
-				{
-					Name:  "ETF",
-					Value: "etf",
-				},
-			},
 		},
 	},
 }
 
-type viableCallsMap map[string][]*viableCall
+type viableCalls []*viableCall
 
 type viableCall struct {
-	ask              float64
-	share            float64
-	strike           float64
-	extrinsicRisk    float64
-	expires          time.Time
-	expiresDatestamp string
-	expiresReadout   string
-	optionURL        string
-	greeksURL        string
-	content          string
-	// delta         float64
+	share         float64
+	bid           float64
+	ask           float64
+	extrinsicRisk float64
+	delta         float64
+	content       string
 }
 
+// todo - move these to inputs from the command with defaults
 const targetDelta float64 = 0.75
-
-// const targetDeltaPlusMinus float64 = 0.5
+const minDelta float64 = 0.70
+const maxDelta float64 = 0.80
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
 	symbol := request.Data.Options[0].Value
-	assetClass := request.Data.Options[1].Value
 
 	conf := config.New()
 	tapi := &tradier.Client{Token: conf.Tradier.Token, Endpoint: conf.Tradier.Endpoint}
 
+	share, err := getSharePrice(tapi, symbol)
+	if err != nil {
+		return nil, err
+	}
+
+	expirations, err := getExpirations(tapi, symbol)
+	if err != nil {
+		return nil, err
+	}
+
+	calls, err := getCalls(tapi, symbol, share, expirations)
+	if err != nil {
+		return nil, err
+	}
+
+	bestCall := getBestCall(calls)
+
+	return getResponse(bestCall), nil
+}
+
+func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
 	quote, err := tapi.GetQuote(symbol, false)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	fmt.Println(quote)
+	return quote.Last, nil
+}
 
-	napi := nasdaq.NewClient()
-
-	share, err := getSharePrice(napi, symbol, assetClass)
+func getExpirations(tapi tradier.ClientInterface, symbol string) (tradier.Expirations, error) {
+	expirations, err := tapi.GetOptionExpirations(symbol, true, false)
 	if err != nil {
 		return nil, err
 	}
+	return expirations, nil
+}
 
-	options, err := napi.GetOptions(symbol, assetClass)
-	if err != nil {
-		return nil, err
+func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations) (viableCalls, error) {
+	earliestExpiryDate := time.Now().AddDate(0, 0, 99)
+
+	calls := viableCalls{}
+	for _, expiry := range expirations {
+		expires, err := time.Parse("2006-01-02", expiry.Date)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		if expires.Unix() < earliestExpiryDate.Unix() {
+			continue
+		}
+
+		chain, err := tapi.GetOptionChain(symbol, expiry.Date, true)
+		if err != nil {
+			return nil, err
+		}
+		for _, option := range chain {
+			if option.OptionType != tradier.OptionTypeCall {
+				continue
+			}
+			if option.Greeks.Delta > maxDelta || option.Greeks.Delta < minDelta {
+				continue
+			}
+			extrinsicRisk := formulas.GetExtrinsicRisk(share, option.Strike, option.Ask)
+			if extrinsicRisk > 10 {
+				continue
+			}
+
+			calls = append(calls, &viableCall{
+				share:         share,
+				bid:           option.Bid,
+				ask:           option.Ask,
+				extrinsicRisk: extrinsicRisk,
+				delta:         option.Greeks.Delta,
+				content: fmt.Sprintf("%s\n%.2fΔ %.2fER - Bid: %.2f Ask: %.2f",
+					option.Description, option.Greeks.Delta,
+					extrinsicRisk, option.Bid, option.Ask,
+				),
+			})
+		}
 	}
+	return calls, nil
+}
 
-	callsMap, err := getCalls(share, options)
-	if err != nil {
-		return nil, err
+func getBestCall(calls viableCalls) *viableCall {
+	var bestCall *viableCall = nil
+	bestScore := float64(1) // how close the call delta is to target delta.
+	for _, call := range calls {
+		score := math.Abs(targetDelta - call.delta)
+		if score < bestScore {
+			bestScore = score
+			bestCall = call
+		}
 	}
+	return bestCall
+}
 
-	bestCall, err := getBestCall(napi, callsMap, symbol, assetClass)
-	if err != nil {
-		return nil, err
-	}
-
+func getResponse(bestCall *viableCall) *discord.InteractionResponse {
 	var content string
 	if bestCall != nil {
 		content = bestCall.content
 	} else {
 		content = "No valid calls found"
 	}
-
 	return &discord.InteractionResponse{
 		Type: discord.InteractionResponseTypeChannelMessageWithSource,
 		Data: &discord.InteractionApplicationCommandCallbackData{
 			Content: content,
 		},
-	}, nil
-}
-
-func findCallByStrike(calls []*viableCall, strike float64) (*viableCall, bool) {
-	for _, call := range calls {
-		if call.strike == strike {
-			return call, true
-		}
 	}
-	return nil, false
-}
-
-func getSharePrice(napi nasdaq.ClientInterface, symbol string, assetClass string) (float64, error) {
-	quote, err := napi.GetQuote(symbol, assetClass)
-	if err != nil {
-		return 0, err
-	}
-
-	share, err := strconv.ParseFloat(strings.ReplaceAll(quote.Data.PrimaryData.LastSalePrice, "$", ""), 64)
-	if err != nil {
-		return 0, err
-	}
-	return share, nil
-}
-
-func getCalls(share float64, options *nasdaq.OptionsResponse) (viableCallsMap, error) {
-	calls := viableCallsMap{}
-	expiryGroup := ""
-	earliestTargetDate := time.Now().AddDate(0, 0, 99)
-
-	for _, option := range options.Data.Table.Rows {
-		var err error
-		if option.ExpiryGroup != "" {
-			expiryGroup = option.ExpiryGroup
-		}
-		if expiryGroup == "" {
-			continue
-		}
-
-		call := &viableCall{share: share}
-		call.expires, err = time.Parse("January 02, 2006", expiryGroup)
-		if err != nil {
-			continue
-		}
-		if call.expires.Unix() < earliestTargetDate.Unix() {
-			continue
-		}
-		call.expiresDatestamp = call.expires.Format("2006-01-02")
-		call.expiresReadout = call.expires.Format("Jan02'06")
-		call.optionURL = nasdaq.SiteBaseURL + option.URL
-
-		call.strike, err = strconv.ParseFloat(option.Strike, 64)
-		if err != nil {
-			continue
-		}
-
-		call.ask, err = strconv.ParseFloat(option.CallAsk, 64)
-		if err != nil {
-			continue
-		}
-
-		call.extrinsicRisk = formulas.GetExtrinsicRisk(call.share, call.strike, call.ask)
-		if call.extrinsicRisk > 10 {
-			continue
-		}
-
-		calls[call.expiresDatestamp] = append(calls[call.expiresDatestamp], call)
-	}
-	return calls, nil
-}
-
-func getBestCall(napi nasdaq.ClientInterface, callsMap viableCallsMap, symbol string, assetClass string) (*viableCall, error) {
-	var bestCall *viableCall = nil
-	bestMatchValue := float64(1)
-	for expiry, calls := range callsMap {
-		greeks, err := napi.GetGreeks(symbol, assetClass, expiry)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, greek := range greeks.Data.Table.Rows {
-			call, found := findCallByStrike(calls, greek.Strike)
-			if !found {
-				continue
-			}
-			if greek.CallDelta > 0.80 || greek.CallDelta < 0.70 { // todo use plusminus
-				continue
-			}
-
-			score := math.Abs(targetDelta - greek.CallDelta)
-			if score < bestMatchValue {
-				call.greeksURL = nasdaq.SiteBaseURL + greek.URL
-				call.content = fmt.Sprintf(
-					"%s %.0f CALL Δ%.2f\n%s",
-					call.expiresReadout, greek.Strike, greek.CallDelta, call.optionURL)
-				bestMatchValue = score
-				bestCall = call
-			}
-		}
-	}
-	return bestCall, nil
 }

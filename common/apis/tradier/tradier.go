@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/wafer-bw/udx-discord-bot/common/config"
 	"github.com/wafer-bw/udx-discord-bot/common/request"
 )
 
@@ -20,6 +21,13 @@ type Client struct {
 // ClientInterface of Client methods
 type ClientInterface interface {
 	GetQuote(symbol string, greeks bool) (*Quote, error)
+	GetOptionExpirations(symbol string, includeAllRoots bool, strikes bool) (Expirations, error)
+	GetOptionChain(symbol string, expiration string, greeks bool) (Chain, error)
+}
+
+// New ClientInterface
+func New(conf config.TradierConfig) ClientInterface {
+	return &Client{Token: conf.Token, Endpoint: conf.Endpoint}
 }
 
 // GetQuote for provided underlying symbol
@@ -42,7 +50,7 @@ func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 
 // GetOptionExpirations for provided underlying symbol
 // https://documentation.tradier.com/brokerage-api/markets/get-options-expirations
-func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, strikes bool) (*Expirations, error) {
+func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, strikes bool) (Expirations, error) {
 	url := fmt.Sprintf("%s/markets/options/expirations?symbol=%s&includeAllRoots=%t&strikes=%t", client.Endpoint, symbol, includeAllRoots, strikes)
 	headers := map[string]string{"accept": contentType, "Authorization": fmt.Sprintf("Bearer %s", client.Token)}
 	status, data, err := request.Do(http.MethodGet, url, headers, nil)
@@ -51,11 +59,11 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 	} else if status != http.StatusOK {
 		return nil, getFault(data)
 	}
-	expirations := &ExpirationsResponse{}
+	expirations := &OptionExpirationsResponse{}
 	if err := json.Unmarshal(data, expirations); err != nil {
 		return nil, err
 	}
-	return expirations.Expirations, nil
+	return expirations.Expirations.Expiration, nil
 }
 
 //GetOptionChain at provided expiration for provided symbol
@@ -69,7 +77,7 @@ func (client Client) GetOptionChain(symbol string, expiration string, greeks boo
 	} else if status != http.StatusOK {
 		return nil, getFault(data)
 	}
-	optionChain := &OptionsChainResponse{}
+	optionChain := &OptionChainsResponse{}
 	if err := json.Unmarshal(data, optionChain); err != nil {
 		return nil, err
 	}

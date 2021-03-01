@@ -52,13 +52,15 @@ type Quote struct {
 	RootSymbols      string    `json:"root_symbols"`
 }
 
-type ExpirationsResponse struct {
-	Expirations *Expirations `json:"expirations"`
+type OptionExpirationsResponse struct {
+	Expirations *OptionExpirations `json:"expirations"`
 }
 
-type Expirations struct {
-	Expirations []*Expiration `json:"expiration"`
+type OptionExpirations struct {
+	Expiration Expirations `json:"expiration"`
 }
+
+type Expirations []*Expiration
 
 type Expiration struct {
 	Date    string   `json:"date"`
@@ -69,15 +71,15 @@ type Strikes struct {
 	Strikes []float64 `json:"strike"`
 }
 
-type OptionsChainResponse struct {
+type OptionChainsResponse struct {
 	Options *Options `json:"options"`
 }
-
-type Chain []*Option
 
 type Options struct {
 	Chain Chain `json:"option"`
 }
+
+type Chain []*Option
 
 type Option struct {
 	Symbol           string     `json:"symbol"`
