@@ -7,11 +7,13 @@ on:
 jobs:
   sync:
     env:
-      DISCORD_API_BASE_URL: https://discord.com/api
-      DISCORD_API_VERSION: v8
+      DISCORD_API_BASE_URL: ${{ secrets.DISCORD_API_BASE }}
+      DISCORD_API_VERSION: ${{ secrets.DISCORD_API_VERSION }}
       DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
       DISCORD_PUBLIC_KEY: ${{ secrets.DISCORD_PUBLIC_KEY }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+      TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }}
+      TRADIER_ENDPOINT: ${{ secrets.TRADIER_ENDPOINT }}
     name: sync
     runs-on: ubuntu-latest
     steps:
