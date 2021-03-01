@@ -40,12 +40,12 @@ func (client *Client) GetOptions(symbol string, assetClass string) (*OptionsResp
 		"X-Forwarded-For": "204.101.161.58",
 		"user-agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
 	}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
 	}
-	if status != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", status, string(data))
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", response.StatusCode, string(data))
 	}
 	options := &OptionsResponse{}
 	if err := json.Unmarshal(data, options); err != nil {
@@ -61,12 +61,12 @@ func (client *Client) GetQuote(symbol string, assetClass string) (*QuoteResponse
 		"X-Forwarded-For": "204.101.161.58",
 		"user-agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
 	}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
 	}
-	if status != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", status, data)
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", response.StatusCode, data)
 	}
 	options := &QuoteResponse{}
 	if err := json.Unmarshal(data, options); err != nil {
@@ -85,12 +85,12 @@ func (client *Client) GetGreeks(symbol string, assetClass string, date string) (
 		"X-Forwarded-For": "204.101.161.58",
 		"user-agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
 	}
-	status, data, err := request.Do(http.MethodGet, url, headers, nil)
+	response, data, err := request.Do(http.MethodGet, url, headers, nil)
 	if err != nil {
 		return nil, err
 	}
-	if status != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", status, data)
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%d - %s", response.StatusCode, data)
 	}
 	greeks := &GreeksResponse{}
 	if err := json.Unmarshal(data, greeks); err != nil {

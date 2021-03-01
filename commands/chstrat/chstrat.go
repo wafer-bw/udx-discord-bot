@@ -1,9 +1,13 @@
 package chstrat
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"math"
+	"sort"
+	"strings"
+	"text/tabwriter"
 	"time"
 
 	"github.com/wafer-bw/disgoslash"
@@ -26,7 +30,7 @@ var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, gu
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
 	Name:        name,
-	Description: "Find a call w/ an ER under 10% & a Δ between .70-.80 as close to .75 as possible and DTE 99<365",
+	Description: "Get best call per expiry w/ ER<10%, Δ.70-.80 closest to Δ.75, and DTE99<365",
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Required:    true,
@@ -37,15 +41,16 @@ var command = &discord.ApplicationCommand{
 	},
 }
 
-type viableCalls []*viableCall
+type viableCallsMap map[string][]*viableCall
+type bestCallsMap map[string]*viableCall
 
 type viableCall struct {
-	share         float64
+	strike        float64
 	bid           float64
 	ask           float64
 	extrinsicRisk float64
 	delta         float64
-	content       string
+	expiry        string
 }
 
 // todo - move these to inputs from the command with defaults
@@ -75,9 +80,9 @@ func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse,
 		return nil, err
 	}
 
-	bestCall := getBestCall(calls)
-
-	return getResponse(bestCall), nil
+	bestCalls := getBestCalls(calls)
+	sortedBestCalls := sortBestCalls(bestCalls)
+	return getResponse(symbol, share, sortedBestCalls), nil
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
@@ -96,11 +101,11 @@ func getExpirations(tapi tradier.ClientInterface, symbol string) (tradier.Expira
 	return expirations, nil
 }
 
-func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations) (viableCalls, error) {
+func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations) (viableCallsMap, error) {
 	earliestExpiryDate := time.Now().AddDate(0, 0, 99)
 	latestExpiryDate := time.Now().AddDate(0, 0, 365)
 
-	calls := viableCalls{}
+	calls := viableCallsMap{}
 	for _, expiry := range expirations {
 		expires, err := time.Parse("2006-01-02", expiry)
 		if err != nil {
@@ -127,42 +132,77 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 				continue
 			}
 
-			calls = append(calls, &viableCall{
-				share:         share,
+			calls[expiry] = append(calls[expiry], &viableCall{
 				bid:           option.Bid,
 				ask:           option.Ask,
 				extrinsicRisk: extrinsicRisk,
 				delta:         option.Greeks.Delta,
-				content: fmt.Sprintf(".\n%s\n%.2fΔ %.2fER - Bid: %.2f Ask: %.2f Share: %.2f",
-					option.Description, option.Greeks.Delta,
-					extrinsicRisk, option.Bid, option.Ask, share,
-				),
+				expiry:        expires.Format("Jan02'06"),
+				strike:        option.Strike,
 			})
 		}
 	}
 	return calls, nil
 }
 
-func getBestCall(calls viableCalls) *viableCall {
-	var bestCall *viableCall = nil
-	bestScore := float64(1) // how close the call delta is to target delta.
-	for _, call := range calls {
-		score := math.Abs(targetDelta - call.delta)
-		if score < bestScore {
-			bestScore = score
-			bestCall = call
+func getBestCalls(callsMap viableCallsMap) bestCallsMap {
+	bestCalls := bestCallsMap{}
+	for expiry, calls := range callsMap {
+		var bestCall *viableCall = nil
+		// how close the call delta is to target delta. Lower is better.
+		bestScore := float64(1)
+		for _, call := range calls {
+			score := math.Abs(targetDelta - call.delta)
+			if score < bestScore {
+				bestScore = score
+				bestCall = call
+			}
 		}
+		bestCalls[expiry] = bestCall
 	}
-	return bestCall
+	return bestCalls
 }
 
-func getResponse(bestCall *viableCall) *discord.InteractionResponse {
-	var content string
-	if bestCall != nil {
-		content = bestCall.content
-	} else {
-		content = "No valid calls found"
+func sortBestCalls(callsMap bestCallsMap) []*viableCall {
+	bestCalls := make([]*viableCall, 0, len(callsMap))
+	keys := make([]string, 0, len(callsMap))
+	for key := range callsMap {
+		keys = append(keys, key)
 	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		bestCalls = append(bestCalls, callsMap[key])
+	}
+	return bestCalls
+}
+
+func getResponse(symbol string, share float64, bestCalls []*viableCall) *discord.InteractionResponse {
+	if len(bestCalls) == 0 {
+		return response("No valid calls found")
+	}
+
+	rows := []string{}
+	buffer := new(bytes.Buffer)
+	tabber := tabwriter.NewWriter(buffer, 0, 0, 1, ' ', 0)
+	for _, call := range bestCalls {
+		row := []string{
+			call.expiry,
+			fmt.Sprintf("%.2f", call.strike),
+			fmt.Sprintf("%.2fΔ", call.delta),
+			fmt.Sprintf("%.2fER", call.extrinsicRisk),
+			fmt.Sprintf("b/a %.2f", call.bid),
+			"-",
+			fmt.Sprintf("%.2f", call.ask),
+		}
+		rows = append(rows, strings.Join(row, "\t"))
+	}
+	fmt.Fprint(tabber, strings.Join(rows, "\n"))
+	tabber.Flush()
+
+	return response(fmt.Sprintf("```\n%s - %.2f\n%s\n```", symbol, share, buffer.String()))
+}
+
+func response(content string) *discord.InteractionResponse {
 	return &discord.InteractionResponse{
 		Type: discord.InteractionResponseTypeChannelMessageWithSource,
 		Data: &discord.InteractionApplicationCommandCallbackData{
