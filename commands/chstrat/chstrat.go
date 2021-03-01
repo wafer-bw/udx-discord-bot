@@ -26,7 +26,7 @@ var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, gu
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
 	Name:        name,
-	Description: "Find a call w/ an ER under 10% and a Δ between .70-.80 as close to .75 as possible.",
+	Description: "Find a call w/ an ER under 10% and a Δ between .70-.80 as close to .75 as possible and a DTE between 99 and 365 days",
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Required:    true,
@@ -98,6 +98,7 @@ func getExpirations(tapi tradier.ClientInterface, symbol string) (tradier.Expira
 
 func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations) (viableCalls, error) {
 	earliestExpiryDate := time.Now().AddDate(0, 0, 99)
+	latestExpiryDate := time.Now().AddDate(0, 0, 365)
 
 	calls := viableCalls{}
 	for _, expiry := range expirations {
@@ -106,7 +107,7 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 			log.Println(err)
 			continue
 		}
-		if expires.Unix() < earliestExpiryDate.Unix() {
+		if expires.Unix() < earliestExpiryDate.Unix() || expires.Unix() > latestExpiryDate.Unix() {
 			continue
 		}
 
