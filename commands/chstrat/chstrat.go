@@ -26,7 +26,7 @@ var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, gu
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
 	Name:        name,
-	Description: "Find a call w/ an ER under 10% and a Δ between .70-.80 as close to .75 as possible and a DTE between 99 and 365 days",
+	Description: "Find a call w/ an ER under 10% & a Δ between .70-.80 as close to .75 as possible and DTE 99<365",
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Required:    true,
