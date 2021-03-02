@@ -11,7 +11,6 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 )
 
-var name = "extrinsicrisk"
 var global = false
 var guildIDs = []string{
 	"116036580094902275", // UDX
@@ -19,11 +18,11 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = disgoslash.NewSlashCommand(name, command, extrinsicRisk, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(command, extrinsicRisk, global, guildIDs)
 
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
-	Name:        name,
+	Name:        "extrinsicrisk",
 	Description: "Calculate an option's extrinsic risk percentage using the provided share, strike, & ask prices",
 	Options: []*discord.ApplicationCommandOption{
 		{
@@ -49,7 +48,7 @@ var command = &discord.ApplicationCommand{
 
 // extrinsicRisk - The code which completes the desired action of the slash command.
 // Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
-func extrinsicRisk(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
+func extrinsicRisk(request *discord.InteractionRequest) *discord.InteractionResponse {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		log.Println(err)
@@ -58,7 +57,7 @@ func extrinsicRisk(request *discord.InteractionRequest) (*discord.InteractionRes
 			Data: &discord.InteractionApplicationCommandCallbackData{
 				Content: "Error parsing command :cry:",
 			},
-		}, nil
+		}
 	}
 	risk := formulas.GetExtrinsicRisk(p.Share, p.Strike, p.Ask)
 
@@ -67,7 +66,7 @@ func extrinsicRisk(request *discord.InteractionRequest) (*discord.InteractionRes
 		Data: &discord.InteractionApplicationCommandCallbackData{
 			Content: fmt.Sprintf("%.2f%%", risk),
 		},
-	}, nil
+	}
 }
 
 type payload struct {
