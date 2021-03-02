@@ -8,6 +8,7 @@ cypress/videos
 .DS_Store
 .coverage
 cov.xml
+dump
 
 # Binaries for programs and plugins
 *.exe
