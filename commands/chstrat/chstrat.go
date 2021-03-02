@@ -17,7 +17,6 @@ import (
 	"github.com/wafer-bw/udx-discord-bot/common/formulas"
 )
 
-var name = "chstrat"
 var global = false
 var guildIDs = []string{
 	"116036580094902275", // UDX
@@ -25,11 +24,11 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = disgoslash.NewSlashCommand(name, command, chstrat, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(command, chstrat, global, guildIDs)
 
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
-	Name:        name,
+	Name:        "chstrat",
 	Description: "Get best call per expiry w/ ER<10%, Δ.70-.80 closest to Δ.75, and DTE99<365",
 	Options: []*discord.ApplicationCommandOption{
 		{
@@ -59,7 +58,7 @@ const minDelta float64 = 0.70
 const maxDelta float64 = 0.80
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
-func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse, error) {
+func chstrat(request *discord.InteractionRequest) *discord.InteractionResponse {
 	symbol := request.Data.Options[0].Value
 
 	conf := config.New()
@@ -67,22 +66,25 @@ func chstrat(request *discord.InteractionRequest) (*discord.InteractionResponse,
 
 	share, err := getSharePrice(tapi, symbol)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil
 	}
 
 	expirations, err := getExpirations(tapi, symbol)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil
 	}
 
 	calls, err := getCalls(tapi, symbol, share, expirations)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil
 	}
 
 	bestCalls := getBestCalls(calls)
 	sortedBestCalls := sortBestCalls(bestCalls)
-	return getResponse(symbol, share, sortedBestCalls), nil
+	return getResponse(symbol, share, sortedBestCalls)
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
