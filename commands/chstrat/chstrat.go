@@ -24,7 +24,7 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = disgoslash.NewSlashCommand(command, chstrat, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(command, chstratWrapper, global, guildIDs)
 
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
@@ -57,29 +57,32 @@ const targetDelta float64 = 0.75
 const minDelta float64 = 0.70
 const maxDelta float64 = 0.80
 
-// chstrat - Find optimal option calls with an extrinsic risk under 10%
-func chstrat(request *discord.InteractionRequest) *discord.InteractionResponse {
-	symbol := request.Data.Options[0].Value
-
+func chstratWrapper(request *discord.InteractionRequest) *discord.InteractionResponse {
 	conf := config.New()
-	tapi := &tradier.Client{Token: conf.Tradier.Token, Endpoint: conf.Tradier.Endpoint}
+	tapi := tradier.New(conf.Tradier)
+	return chstrat(request, tapi, time.Now())
+}
+
+// chstrat - Find optimal option calls with an extrinsic risk under 10%
+func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, now time.Time) *discord.InteractionResponse {
+	symbol := request.Data.Options[0].Value
 
 	share, err := getSharePrice(tapi, symbol)
 	if err != nil {
 		log.Println(err)
-		return nil
+		return response(err.Error())
 	}
 
 	expirations, err := getExpirations(tapi, symbol)
 	if err != nil {
 		log.Println(err)
-		return nil
+		return response(err.Error())
 	}
 
-	calls, err := getCalls(tapi, symbol, share, expirations)
+	calls, err := getCalls(tapi, symbol, share, expirations, now)
 	if err != nil {
 		log.Println(err)
-		return nil
+		return response(err.Error())
 	}
 
 	bestCalls := getBestCalls(calls)
@@ -103,9 +106,9 @@ func getExpirations(tapi tradier.ClientInterface, symbol string) (tradier.Expira
 	return expirations, nil
 }
 
-func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations) (viableCallsMap, error) {
-	earliestExpiryDate := time.Now().AddDate(0, 0, 99)
-	latestExpiryDate := time.Now().AddDate(0, 0, 365)
+func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations, now time.Time) (viableCallsMap, error) {
+	earliestExpiryDate := now.AddDate(0, 0, 99)
+	latestExpiryDate := now.AddDate(0, 0, 365)
 
 	calls := viableCallsMap{}
 	for _, expiry := range expirations {

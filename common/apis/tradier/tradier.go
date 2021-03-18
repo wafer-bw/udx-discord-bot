@@ -26,7 +26,7 @@ type ClientInterface interface {
 }
 
 // New ClientInterface
-func New(conf config.TradierConfig) ClientInterface {
+func New(conf *config.TradierConfig) ClientInterface {
 	return &Client{Token: conf.Token, Endpoint: conf.Endpoint}
 }
 
@@ -39,7 +39,7 @@ func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 	if err != nil {
 		return nil, err
 	} else if response.StatusCode != http.StatusOK {
-		return nil, getFault(data)
+		return nil, getFault(data, response.StatusCode)
 	}
 	quotes := &QuotesResponse{}
 	if err := json.Unmarshal(data, quotes); err != nil {
@@ -57,7 +57,7 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 	if err != nil {
 		return nil, err
 	} else if response.StatusCode != http.StatusOK {
-		return nil, getFault(data)
+		return nil, getFault(data, response.StatusCode)
 	}
 	expirations := &OptionExpirationsResponse{}
 	if err := json.Unmarshal(data, expirations); err != nil {
@@ -75,7 +75,7 @@ func (client Client) GetOptionChain(symbol string, expiration string, greeks boo
 	if err != nil {
 		return nil, err
 	} else if response.StatusCode != http.StatusOK {
-		return nil, getFault(data)
+		return nil, getFault(data, response.StatusCode)
 	}
 	optionChain := &OptionChainsResponse{}
 	if err := json.Unmarshal(data, optionChain); err != nil {
@@ -84,11 +84,12 @@ func (client Client) GetOptionChain(symbol string, expiration string, greeks boo
 	return optionChain.Options.Chain, nil
 }
 
-func getFault(data []byte) error {
-	log.Println(string(data))
+func getFault(data []byte, status int) error {
+	errorStr := string(data)
+	log.Println(errorStr)
 	fault := &FaultResponse{}
 	if err := json.Unmarshal(data, fault); err != nil {
-		return err
+		return fmt.Errorf("%d - \"%s\"\n%s", status, errorStr, err.Error())
 	}
-	return fmt.Errorf("%s (%s)", fault.Fault, fault.Fault.Detail.ErrorCode)
+	return fmt.Errorf("%d (%s) - \"%s\"", status, fault.Fault.Detail.ErrorCode, fault.Fault)
 }

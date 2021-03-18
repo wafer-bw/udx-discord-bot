@@ -26,8 +26,15 @@ tidy:
 	go mod tidy
 .PHONY: tidy
 
+mocks:
+	rm -rf generatedmocks/*
+	mockery --all --output="generatedmocks" --keeptree
+.PHONY: mocks
+
+
 precommit:
 	make get
+	make mocks
 	make tidy
 	make test
 	make lint
