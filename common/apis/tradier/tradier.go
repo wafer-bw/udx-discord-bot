@@ -41,9 +41,13 @@ func (client Client) GetQuote(symbol string, greeks bool) (*Quote, error) {
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data, response.StatusCode)
 	}
+	log.Println(string(data))
 	quotes := &QuotesResponse{}
 	if err := json.Unmarshal(data, quotes); err != nil {
 		return nil, err
+	}
+	if quotes.Quotes.Quote == nil {
+		return nil, fmt.Errorf("could not find quote for symbol %s", symbol)
 	}
 	return quotes.Quotes.Quote, nil
 }
@@ -59,9 +63,13 @@ func (client Client) GetOptionExpirations(symbol string, includeAllRoots bool, s
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data, response.StatusCode)
 	}
+	log.Println(string(data))
 	expirations := &OptionExpirationsResponse{}
 	if err := json.Unmarshal(data, expirations); err != nil {
 		return nil, err
+	}
+	if expirations.Expirations.Expirations == nil {
+		return nil, fmt.Errorf("could not find expirations for symbol %s", symbol)
 	}
 	return expirations.Expirations.Expirations, nil
 }
@@ -77,9 +85,13 @@ func (client Client) GetOptionChain(symbol string, expiration string, greeks boo
 	} else if response.StatusCode != http.StatusOK {
 		return nil, getFault(data, response.StatusCode)
 	}
+	log.Println(string(data))
 	optionChain := &OptionChainsResponse{}
 	if err := json.Unmarshal(data, optionChain); err != nil {
 		return nil, err
+	}
+	if optionChain.Options.Chain == nil {
+		return nil, fmt.Errorf("could not find option chain for symbol %s", symbol)
 	}
 	return optionChain.Options.Chain, nil
 }
