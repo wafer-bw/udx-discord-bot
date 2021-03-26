@@ -2,6 +2,7 @@ package chstrat
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"log"
 	"math"
@@ -52,6 +53,18 @@ type viableCall struct {
 	expiry        string
 }
 
+type chain struct {
+	expiry string
+	chain  tradier.Chain
+}
+
+type chainResult struct {
+	chain chain
+	err   error
+}
+
+const callsDeadlineDuration = 2750 * time.Millisecond
+
 // todo - move these to inputs from the command with defaults
 const targetDelta float64 = 0.75
 const minDelta float64 = 0.70
@@ -73,13 +86,18 @@ func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, 
 		return response(err.Error())
 	}
 
-	expirations, err := getExpirations(tapi, symbol)
+	expirations, err := getExpirations(tapi, symbol, now)
 	if err != nil {
 		log.Println(err)
 		return response(err.Error())
 	}
 
-	calls, err := getCalls(tapi, symbol, share, expirations, now)
+	chains, errs, deadlineExceeded := getChains(tapi, symbol, expirations, now)
+	for err := range errs {
+		log.Println(err)
+	}
+
+	calls, err := getCalls(share, chains)
 	if err != nil {
 		log.Println(err)
 		return response(err.Error())
@@ -87,7 +105,7 @@ func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, 
 
 	bestCalls := getBestCalls(calls)
 	sortedBestCalls := sortBestCalls(bestCalls)
-	return getResponse(symbol, share, sortedBestCalls)
+	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded)
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
@@ -98,19 +116,15 @@ func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error)
 	return quote.Last, nil
 }
 
-func getExpirations(tapi tradier.ClientInterface, symbol string) (tradier.Expirations, error) {
+func getExpirations(tapi tradier.ClientInterface, symbol string, now time.Time) (tradier.Expirations, error) {
 	expirations, err := tapi.GetOptionExpirations(symbol, true, false)
 	if err != nil {
 		return nil, err
 	}
-	return expirations, nil
-}
 
-func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expirations tradier.Expirations, now time.Time) (viableCallsMap, error) {
 	earliestExpiryDate := now.AddDate(0, 0, 99)
 	latestExpiryDate := now.AddDate(0, 0, 365)
-
-	calls := viableCallsMap{}
+	viableExpirations := tradier.Expirations{}
 	for _, expiry := range expirations {
 		expires, err := time.Parse("2006-01-02", expiry)
 		if err != nil {
@@ -120,12 +134,58 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 		if expires.Unix() < earliestExpiryDate.Unix() || expires.Unix() > latestExpiryDate.Unix() {
 			continue
 		}
+		viableExpirations = append(viableExpirations, expiry)
+	}
 
-		chain, err := tapi.GetOptionChain(symbol, expiry, true)
-		if err != nil {
-			return nil, err
+	return viableExpirations, nil
+}
+
+func getChain(chains chan<- chainResult, tapi tradier.ClientInterface, symbol string, expiry string) {
+	fmt.Println(time.Now().UnixNano())
+	c, e := tapi.GetOptionChain(symbol, expiry, true)
+	res := chainResult{chain: chain{chain: c, expiry: expiry}, err: e}
+	chains <- res
+}
+
+func getChains(tapi tradier.ClientInterface, symbol string, expirations tradier.Expirations, now time.Time) ([]chain, []error, bool) {
+	ctx, cancel := context.WithDeadline(context.Background(), now.Add(callsDeadlineDuration))
+	defer cancel()
+
+	chains := make(chan chainResult)
+	defer close(chains)
+
+	for _, expiry := range expirations {
+		go getChain(chains, tapi, symbol, expiry)
+	}
+
+	gatheredErrors := []error{}
+	gatheredChains := []chain{}
+	for i := 0; i < len(expirations); i++ {
+		select {
+		case res := <-chains:
+			if res.err != nil {
+				gatheredErrors = append(gatheredErrors, res.err)
+			} else if res.chain.chain != nil {
+				gatheredChains = append(gatheredChains, res.chain)
+			}
+		case <-ctx.Done():
+			log.Println(ctx.Err())
+			return gatheredChains, gatheredErrors, true
 		}
-		for _, option := range chain {
+	}
+	return gatheredChains, gatheredErrors, false
+}
+
+func getCalls(share float64, chains []chain) (viableCallsMap, error) {
+	calls := viableCallsMap{}
+	for _, chain := range chains {
+		expires, err := time.Parse("2006-01-02", chain.expiry)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		for _, option := range chain.chain {
 			if option.OptionType != tradier.OptionTypeCall {
 				continue
 			}
@@ -137,7 +197,7 @@ func getCalls(tapi tradier.ClientInterface, symbol string, share float64, expira
 				continue
 			}
 
-			calls[expiry] = append(calls[expiry], &viableCall{
+			calls[chain.expiry] = append(calls[chain.expiry], &viableCall{
 				bid:           option.Bid,
 				ask:           option.Ask,
 				extrinsicRisk: extrinsicRisk,
@@ -181,7 +241,7 @@ func sortBestCalls(callsMap bestCallsMap) []*viableCall {
 	return bestCalls
 }
 
-func getResponse(symbol string, share float64, bestCalls []*viableCall) *discord.InteractionResponse {
+func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool) *discord.InteractionResponse {
 	if len(bestCalls) == 0 {
 		return response("No valid calls found")
 	}
@@ -204,7 +264,12 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall) *discord
 	fmt.Fprint(tabber, strings.Join(rows, "\n"))
 	tabber.Flush()
 
-	return response(fmt.Sprintf("```\n%s - $%.2f\n%s\n```", symbol, share, buffer.String()))
+	msg := fmt.Sprintf("```\n%s - $%.2f\n%s\n```", symbol, share, buffer.String())
+	if deadlineExceeded {
+		msg += "\n_partial results due to time limit_"
+	}
+
+	return response(msg)
 }
 
 func response(content string) *discord.InteractionResponse {

@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 	"github.com/wafer-bw/disgoslash/discord"
 	"github.com/wafer-bw/udx-discord-bot/common/config"
@@ -31,25 +30,24 @@ func TestChstratWrapper(t *testing.T) {
 	})
 }
 
-// todo use mocks so it doesnt spam the api
 func TestChstrat(t *testing.T) {
 
-	t.Run("LIVE RUN", func(t *testing.T) {
-		err := godotenv.Load("../../.env")
-		if err != nil {
-			log.Println("Warning: could not load .env file")
-		}
-		request := &discord.InteractionRequest{
-			Data: &discord.ApplicationCommandInteractionData{
-				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "symbol", Value: "SPY"},
-				},
-			},
-		}
-		response := chstratWrapper(request)
-		require.NotNil(t, response)
-		require.Equal(t, "", response.Data.Content)
-	})
+	// t.Run("LIVE RUN", func(t *testing.T) {
+	// 	err := godotenv.Load("../../.env")
+	// 	if err != nil {
+	// 		log.Println("Warning: could not load .env file")
+	// 	}
+	// 	request := &discord.InteractionRequest{
+	// 		Data: &discord.ApplicationCommandInteractionData{
+	// 			Options: []*discord.ApplicationCommandInteractionDataOption{
+	// 				{Name: "symbol", Value: "TSLA"},
+	// 			},
+	// 		},
+	// 	}
+	// 	response := chstratWrapper(request)
+	// 	require.NotNil(t, response)
+	// 	require.Equal(t, "", response.Data.Content)
+	// })
 
 	// t.Run("success", func(t *testing.T) {
 	// 	now := time.Now()
