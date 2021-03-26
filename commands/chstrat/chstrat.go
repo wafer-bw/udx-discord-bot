@@ -63,7 +63,7 @@ type chainResult struct {
 	err   error
 }
 
-const callsDeadlineDuration = 2750 * time.Millisecond
+const callsDeadlineDuration = 2850 * time.Millisecond
 
 // todo - move these to inputs from the command with defaults
 const targetDelta float64 = 0.75
@@ -141,7 +141,6 @@ func getExpirations(tapi tradier.ClientInterface, symbol string, now time.Time) 
 }
 
 func getChain(chains chan<- chainResult, tapi tradier.ClientInterface, symbol string, expiry string) {
-	fmt.Println(time.Now().UnixNano())
 	c, e := tapi.GetOptionChain(symbol, expiry, true)
 	res := chainResult{chain: chain{chain: c, expiry: expiry}, err: e}
 	chains <- res
@@ -243,7 +242,11 @@ func sortBestCalls(callsMap bestCallsMap) []*viableCall {
 
 func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool) *discord.InteractionResponse {
 	if len(bestCalls) == 0 {
-		return response("No valid calls found")
+		msg := "No valid calls found"
+		if deadlineExceeded {
+			msg += "\n_incomplete results due to time limit_"
+		}
+		return response(msg)
 	}
 
 	rows := []string{}
@@ -266,7 +269,7 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall, deadline
 
 	msg := fmt.Sprintf("```\n%s - $%.2f\n%s\n```", symbol, share, buffer.String())
 	if deadlineExceeded {
-		msg += "\n_partial results due to time limit_"
+		msg += "\n_incomplete results due to time limit_"
 	}
 
 	return response(msg)

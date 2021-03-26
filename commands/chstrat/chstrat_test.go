@@ -40,7 +40,7 @@ func TestChstrat(t *testing.T) {
 	// 	request := &discord.InteractionRequest{
 	// 		Data: &discord.ApplicationCommandInteractionData{
 	// 			Options: []*discord.ApplicationCommandInteractionDataOption{
-	// 				{Name: "symbol", Value: "TSLA"},
+	// 				{Name: "symbol", Value: "SPY"},
 	// 			},
 	// 		},
 	// 	}
