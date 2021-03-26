@@ -6,6 +6,7 @@ A serverless Discord slash command bot powered by Vercel written in Golang using
 [![Go Report Card](https://goreportcard.com/badge/github.com/wafer-bw/udx-discord-bot)](https://goreportcard.com/report/github.com/wafer-bw/udx-discord-bot)
 ![CodeQL](https://github.com/wafer-bw/udx-discord-bot/workflows/CodeQL/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/wafer-bw/udx-discord-bot/badge.svg)](https://coveralls.io/github/wafer-bw/udx-discord-bot)
+[![Register Discord Slash Commands](https://github.com/wafer-bw/udx-discord-bot/actions/workflows/sync.yml/badge.svg)](https://github.com/wafer-bw/udx-discord-bot/actions/workflows/sync.yml)
 
 ## Getting Started
 
