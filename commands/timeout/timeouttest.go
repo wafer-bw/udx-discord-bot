@@ -21,7 +21,7 @@ var command = &discord.ApplicationCommand{
 	Description: "Test deadline exceeded.",
 	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        discord.ApplicationCommandOptionTypeInteger,
+			Type:        discord.ApplicationCommandOptionTypeString,
 			Name:        "Delay",
 			Description: "Delay in ms",
 			Required:    true,
