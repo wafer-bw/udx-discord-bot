@@ -1,3 +1,6 @@
+# GCP
+app.yaml
+
 # Tests
 cypress/screenshots
 cypress/videos
