@@ -10,6 +10,7 @@ import (
 
 	"github.com/wafer-bw/disgoslash"
 	"github.com/wafer-bw/disgoslash/discord"
+	"github.com/wafer-bw/udx-discord-bot/common/config"
 )
 
 var global = false
@@ -29,7 +30,7 @@ func respond(request *discord.InteractionRequest) *discord.InteractionResponse {
 	go continuework(request)
 
 	return &discord.InteractionResponse{
-		Type: discord.InteractionResponseTypeAcknowledge,
+		Type: discord.InteractionResponseTypeAcknowledgeWithSource,
 		Data: &discord.InteractionApplicationCommandCallbackData{
 			Content: "ACK",
 		},
@@ -38,9 +39,10 @@ func respond(request *discord.InteractionRequest) *discord.InteractionResponse {
 
 func continuework(request *discord.InteractionRequest) {
 	time.Sleep(discord.MaxResponseTime * 2)
-	id := request.ID
+
+	conf := config.New()
 	token := request.Token
-	url := fmt.Sprintf("https://discord.com/api/v8/interactions/%s/%s/callback", id, token)
+	url := fmt.Sprintf("https://discord.com/api/v8/webhooks/%s/%s", conf.Discord.ClientID, token)
 
 	response := &discord.InteractionResponse{
 		Type: discord.InteractionResponseTypeChannelMessageWithSource,
