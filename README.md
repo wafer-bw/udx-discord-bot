@@ -71,15 +71,15 @@ go get -t -v -d ./...
 # Tidy go.mod
 go mod tidy
 # Run tests
-go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+go test -coverprofile=cover.out `go list ./... | grep -v ./generatedmocks`
 # Run verbose tests
-go test -v -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+go test -v -coverprofile=cover.out `go list ./... | grep -v ./generatedmocks`
 # Run linting
 golangci-lint run
 # Run formatting
 gofmt -s -w .
 # Run all the things you should before you make a commit
-go test -coverprofile=cover.out `go list ./... | grep -v ./disgoslash/generatedmocks`
+go test -coverprofile=cover.out `go list ./... | grep -v ./generatedmocks`
 golangci-lint run
 gofmt -s -w .
 # Deploy to preview
