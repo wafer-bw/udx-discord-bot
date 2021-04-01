@@ -23,7 +23,7 @@ var command = &discord.ApplicationCommand{
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
-			Name:        "subcommandgroup",
+			Name:        "subcommandgroupa",
 			Description: "GROUP A",
 			Options: []*discord.ApplicationCommandOption{
 				{
@@ -49,7 +49,7 @@ var command = &discord.ApplicationCommand{
 		},
 		{
 			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
-			Name:        "subcommandgroup",
+			Name:        "subcommandgroupb",
 			Description: "GROUP B",
 			Options: []*discord.ApplicationCommandOption{
 				{
