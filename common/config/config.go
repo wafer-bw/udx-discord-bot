@@ -11,9 +11,9 @@ import (
 
 // EnvVars defines expected & required environment variables
 type EnvVars struct {
-	DiscordPublicKey string `envconfig:"DEV_DISCORD_PUBLIC_KEY" required:"true" split_words:"true"`
-	DiscordClientID  string `envconfig:"DEV_DISCORD_CLIENT_ID" required:"true" split_words:"true"`
-	DiscordToken     string `envconfig:"DEV_DISCORD_TOKEN" required:"true" split_words:"true"`
+	DiscordPublicKey string `envconfig:"DISCORD_PUBLIC_KEY" required:"true" split_words:"true"`
+	DiscordClientID  string `envconfig:"DISCORD_CLIENT_ID" required:"true" split_words:"true"`
+	DiscordToken     string `envconfig:"DISCORD_TOKEN" required:"true" split_words:"true"`
 	TradierEndpoint  string `envconfig:"TRADIER_ENDPOINT" required:"true" split_words:"true"`
 	TradierToken     string `envconfig:"TRADIER_TOKEN" required:"true" split_words:"true"`
 }
@@ -32,10 +32,6 @@ type Config struct {
 
 // New returns a new `Config` struct; panics if unable
 func New() *Config {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Println("Warning: could not load .env file")
-	// }
 	env := getEnvVars()
 	ensureNoBlankEnvVars(env)
 	return &Config{
