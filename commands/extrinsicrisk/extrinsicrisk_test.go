@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/wafer-bw/disgoslash/discord"
+	"github.com/wafer-bw/udx-discord-bot/common/utils"
 )
 
 func TestMain(m *testing.M) {
@@ -21,9 +22,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: "101.80"},
-					{Name: "strike", Value: "87.5"},
-					{Name: "ask", Value: "19"},
+					{Name: "share", String: utils.StringPointer("101.80")},
+					{Name: "strike", String: utils.StringPointer("87.5")},
+					{Name: "ask", String: utils.StringPointer("19")},
 				},
 			},
 		}
@@ -49,9 +50,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: "a"},
-					{Name: "strike", Value: "87.5"},
-					{Name: "ask", Value: "19"},
+					{Name: "share", String: utils.StringPointer("a")},
+					{Name: "strike", String: utils.StringPointer("87.5")},
+					{Name: "ask", String: utils.StringPointer("19")},
 				},
 			},
 		}
@@ -65,9 +66,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: "101.80"},
-					{Name: "strike", Value: "a"},
-					{Name: "ask", Value: "19"},
+					{Name: "share", String: utils.StringPointer("101.80")},
+					{Name: "strike", String: utils.StringPointer("a")},
+					{Name: "ask", String: utils.StringPointer("19")},
 				},
 			},
 		}
@@ -81,9 +82,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: "101.80"},
-					{Name: "strike", Value: "87.5"},
-					{Name: "ask", Value: "a"},
+					{Name: "share", String: utils.StringPointer("101.80")},
+					{Name: "strike", String: utils.StringPointer("87.5")},
+					{Name: "ask", String: utils.StringPointer("a")},
 				},
 			},
 		}

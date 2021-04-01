@@ -29,7 +29,7 @@ var command = &discord.ApplicationCommand{
 
 // hello - This is where we put the code to run when a user uses our slash command
 func hello(request *discord.InteractionRequest) *discord.InteractionResponse {
-	username := request.Data.Options[0].Value
+	username := *request.Data.Options[0].String
 	return &discord.InteractionResponse{
 		Type: discord.InteractionResponseTypeChannelMessageWithSource,
 		Data: &discord.InteractionApplicationCommandCallbackData{
