@@ -27,8 +27,8 @@ var command = &discord.ApplicationCommand{
 			Description: "GROUP A",
 			Options: []*discord.ApplicationCommandOption{
 				{
-					Name:        "subcommand",
-					Description: "SUB",
+					Name:        "subcommand a",
+					Description: "SUB A",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
 						{
@@ -45,6 +45,19 @@ var command = &discord.ApplicationCommand{
 						},
 					},
 				},
+				{
+					Name:        "subcommand b",
+					Description: "SUB B",
+					Type:        discord.ApplicationCommandOptionTypeSubCommand,
+					Options: []*discord.ApplicationCommandOption{
+						{
+							Name:        "string",
+							Description: "string",
+							Type:        discord.ApplicationCommandOptionTypeString,
+							Required:    true,
+						},
+					},
+				},
 			},
 		},
 		{
@@ -53,14 +66,27 @@ var command = &discord.ApplicationCommand{
 			Description: "GROUP B",
 			Options: []*discord.ApplicationCommandOption{
 				{
-					Name:        "subcommand",
-					Description: "SUB",
+					Name:        "subcommand c",
+					Description: "SUB C",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
 						{
 							Name:        "number",
 							Description: "number",
 							Type:        discord.ApplicationCommandOptionTypeInteger,
+							Required:    true,
+						},
+					},
+				},
+				{
+					Name:        "subcommand d",
+					Description: "SUB D",
+					Type:        discord.ApplicationCommandOptionTypeSubCommand,
+					Options: []*discord.ApplicationCommandOption{
+						{
+							Name:        "bool",
+							Description: "bool",
+							Type:        discord.ApplicationCommandOptionTypeBoolean,
 							Required:    true,
 						},
 					},
