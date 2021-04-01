@@ -27,7 +27,7 @@ var command = &discord.ApplicationCommand{
 			Description: "GROUP A",
 			Options: []*discord.ApplicationCommandOption{
 				{
-					Name:        "subcommand a",
+					Name:        "subcommanda",
 					Description: "SUB A",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
@@ -46,7 +46,7 @@ var command = &discord.ApplicationCommand{
 					},
 				},
 				{
-					Name:        "subcommand b",
+					Name:        "subcommandb",
 					Description: "SUB B",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
@@ -66,7 +66,7 @@ var command = &discord.ApplicationCommand{
 			Description: "GROUP B",
 			Options: []*discord.ApplicationCommandOption{
 				{
-					Name:        "subcommand c",
+					Name:        "subcommandc",
 					Description: "SUB C",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
@@ -79,7 +79,7 @@ var command = &discord.ApplicationCommand{
 					},
 				},
 				{
-					Name:        "subcommand d",
+					Name:        "subcommandd",
 					Description: "SUB D",
 					Type:        discord.ApplicationCommandOptionTypeSubCommand,
 					Options: []*discord.ApplicationCommandOption{
