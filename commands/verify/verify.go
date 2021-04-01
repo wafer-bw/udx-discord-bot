@@ -33,6 +33,12 @@ var command = &discord.ApplicationCommand{
 			Description: "Enter a role",
 			Required:    true,
 		},
+		{
+			Name:        "channel",
+			Description: "channel",
+			Type:        discord.ApplicationCommandOptionTypeChannel,
+			Required:    false,
+		},
 		// {
 		// 	Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
 		// 	Name:        "subcommandgroup",
