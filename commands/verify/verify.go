@@ -22,49 +22,51 @@ var command = &discord.ApplicationCommand{
 	Description: "debugging",
 	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        discord.ApplicationCommandOptionTypeUser,
-			Name:        "User",
-			Description: "Enter a user",
-			Required:    true,
+			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
+			Name:        "subcommandgroup",
+			Description: "GROUP A",
+			Options: []*discord.ApplicationCommandOption{
+				{
+					Name:        "subcommand",
+					Description: "SUB",
+					Type:        discord.ApplicationCommandOptionTypeSubCommand,
+					Options: []*discord.ApplicationCommandOption{
+						{
+							Name:        "string",
+							Description: "string",
+							Type:        discord.ApplicationCommandOptionTypeString,
+							Required:    true,
+						},
+						{
+							Name:        "channel",
+							Description: "channel",
+							Type:        discord.ApplicationCommandOptionTypeChannel,
+							Required:    false,
+						},
+					},
+				},
+			},
 		},
 		{
-			Type:        discord.ApplicationCommandOptionTypeRole,
-			Name:        "Role",
-			Description: "Enter a role",
-			Required:    true,
+			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
+			Name:        "subcommandgroup",
+			Description: "GROUP B",
+			Options: []*discord.ApplicationCommandOption{
+				{
+					Name:        "subcommand",
+					Description: "SUB",
+					Type:        discord.ApplicationCommandOptionTypeSubCommand,
+					Options: []*discord.ApplicationCommandOption{
+						{
+							Name:        "number",
+							Description: "number",
+							Type:        discord.ApplicationCommandOptionTypeInteger,
+							Required:    true,
+						},
+					},
+				},
+			},
 		},
-		{
-			Name:        "channel",
-			Description: "channel",
-			Type:        discord.ApplicationCommandOptionTypeChannel,
-			Required:    false,
-		},
-		// {
-		// 	Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
-		// 	Name:        "subcommandgroup",
-		// 	Description: "GROUP",
-		// 	Options: []*discord.ApplicationCommandOption{
-		// 		{
-		// 			Name:        "subcommand",
-		// 			Description: "SUB",
-		// 			Type:        discord.ApplicationCommandOptionTypeSubCommand,
-		// 			Options: []*discord.ApplicationCommandOption{
-		// 				{
-		// 					Name:        "string",
-		// 					Description: "string",
-		// 					Type:        discord.ApplicationCommandOptionTypeString,
-		// 					Required:    true,
-		// 				},
-		// 				{
-		// 					Name:        "channel",
-		// 					Description: "channel",
-		// 					Type:        discord.ApplicationCommandOptionTypeChannel,
-		// 					Required:    false,
-		// 				},
-		// 			},
-		// 		},
-		// 	},
-		// },
 	},
 }
 
