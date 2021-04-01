@@ -56,10 +56,6 @@ var command = &discord.ApplicationCommand{
 
 // verify
 func verify(request *discord.InteractionRequest) *discord.InteractionResponse {
-	for _, option := range request.Data.Options {
-		option.Value = json.RawMessage("{}")
-	}
-
 	var msg string
 	data, err := json.Marshal(request.Data.Options)
 	if err != nil {
