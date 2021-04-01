@@ -79,15 +79,15 @@ func getPayload(options []*discord.ApplicationCommandInteractionDataOption) (*pa
 	if len(options) != 3 {
 		return nil, errors.New("missing required options")
 	}
-	share, err := strconv.ParseFloat(options[0].Value, 64)
+	share, err := strconv.ParseFloat(*options[0].String, 64)
 	if err != nil {
 		return nil, err
 	}
-	strike, err := strconv.ParseFloat(options[1].Value, 64)
+	strike, err := strconv.ParseFloat(*options[1].String, 64)
 	if err != nil {
 		return nil, err
 	}
-	ask, err := strconv.ParseFloat(options[2].Value, 64)
+	ask, err := strconv.ParseFloat(*options[2].String, 64)
 	if err != nil {
 		return nil, err
 	}

@@ -78,7 +78,7 @@ func chstratWrapper(request *discord.InteractionRequest) *discord.InteractionRes
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, now time.Time) *discord.InteractionResponse {
-	symbol := request.Data.Options[0].Value
+	symbol := *request.Data.Options[0].String
 
 	share, err := getSharePrice(tapi, symbol)
 	if err != nil {

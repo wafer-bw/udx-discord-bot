@@ -1,0 +1,22 @@
+name: Register Discord Slash Commands For Dev Testing
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  sync:
+    env:
+      DISCORD_API_BASE_URL: ${{ secrets.DISCORD_API_BASE }}
+      DISCORD_API_VERSION: ${{ secrets.DISCORD_API_VERSION }}
+      DISCORD_CLIENT_ID: ${{ secrets.DEV_DISCORD_CLIENT_ID }}
+      DISCORD_PUBLIC_KEY: ${{ secrets.DEV_DISCORD_PUBLIC_KEY }}
+      DISCORD_TOKEN: ${{ secrets.DEV_DISCORD_TOKEN }}
+      TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }}
+      TRADIER_ENDPOINT: ${{ secrets.TRADIER_ENDPOINT }}
+    name: sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Reregister All Discord Slash Commands
+        run: make sync
