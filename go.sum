@@ -29,6 +29,8 @@ github.com/wafer-bw/disgoslash v0.6.2-0.20210329213131-3244ee5e6448 h1:zpP3/fYl/
 github.com/wafer-bw/disgoslash v0.6.2-0.20210329213131-3244ee5e6448/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
 github.com/wafer-bw/disgoslash v0.6.2-0.20210401184923-08e79cf1284e h1:wiAfMZpG2+flg6aMbFFN3kOxL1br+w2Wgt+5FxlDhWA=
 github.com/wafer-bw/disgoslash v0.6.2-0.20210401184923-08e79cf1284e/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
+github.com/wafer-bw/disgoslash v0.6.2-0.20210401191649-ef6ff13c236b h1:Q7gHYslxUWxQjKRueovOWpI0tDkjOAe421zY6w+YEC8=
+github.com/wafer-bw/disgoslash v0.6.2-0.20210401191649-ef6ff13c236b/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c h1:Hei/4ADfdWqJk1ZMxUNpqntNwaWcugrBjAiHlqqRiVk=
