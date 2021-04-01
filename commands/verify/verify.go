@@ -33,32 +33,32 @@ var command = &discord.ApplicationCommand{
 			Description: "Enter a role",
 			Required:    true,
 		},
-		{
-			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
-			Name:        "subcommandgroup",
-			Description: "GROUP",
-			Options: []*discord.ApplicationCommandOption{
-				{
-					Name:        "subcommand",
-					Description: "SUB",
-					Type:        discord.ApplicationCommandOptionTypeSubCommand,
-					Options: []*discord.ApplicationCommandOption{
-						{
-							Name:        "string",
-							Description: "string",
-							Type:        discord.ApplicationCommandOptionTypeString,
-							Required:    true,
-						},
-						{
-							Name:        "channel",
-							Description: "channel",
-							Type:        discord.ApplicationCommandOptionTypeChannel,
-							Required:    false,
-						},
-					},
-				},
-			},
-		},
+		// {
+		// 	Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
+		// 	Name:        "subcommandgroup",
+		// 	Description: "GROUP",
+		// 	Options: []*discord.ApplicationCommandOption{
+		// 		{
+		// 			Name:        "subcommand",
+		// 			Description: "SUB",
+		// 			Type:        discord.ApplicationCommandOptionTypeSubCommand,
+		// 			Options: []*discord.ApplicationCommandOption{
+		// 				{
+		// 					Name:        "string",
+		// 					Description: "string",
+		// 					Type:        discord.ApplicationCommandOptionTypeString,
+		// 					Required:    true,
+		// 				},
+		// 				{
+		// 					Name:        "channel",
+		// 					Description: "channel",
+		// 					Type:        discord.ApplicationCommandOptionTypeChannel,
+		// 					Required:    false,
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// },
 	},
 }
 
