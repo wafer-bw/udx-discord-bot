@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  sync:
+  syncdev:
     env:
       DISCORD_API_BASE_URL: ${{ secrets.DISCORD_API_BASE }}
       DISCORD_API_VERSION: ${{ secrets.DISCORD_API_VERSION }}
