@@ -22,24 +22,6 @@ var command = &discord.ApplicationCommand{
 	Description: "debugging",
 	Options: []*discord.ApplicationCommandOption{
 		{
-			Type:        discord.ApplicationCommandOptionTypeString,
-			Name:        "String",
-			Description: "Enter a string",
-			Required:    true,
-		},
-		{
-			Type:        discord.ApplicationCommandOptionTypeInteger,
-			Name:        "Number",
-			Description: "Enter a number",
-			Required:    true,
-		},
-		{
-			Type:        discord.ApplicationCommandOptionTypeBoolean,
-			Name:        "Boolean",
-			Description: "Enter a boolean",
-			Required:    true,
-		},
-		{
 			Type:        discord.ApplicationCommandOptionTypeUser,
 			Name:        "User",
 			Description: "Enter a user",
@@ -50,6 +32,32 @@ var command = &discord.ApplicationCommand{
 			Name:        "Role",
 			Description: "Enter a role",
 			Required:    true,
+		},
+		{
+			Type:        discord.ApplicationCommandOptionTypeSubCommandGroup,
+			Name:        "subcommandgroup",
+			Description: "GROUP",
+			Options: []*discord.ApplicationCommandOption{
+				{
+					Name:        "subcommand",
+					Description: "SUB",
+					Type:        discord.ApplicationCommandOptionTypeSubCommand,
+					Options: []*discord.ApplicationCommandOption{
+						{
+							Name:        "string",
+							Description: "string",
+							Type:        discord.ApplicationCommandOptionTypeString,
+							Required:    true,
+						},
+						{
+							Name:        "channel",
+							Description: "channel",
+							Type:        discord.ApplicationCommandOptionTypeChannel,
+							Required:    false,
+						},
+					},
+				},
+			},
 		},
 	},
 }
