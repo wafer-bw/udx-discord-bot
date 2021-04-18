@@ -33,43 +33,43 @@ var command = &discord.ApplicationCommand{
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Required:    true,
-			Name:        "Symbol",
+			Name:        "symbol",
 			Description: "The symbol for the underlying. Ex: TSLA",
 			Type:        discord.ApplicationCommandOptionTypeString,
 		},
 		{
 			Required:    false,
-			Name:        "Target-Delta",
+			Name:        "target-delta",
 			Description: "Target delta. Default: 75",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "Min-Delta",
+			Name:        "min-delta",
 			Description: "Minimum delta. Default: 70",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "Max-Delta",
+			Name:        "max-delta",
 			Description: "Maximum delta. Default: 80",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "Min-DTE",
+			Name:        "min-dte",
 			Description: "Minimum days to expiry. Default: 99",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "Max-DTE",
+			Name:        "max-dte",
 			Description: "Minimum days to expiry. Default: 365",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "Max-EV-percent",
+			Name:        "max-ev",
 			Description: "Max extrinsic value percentage. Default: 10",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
@@ -112,6 +112,7 @@ func leapWrapper(request *discord.InteractionRequest) *discord.InteractionRespon
 func mapIntOptions(options []*discord.ApplicationCommandInteractionDataOption) map[string]int {
 	optionsMap := map[string]int{}
 	for _, option := range options {
+		log.Println(option.IntValue())
 		if val, ok := option.IntValue(); ok {
 			optionsMap[option.Name] = val
 		}
@@ -130,22 +131,22 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 	log.Println(optionsMap)
 	log.Println(request.Data.Options)
 
-	if minDelta, ok = optionsMap["Min-Delta"]; !ok {
+	if minDelta, ok = optionsMap["min-delta"]; !ok {
 		minDelta = defaultMinDelta
 	}
-	if targetDelta, ok = optionsMap["Target-Delta"]; !ok {
+	if targetDelta, ok = optionsMap["target-delta"]; !ok {
 		targetDelta = defaultTargetDelta
 	}
-	if maxDelta, ok = optionsMap["Max-Delta"]; !ok {
+	if maxDelta, ok = optionsMap["max-delta"]; !ok {
 		maxDelta = defaultMaxDelta
 	}
-	if minDTE, ok = optionsMap["Min-DTE"]; !ok {
+	if minDTE, ok = optionsMap["min-dte"]; !ok {
 		minDTE = defaultMinDTE
 	}
-	if maxDTE, ok = optionsMap["Max-DTE"]; !ok {
+	if maxDTE, ok = optionsMap["min-dte"]; !ok {
 		maxDTE = defaultMaxDTE
 	}
-	if maxEV, ok = optionsMap["Max-EV"]; !ok {
+	if maxEV, ok = optionsMap["max-ev"]; !ok {
 		maxEV = defaultMaxEV
 	}
 
