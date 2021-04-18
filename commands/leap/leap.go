@@ -175,7 +175,7 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 
 	bestCalls := getBestCalls(calls, targetDelta)
 	sortedBestCalls := sortBestCalls(bestCalls)
-	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded)
+	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded, optionsMap)
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
@@ -310,7 +310,7 @@ func sortBestCalls(callsMap bestCallsMap) []*viableCall {
 	return bestCalls
 }
 
-func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool) *discord.InteractionResponse {
+func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool, optionsMap map[string]int) *discord.InteractionResponse {
 	if len(bestCalls) == 0 {
 		msg := "No valid calls found"
 		if deadlineExceeded {
@@ -341,6 +341,8 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall, deadline
 	if deadlineExceeded {
 		msg += "\n_incomplete results due to time limit_"
 	}
+
+	log.Println(optionsMap)
 
 	return response(msg)
 }
