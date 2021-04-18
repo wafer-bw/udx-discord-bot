@@ -7,5 +7,5 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/stretchr/testify v1.7.0
-	github.com/wafer-bw/disgoslash v0.6.2-0.20210418190607-3ddcc9c2ea2d
+	github.com/wafer-bw/disgoslash v0.6.2-0.20210418194843-6a83fe7ed22f
 )
