@@ -20,6 +20,7 @@ import (
 
 var global = false
 var guildIDs = []string{
+	"116036580094902275", // UDX
 	"810227107967402056", // UDX Bot Dev
 }
 
@@ -39,14 +40,14 @@ var command = &discord.ApplicationCommand{
 		},
 		{
 			Required:    false,
-			Name:        "target-delta",
-			Description: "Target delta. Default: 75",
+			Name:        "min-delta",
+			Description: "Minimum delta. Default: 70",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
 			Required:    false,
-			Name:        "min-delta",
-			Description: "Minimum delta. Default: 70",
+			Name:        "target-delta",
+			Description: "Target delta. Default: 75",
 			Type:        discord.ApplicationCommandOptionTypeInteger,
 		},
 		{
