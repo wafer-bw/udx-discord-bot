@@ -125,8 +125,6 @@ go run sync/sync.go
     * table of contents
 * `chstrat`
     * handle errors properly and respond in discord
-    * use goroutines
-        * cancel out and return before 10s vercel time limit
     * write tests
 * `sync`
     * move to cmd folder and convert to command

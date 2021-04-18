@@ -11,7 +11,7 @@ cypress/videos
 .DS_Store
 .coverage
 cov.xml
-temp.json
+data
 
 # Binaries for programs and plugins
 *.exe

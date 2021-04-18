@@ -1,6 +1,7 @@
 package extrinsicrisk
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -8,7 +9,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/wafer-bw/disgoslash/discord"
-	"github.com/wafer-bw/udx-discord-bot/common/utils"
 )
 
 func TestMain(m *testing.M) {
@@ -22,9 +22,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", String: utils.StringPointer("101.80")},
-					{Name: "strike", String: utils.StringPointer("87.5")},
-					{Name: "ask", String: utils.StringPointer("19")},
+					{Name: "share", Value: json.RawMessage(`"101.80"`)},
+					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
+					{Name: "ask", Value: json.RawMessage(`"19"`)},
 				},
 			},
 		}
@@ -50,9 +50,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", String: utils.StringPointer("a")},
-					{Name: "strike", String: utils.StringPointer("87.5")},
-					{Name: "ask", String: utils.StringPointer("19")},
+					{Name: "share", Value: json.RawMessage(`"a"`)},
+					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
+					{Name: "ask", Value: json.RawMessage(`"19"`)},
 				},
 			},
 		}
@@ -66,9 +66,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", String: utils.StringPointer("101.80")},
-					{Name: "strike", String: utils.StringPointer("a")},
-					{Name: "ask", String: utils.StringPointer("19")},
+					{Name: "share", Value: json.RawMessage(`"101.80"`)},
+					{Name: "strike", Value: json.RawMessage(`"a"`)},
+					{Name: "ask", Value: json.RawMessage(`"19"`)},
 				},
 			},
 		}
@@ -82,9 +82,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", String: utils.StringPointer("101.80")},
-					{Name: "strike", String: utils.StringPointer("87.5")},
-					{Name: "ask", String: utils.StringPointer("a")},
+					{Name: "share", Value: json.RawMessage(`"101.80"`)},
+					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
+					{Name: "ask", Value: json.RawMessage(`"a"`)},
 				},
 			},
 		}
