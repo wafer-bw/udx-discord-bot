@@ -1,4 +1,4 @@
-package extrinsicrisk
+package extrinsicvalue
 
 import (
 	"errors"
@@ -18,12 +18,12 @@ var guildIDs = []string{
 }
 
 // SlashCommand instance
-var SlashCommand = disgoslash.NewSlashCommand(command, extrinsicRisk, global, guildIDs)
+var SlashCommand = disgoslash.NewSlashCommand(command, extrinsicValue, global, guildIDs)
 
 // command schema for the slash command
 var command = &discord.ApplicationCommand{
-	Name:        "extrinsicrisk",
-	Description: "Calculate an option's extrinsic risk percentage using the provided share, strike, & ask prices",
+	Name:        "extrinsicvalue",
+	Description: "Calculate an option's extrinsic value percentage using the provided share, strike, & ask prices",
 	Options: []*discord.ApplicationCommandOption{
 		{
 			Type:        discord.ApplicationCommandOptionTypeString,
@@ -46,9 +46,9 @@ var command = &discord.ApplicationCommand{
 	},
 }
 
-// extrinsicRisk - The code which completes the desired action of the slash command.
+// extrinsicValue - The code which completes the desired action of the slash command.
 // Calculate extrinsic risk % for provided `share`, `strike`, & `ask`
-func extrinsicRisk(request *discord.InteractionRequest) *discord.InteractionResponse {
+func extrinsicValue(request *discord.InteractionRequest) *discord.InteractionResponse {
 	p, err := getPayload(request.Data.Options)
 	if err != nil {
 		log.Println(err)
@@ -59,7 +59,7 @@ func extrinsicRisk(request *discord.InteractionRequest) *discord.InteractionResp
 			},
 		}
 	}
-	risk := formulas.GetExtrinsicRisk(p.Share, p.Strike, p.Ask)
+	risk := formulas.GetExtrinsicValue(p.Share, p.Strike, p.Ask)
 
 	return &discord.InteractionResponse{
 		Type: discord.InteractionResponseTypeChannelMessageWithSource,

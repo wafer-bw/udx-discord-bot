@@ -1,4 +1,4 @@
-package extrinsicrisk
+package extrinsicvalue
 
 import (
 	"io/ioutil"
@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestExtrinsicRisk(t *testing.T) {
+func TestExtrinsicValue(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
@@ -29,7 +29,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "4.62%"
 
-		response := extrinsicRisk(request)
+		response := extrinsicValue(request)
 		require.Equal(t, expect, response.Data.Content)
 	})
 
@@ -41,7 +41,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response := extrinsicRisk(request)
+		response := extrinsicValue(request)
 		require.Equal(t, expect, response.Data.Content)
 	})
 
@@ -57,7 +57,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response := extrinsicRisk(request)
+		response := extrinsicValue(request)
 		require.Equal(t, expect, response.Data.Content)
 	})
 
@@ -73,7 +73,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response := extrinsicRisk(request)
+		response := extrinsicValue(request)
 		require.Equal(t, expect, response.Data.Content)
 	})
 
@@ -89,7 +89,7 @@ func TestExtrinsicRisk(t *testing.T) {
 		}
 		expect := "Error parsing command :cry:"
 
-		response := extrinsicRisk(request)
+		response := extrinsicValue(request)
 		require.Equal(t, expect, response.Data.Content)
 	})
 }

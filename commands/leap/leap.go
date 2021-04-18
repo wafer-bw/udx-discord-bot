@@ -80,12 +80,12 @@ type viableCallsMap map[string][]*viableCall
 type bestCallsMap map[string]*viableCall
 
 type viableCall struct {
-	strike        float64
-	bid           float64
-	ask           float64
-	extrinsicRisk float64
-	delta         float64
-	expiry        string
+	strike         float64
+	bid            float64
+	ask            float64
+	extrinsicValue float64
+	delta          float64
+	expiry         string
 }
 
 type chain struct {
@@ -109,28 +109,40 @@ func leapWrapper(request *discord.InteractionRequest) *discord.InteractionRespon
 	return leap(request, tapi, time.Now())
 }
 
+func mapIntOptions(options []*discord.ApplicationCommandInteractionDataOption) map[string]int {
+	optionsMap := map[string]int{}
+	for _, option := range options {
+		if val, ok := option.IntValue(); ok {
+			optionsMap[option.Name] = val
+		}
+	}
+	return optionsMap
+}
+
 // leap - Find optimal option calls with an extrinsic risk under 10%
 func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now time.Time) *discord.InteractionResponse {
 	symbol, _ := request.Data.Options[0].StringValue()
 
 	var ok bool
 	var minDelta, targetDelta, maxDelta, minDTE, maxDTE, maxEV int
-	if minDelta, ok = request.Data.Options[2].IntValue(); !ok {
+
+	optionsMap := mapIntOptions(request.Data.Options)
+	if minDelta, ok = optionsMap["Min-Delta"]; !ok {
 		minDelta = defaultMinDelta
 	}
-	if targetDelta, ok = request.Data.Options[2].IntValue(); !ok {
+	if targetDelta, ok = optionsMap["Target-Delta"]; !ok {
 		targetDelta = defaultTargetDelta
 	}
-	if maxDelta, ok = request.Data.Options[3].IntValue(); !ok {
+	if maxDelta, ok = optionsMap["Max-Delta"]; !ok {
 		maxDelta = defaultMaxDelta
 	}
-	if minDTE, ok = request.Data.Options[4].IntValue(); !ok {
+	if minDTE, ok = optionsMap["Min-DTE"]; !ok {
 		minDTE = defaultMinDTE
 	}
-	if maxDTE, ok = request.Data.Options[5].IntValue(); !ok {
+	if maxDTE, ok = optionsMap["Max-DTE"]; !ok {
 		maxDTE = defaultMaxDTE
 	}
-	if maxEV, ok = request.Data.Options[6].IntValue(); !ok {
+	if maxEV, ok = optionsMap["Max-EV"]; !ok {
 		maxEV = defaultMaxEV
 	}
 
@@ -249,18 +261,18 @@ func getCalls(share float64, chains []chain, minDelta int, maxDelta int, maxEV i
 			if option.Greeks.Delta > float64(maxDelta)/100 || option.Greeks.Delta < float64(minDelta)/100 {
 				continue
 			}
-			extrinsicRisk := formulas.GetExtrinsicRisk(share, option.Strike, option.Ask)
-			if extrinsicRisk > float64(maxEV) {
+			extrinsicValue := formulas.GetExtrinsicValue(share, option.Strike, option.Ask)
+			if extrinsicValue > float64(maxEV) {
 				continue
 			}
 
 			calls[chain.expiry] = append(calls[chain.expiry], &viableCall{
-				bid:           option.Bid,
-				ask:           option.Ask,
-				extrinsicRisk: extrinsicRisk,
-				delta:         option.Greeks.Delta,
-				expiry:        expires.Format("Jan02'06"),
-				strike:        option.Strike,
+				bid:            option.Bid,
+				ask:            option.Ask,
+				extrinsicValue: extrinsicValue,
+				delta:          option.Greeks.Delta,
+				expiry:         expires.Format("Jan02'06"),
+				strike:         option.Strike,
 			})
 		}
 	}
@@ -315,7 +327,7 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall, deadline
 			call.expiry,
 			fmt.Sprintf("%.2f", call.strike),
 			fmt.Sprintf("%.0fΔ", call.delta*100),
-			fmt.Sprintf("%.2fER", call.extrinsicRisk),
+			fmt.Sprintf("%.2fER", call.extrinsicValue),
 			fmt.Sprintf("b%.2f", call.bid),
 			"-",
 			fmt.Sprintf("a%.2f", call.ask),

@@ -15,8 +15,8 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestExtrinsicRisk(t *testing.T) {
+func TestExtrinsicValue(t *testing.T) {
 	expect := 4.616895874263264
-	er := GetExtrinsicRisk(101.80, 87.50, 19)
+	er := GetExtrinsicValue(101.80, 87.50, 19)
 	require.Equal(t, expect, er)
 }
