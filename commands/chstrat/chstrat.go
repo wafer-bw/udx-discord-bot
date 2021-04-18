@@ -77,25 +77,21 @@ func chstratWrapper(request *discord.InteractionRequest) *discord.InteractionRes
 
 // chstrat - Find optimal option calls with an extrinsic risk under 10%
 func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, now time.Time) *discord.InteractionResponse {
-	symbol, err := request.Data.Options[0].GetString()
+	symbol, _ := request.Data.Options[0].StringValue()
+
+	share, err := getSharePrice(tapi, symbol)
 	if err != nil {
 		log.Println(err)
 		return response(err.Error())
 	}
 
-	share, err := getSharePrice(tapi, *symbol)
+	expirations, err := getExpirations(tapi, symbol, now)
 	if err != nil {
 		log.Println(err)
 		return response(err.Error())
 	}
 
-	expirations, err := getExpirations(tapi, *symbol, now)
-	if err != nil {
-		log.Println(err)
-		return response(err.Error())
-	}
-
-	chains, errs, deadlineExceeded := getChains(tapi, *symbol, expirations, now)
+	chains, errs, deadlineExceeded := getChains(tapi, symbol, expirations, now)
 	for err := range errs {
 		log.Println(err)
 	}
@@ -108,7 +104,7 @@ func chstrat(request *discord.InteractionRequest, tapi tradier.ClientInterface, 
 
 	bestCalls := getBestCalls(calls)
 	sortedBestCalls := sortBestCalls(bestCalls)
-	return getResponse(*symbol, share, sortedBestCalls, deadlineExceeded)
+	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded)
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {

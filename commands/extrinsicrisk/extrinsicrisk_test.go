@@ -1,7 +1,6 @@
 package extrinsicrisk
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -22,9 +21,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: json.RawMessage(`"101.80"`)},
-					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
-					{Name: "ask", Value: json.RawMessage(`"19"`)},
+					{Name: "share", Value: "101.80"},
+					{Name: "strike", Value: "87.5"},
+					{Name: "ask", Value: "19"},
 				},
 			},
 		}
@@ -50,9 +49,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: json.RawMessage(`"a"`)},
-					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
-					{Name: "ask", Value: json.RawMessage(`"19"`)},
+					{Name: "share", Value: "a"},
+					{Name: "strike", Value: "87.5"},
+					{Name: "ask", Value: "19"},
 				},
 			},
 		}
@@ -66,9 +65,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: json.RawMessage(`"101.80"`)},
-					{Name: "strike", Value: json.RawMessage(`"a"`)},
-					{Name: "ask", Value: json.RawMessage(`"19"`)},
+					{Name: "share", Value: "101.80"},
+					{Name: "strike", Value: "a"},
+					{Name: "ask", Value: "19"},
 				},
 			},
 		}
@@ -82,9 +81,9 @@ func TestExtrinsicRisk(t *testing.T) {
 		request := &discord.InteractionRequest{
 			Data: &discord.ApplicationCommandInteractionData{
 				Options: []*discord.ApplicationCommandInteractionDataOption{
-					{Name: "share", Value: json.RawMessage(`"101.80"`)},
-					{Name: "strike", Value: json.RawMessage(`"87.5"`)},
-					{Name: "ask", Value: json.RawMessage(`"a"`)},
+					{Name: "share", Value: "101.80"},
+					{Name: "strike", Value: "87.5"},
+					{Name: "ask", Value: "a"},
 				},
 			},
 		}

@@ -79,29 +79,29 @@ func getPayload(options []*discord.ApplicationCommandInteractionDataOption) (*pa
 		return nil, errors.New("missing required options")
 	}
 
-	shareStr, err := options[0].GetString()
-	if err != nil {
-		return nil, err
+	shareStr, ok := options[0].StringValue()
+	if !ok {
+		return nil, errors.New("missing share price")
 	}
-	share, err := strconv.ParseFloat(*shareStr, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	strikeStr, err := options[1].GetString()
-	if err != nil {
-		return nil, err
-	}
-	strike, err := strconv.ParseFloat(*strikeStr, 64)
+	share, err := strconv.ParseFloat(shareStr, 64)
 	if err != nil {
 		return nil, err
 	}
 
-	askStr, err := options[2].GetString()
+	strikeStr, ok := options[1].StringValue()
+	if !ok {
+		return nil, errors.New("missing strike price")
+	}
+	strike, err := strconv.ParseFloat(strikeStr, 64)
 	if err != nil {
 		return nil, err
 	}
-	ask, err := strconv.ParseFloat(*askStr, 64)
+
+	askStr, ok := options[2].StringValue()
+	if !ok {
+		return nil, errors.New("missing ask price")
+	}
+	ask, err := strconv.ParseFloat(askStr, 64)
 	if err != nil {
 		return nil, err
 	}
