@@ -128,8 +128,6 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 	var minDelta, targetDelta, maxDelta, minDTE, maxDTE, maxEV int
 
 	optionsMap := mapIntOptions(request.Data.Options)
-	log.Println(optionsMap)
-	log.Println(request.Data.Options)
 
 	if minDelta, ok = optionsMap["min-delta"]; !ok {
 		minDelta = defaultMinDelta
@@ -143,7 +141,7 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 	if minDTE, ok = optionsMap["min-dte"]; !ok {
 		minDTE = defaultMinDTE
 	}
-	if maxDTE, ok = optionsMap["min-dte"]; !ok {
+	if maxDTE, ok = optionsMap["max-dte"]; !ok {
 		maxDTE = defaultMaxDTE
 	}
 	if maxEV, ok = optionsMap["max-ev"]; !ok {
