@@ -14,7 +14,7 @@ jobs:
       DISCORD_TOKEN: ${{ secrets.DEV_DISCORD_TOKEN }}
       TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }}
       TRADIER_ENDPOINT: ${{ secrets.TRADIER_ENDPOINT }}
-    name: sync
+    name: syncdev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
