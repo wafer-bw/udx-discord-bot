@@ -127,6 +127,9 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 	var minDelta, targetDelta, maxDelta, minDTE, maxDTE, maxEV int
 
 	optionsMap := mapIntOptions(request.Data.Options)
+	log.Println(optionsMap)
+	log.Println(request.Data.Options)
+
 	if minDelta, ok = optionsMap["Min-Delta"]; !ok {
 		minDelta = defaultMinDelta
 	}
@@ -175,7 +178,7 @@ func leap(request *discord.InteractionRequest, tapi tradier.ClientInterface, now
 
 	bestCalls := getBestCalls(calls, targetDelta)
 	sortedBestCalls := sortBestCalls(bestCalls)
-	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded, optionsMap)
+	return getResponse(symbol, share, sortedBestCalls, deadlineExceeded)
 }
 
 func getSharePrice(tapi tradier.ClientInterface, symbol string) (float64, error) {
@@ -310,7 +313,7 @@ func sortBestCalls(callsMap bestCallsMap) []*viableCall {
 	return bestCalls
 }
 
-func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool, optionsMap map[string]int) *discord.InteractionResponse {
+func getResponse(symbol string, share float64, bestCalls []*viableCall, deadlineExceeded bool) *discord.InteractionResponse {
 	if len(bestCalls) == 0 {
 		msg := "No valid calls found"
 		if deadlineExceeded {
@@ -341,8 +344,6 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall, deadline
 	if deadlineExceeded {
 		msg += "\n_incomplete results due to time limit_"
 	}
-
-	log.Println(optionsMap)
 
 	return response(msg)
 }
