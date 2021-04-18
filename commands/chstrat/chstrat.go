@@ -45,12 +45,12 @@ type viableCallsMap map[string][]*viableCall
 type bestCallsMap map[string]*viableCall
 
 type viableCall struct {
-	strike        float64
-	bid           float64
-	ask           float64
-	extrinsicRisk float64
-	delta         float64
-	expiry        string
+	strike         float64
+	bid            float64
+	ask            float64
+	extrinsicValue float64
+	delta          float64
+	expiry         string
 }
 
 type chain struct {
@@ -191,18 +191,18 @@ func getCalls(share float64, chains []chain) (viableCallsMap, error) {
 			if option.Greeks.Delta > maxDelta || option.Greeks.Delta < minDelta {
 				continue
 			}
-			extrinsicRisk := formulas.GetExtrinsicRisk(share, option.Strike, option.Ask)
-			if extrinsicRisk > 10 {
+			extrinsicValue := formulas.GetExtrinsicValue(share, option.Strike, option.Ask)
+			if extrinsicValue > 10 {
 				continue
 			}
 
 			calls[chain.expiry] = append(calls[chain.expiry], &viableCall{
-				bid:           option.Bid,
-				ask:           option.Ask,
-				extrinsicRisk: extrinsicRisk,
-				delta:         option.Greeks.Delta,
-				expiry:        expires.Format("Jan02'06"),
-				strike:        option.Strike,
+				bid:            option.Bid,
+				ask:            option.Ask,
+				extrinsicValue: extrinsicValue,
+				delta:          option.Greeks.Delta,
+				expiry:         expires.Format("Jan02'06"),
+				strike:         option.Strike,
 			})
 		}
 	}
@@ -257,7 +257,7 @@ func getResponse(symbol string, share float64, bestCalls []*viableCall, deadline
 			call.expiry,
 			fmt.Sprintf("%.2f", call.strike),
 			fmt.Sprintf("%.0fΔ", call.delta*100),
-			fmt.Sprintf("%.2fER", call.extrinsicRisk),
+			fmt.Sprintf("%.2fER", call.extrinsicValue),
 			fmt.Sprintf("b%.2f", call.bid),
 			"-",
 			fmt.Sprintf("a%.2f", call.ask),
