@@ -25,12 +25,6 @@ github.com/stretchr/objx v0.3.0/go.mod h1:qt09Ya8vawLte6SNmTgCsAVtYtaKzEcn8ATUoH
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210329213131-3244ee5e6448 h1:zpP3/fYl/liyvPcNQj+vsl2Kt2iENEZKGioLM5DcZxY=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210329213131-3244ee5e6448/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210401184923-08e79cf1284e h1:wiAfMZpG2+flg6aMbFFN3kOxL1br+w2Wgt+5FxlDhWA=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210401184923-08e79cf1284e/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210401191649-ef6ff13c236b h1:Q7gHYslxUWxQjKRueovOWpI0tDkjOAe421zY6w+YEC8=
-github.com/wafer-bw/disgoslash v0.6.2-0.20210401191649-ef6ff13c236b/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
 github.com/wafer-bw/disgoslash v0.6.2-0.20210418190607-3ddcc9c2ea2d h1:sL/Q1WUt4qIpQ3Pup8arJcpAZaEKI/EjfrBKOCps1wA=
 github.com/wafer-bw/disgoslash v0.6.2-0.20210418190607-3ddcc9c2ea2d/go.mod h1:0Luar4EeaVFhGuaUClkIMrcCQT/6ByfsaNER5YxAvKo=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=

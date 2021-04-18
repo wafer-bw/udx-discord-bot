@@ -97,7 +97,7 @@ func getPayload(options []*discord.ApplicationCommandInteractionDataOption) (*pa
 		return nil, err
 	}
 
-	askStr, err := options[1].GetString()
+	askStr, err := options[2].GetString()
 	if err != nil {
 		return nil, err
 	}
